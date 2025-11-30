@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd"
+       default-autowire="byName">
+
+    <!-- 扫描识别包下所有注解 -->
+    <context:component-scan base-package="cn.ivfzhou.java.spring"/>
+
+    <!-- 加载 properties 文件，可在内部使用 ${} 调用 -->
+    <context:property-placeholder location="classpath:config.properties"/>
+
+    <!-- 引入其它配置文件。 -->
+    <import resource="application-*.xml"/>
+
+    <bean id="user" class="cn.ivfzhou.java.spring.bean.User"/>
+
+    <!-- 给 spring-bean 设别名。 -->
+    <!--<alias name="user" alias="userAlias"/>-->
+
+    <!--
+    <bean id="user1" class="cn.ivfzhou.java.spring.bean.User" depends-on="" lazy-init="true" autowire="byName"
+          init-method="init" destroy-method="destroy" scope="singleton">&lt;!&ndash; byType &ndash;&gt;
+        &lt;!&ndash; 使用 setter &ndash;&gt;
+        <property name="age">
+            <value>18</value>
+        </property>
+        <property name="ref">
+            <null></null>
+        </property>
+        <property name="name" value="zz"/>
+        <property name="friend" ref="friend"/>
+        <property name="pros">
+            <value>
+                n=m,
+                m=n
+            </value>
+        </property>
+        <property name="set">
+            <array>
+                <value>a</value>
+                <value>b</value>
+                <value>c</value>
+                <value>c</value>
+                <value>${msg}</value>
+            </array>
+        </property>
+        <property name="map">
+            &lt;!&ndash;
+            <map>
+                <entry key="a">
+                    <value>a</value>
+                </entry>
+                <entry key="b" value="b"/>
+            </map>
+            &ndash;&gt;
+            <props>
+                <prop key="a">a</prop>
+            </props>
+        </property>
+    </bean>
+    -->
+
+    <!--<bean id="user2" class="cn.ivfzhou.java.spring.bean.User" p:age="18" p:friend-ref="friend"/>-->
+
+    <!--<bean id="friend" class="cn.ivfzhou.java.spring.bean.User"/>-->
+
+    <!--<bean id="user3" class="cn.ivfzhou.java.spring.bean.User" c:_0="18" c:_1="ivfzhou" c:_2-ref="friend"/>-->
+
+    <!--
+    <bean id="user4" name="name1,name2" class="cn.ivfzhou.java.spring.bean.User">
+        <constructor-arg name="age" value="18"/>
+        <constructor-arg name="name" value="ivfzhou"/>
+        <constructor-arg name="friend" ref="friend"/>
+    </bean>
+    -->
+
+    <!--<bean id="factory" class="cn.ivfzhou.java.spring.bean.UserFactory"/>-->
+
+    <!--<bean id="user5" factory-bean="factory" factory-method="build"/>-->
+
+</beans>

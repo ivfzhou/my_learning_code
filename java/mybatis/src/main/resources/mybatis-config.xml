@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+    <!-- 指定属性值，resource 从类路径引入 properties 文件，url 从指定路径引入。
+         优先级：代码方法最高，外部文件引入次之，最后是元素体内编写的。
+    -->
+    <properties resource="mybatis-properties.properties"> <!-- url="" -->
+        <property name="driver" value="com.mysql.cj.jdbc.Driver"/>
+        <!-- 启用默认值特性。 -->
+        <property name="org.apache.ibatis.parsing.PropertyParser.enable-default-value" value="true"/>
+        <!-- 修改默认值的分隔符。 -->
+        <property name="org.apache.ibatis.parsing.PropertyParser.default-value-separator" value="?:"/>
+    </properties>
+
+    <settings>
+        <setting name="cacheEnabled" value="true"/>
+        <setting name="lazyLoadingEnabled" value="true"/>
+        <setting name="multipleResultSetsEnabled" value="true"/>
+        <setting name="useColumnLabel" value="true"/>
+        <setting name="useGeneratedKeys" value="false"/>
+        <setting name="autoMappingBehavior" value="PARTIAL"/>
+        <setting name="autoMappingUnknownColumnBehavior" value="WARNING"/>
+        <setting name="defaultExecutorType" value="SIMPLE"/>
+        <setting name="defaultStatementTimeout" value="25"/>
+        <setting name="defaultFetchSize" value="100"/>
+        <setting name="safeRowBoundsEnabled" value="false"/>
+        <setting name="mapUnderscoreToCamelCase" value="false"/>
+        <setting name="localCacheScope" value="SESSION"/>
+        <setting name="jdbcTypeForNull" value="OTHER"/>
+        <setting name="lazyLoadTriggerMethods" value="equals,clone,hashCode,toString"/>
+        <!-- 自定义脚本语言。 -->
+        <!--<setting name="defaultScriptingLanguage" value="MyLanguageDriver"/>-->
+        <setting name="logImpl" value="SLF4J"/>
+    </settings>
+
+    <typeAliases>
+        <!--<typeAlias alias="blog" type="cn.ivfzhou.java.mybatis.bean.Blog"/>-->
+        <!-- 把这个包下的类名首字母小写作别名，有注解就使用注解值。 -->
+        <package name="cn.ivfzhou.java.mybatis.bean"/>
+    </typeAliases>
+
+    <typeHandlers>
+        <!-- String 类型的数据会使用这个 Handler 转化。 -->
+        <!--<typeHandler handler="MyTypeHandler" javaType="type" jdbcType="INTEGER"/>-->
+        <!-- 自动注解查找类型处理器。 -->
+        <!--<package name="cn.ivfzhou.java.mybatis.typehandler"/>-->
+    </typeHandlers>
+
+    <!--
+    <objectFactory type="cn.ivfzhou.java.mybatis.beanfactory.MyObjectFactory">
+        <property name="pname" value="pvalue"/>
+    </objectFactory>
+    -->
+
+    <!--
+    <plugins>
+        <plugin interceptor="cn.ivfzhou.java.mybatis.interceptor.MyPlugin">
+            <property name="pname" value="pvalue"/>
+        </plugin>
+    </plugins>
+    -->
+
+    <environments default="development">
+        <environment id="development">
+            <transactionManager type="JDBC"> <!-- MANAGED JdbcTransactionFactory ManagedTransactionFactory -->
+                <property name="closeConnection" value="false"/>
+            </transactionManager>
+            <dataSource type="cn.ivfzhou.java.mybatis.transaction.MyDataSourceFactory">
+                <!-- POOLED UNPOOLED JNDI UnpooledDataSourceFactory -->
+                <!-- 如果 ${driver} 没找到则为冒号后部分值。需要配置开启这个特性。-->
+                <property name="driver" value="${driver?:com.mysql.jdbc.Driver}"/>
+                <property name="url" value="${url}"/>
+                <property name="username" value="${username}"/>
+                <property name="password" value="${password}"/>
+                <property name="defaultTransactionIsolationLevel" value="4"/>
+                <property name="defaultNetworkTimeout" value="1500"/>
+                <property name="driver.encoding " value="UTF-8"/>
+            </dataSource>
+        </environment>
+        <environment id="myenv">
+            <transactionManager type="cn.ivfzhou.java.mybatis.transaction.MyTransactionManager">
+                <property name="name" value="value"/>
+            </transactionManager>
+            <dataSource type="cn.ivfzhou.java.mybatis.transaction.MyDataSourceFactory">
+                <property name="name" value="value"/>
+            </dataSource>
+        </environment>
+    </environments>
+
+    <databaseIdProvider type="DB_VENDOR">
+        <property name="SQL Server" value="sqlserver"/>
+        <property name="DB2" value="db2"/>
+        <property name="Oracle" value="oracle"/>
+        <property name="MySQL" value="mysql"/>
+    </databaseIdProvider>
+
+    <!--
+    <databaseIdProvider type="cn.ivfzhou.java.mybatis.databaseidprovider.MyDatabaseIDProvider">
+        <property name="MySQL" value="mysql"/>
+    </databaseIdProvider>
+    -->
+
+    <mappers>
+        <!--<mapper resource="mybatis-mapper-config.xml"/>-->
+        <!--<mapper class="BlogMapper"/>-->
+        <!--<mapper url="file:///"/>-->
+        <package name="cn.ivfzhou.java.mybatis.mapper"/>
+    </mappers>
+
+</configuration>

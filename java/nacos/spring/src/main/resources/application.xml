@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns="http://www.springframework.org/schema/beans"
+       xmlns:nacos="http://nacos.io/schema/nacos"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/mvc
+       https://springframework.org/schema/mvc/spring-mvc.xsd
+       http://nacos.io/schema/nacos
+       http://nacos.io/schema/nacos.xsd">
+
+    <!-- 启用 Nacos 注解驱动 -->
+    <nacos:annotation-driven/>
+
+    <!-- 启用 Spring 本身的组件扫描和注解配置（如 @Service, @Autowired） -->
+    <context:annotation-config/>
+    <context:component-scan base-package="cn.ivfzhou.java.nacos.spring"/>
+
+    <mvc:annotation-driven/>
+
+</beans>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <parent>
+        <artifactId>java</artifactId>
+        <groupId>cn.ivfzhou</groupId>
+        <version>1.0.0</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>cn.ivfzhou.java</groupId>
+    <artifactId>javaee</artifactId>
+    <version>1.0.0</version>
+    <name>javaee</name>
+    <packaging>war</packaging>
+
+    <dependencies>
+        <dependency>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.servlet.jsp</groupId>
+            <artifactId>jakarta.servlet.jsp-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.servlet.jsp.jstl</groupId>
+            <artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.web</groupId>
+            <artifactId>jakarta.servlet.jsp.jstl</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.tomcat.maven</groupId>
+                <artifactId>tomcat7-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+
+        <!-- 生成的文件名 -->
+        <finalName>javaee</finalName>
+
+        <resources>
+            <resource>
+                <!-- 默认值 -->
+                <directory>src/main/resources</directory>
+                <!-- 默认 false。把文件中 ${} 替换成其它值。 -->
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+        <filters>
+            <!-- 引入该文件 -->
+            <filter>src/main/filters/filter.properties</filter>
+        </filters>
+    </build>
+
+</project>

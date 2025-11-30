@@ -1,0 +1,689 @@
+services:
+  mysql:
+    image: mysql:9.4.0
+    container_name: mysql
+    hostname: ivfzhoudockermysql
+    privileged: true
+    extra_hosts:
+      - "ivfzhoudebian:172.16.3.1"
+    networks:
+      network:
+        ipv4_address: 172.16.3.128
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+    #ports:
+    #  - "3306:3306"
+    volumes:
+      - /home/ivfzhou/volumes/mysql/data/:/var/lib/mysql/:rw
+      - /home/ivfzhou/volumes/mysql/config/:/etc/mysql/conf.d/:rw
+      - /home/ivfzhou/volumes/mysql/log/:/logs/:rw
+  redis:
+    image: redis:8.0.2
+    container_name: redis
+    privileged: true
+    hostname: ivfzhoudockerredis
+    networks:
+      network:
+        ipv4_address: 172.16.3.129
+    extra_hosts:
+      - "ivfzhoudebian:172.16.3.1"
+    working_dir: /data
+    #ports:
+    #  - "6379:6379"
+    volumes:
+      - /home/ivfzhou/volumes/redis/config:/config:rw
+      - /home/ivfzhou/volumes/redis/data:/data:rw
+    command:
+      - redis-server
+      - /config/redis.conf
+  redis_0:
+    image: redis:8.0.2
+    container_name: redis_0
+    privileged: true
+    hostname: ivfzhoudockerredis0
+    networks:
+      network:
+        ipv4_address: 172.16.3.130
+    extra_hosts:
+      - "ivfzhoudebian:172.16.3.1"
+    working_dir: /data
+    #ports:
+    #  - "6380:6380"
+    #  - "16380:16380"
+    volumes:
+      - /home/ivfzhou/volumes/redis/cluster/config:/config:rw
+      - /home/ivfzhou/volumes/redis/cluster/data:/data:rw
+    command:
+      - redis-server
+      - /config/redis_6380.conf
+  redis_1:
+    image: redis:8.0.2
+    working_dir: /data
+    container_name: redis_1
+    hostname: ivfzhoudockerredis1
+    networks:
+      network:
+        ipv4_address: 172.16.3.131
+    extra_hosts:
+      - "ivfzhoudebian:172.16.3.1"
+    privileged: true
+    #ports:
+    #  - "6381:6381"
+    #  - "16381:16381"
+    volumes:
+      - /home/ivfzhou/volumes/redis/cluster/config:/config
+      - /home/ivfzhou/volumes/redis/cluster/data:/data
+    command:
+      - redis-server
+      - /config/redis_6381.conf
+  redis_2:
+    image: redis:8.0.2
+    container_name: redis_2
+    working_dir: /data
+    privileged: true
+    hostname: ivfzhoudockerredis2
+    networks:
+      network:
+        ipv4_address: 172.16.3.132
+    extra_hosts:
+      - "ivfzhoudebian:172.16.3.1"
+    #ports:
+    #  - "6382:6382"
+    #  - "16382:16382"
+    stdin_open: true
+    volumes:
+      - /home/ivfzhou/volumes/redis/cluster/config:/config
+      - /home/ivfzhou/volumes/redis/cluster/data:/data
+    command:
+      - redis-server
+      - /config/redis_6382.conf
+  redis_3:
+    image: redis:8.0.2
+    container_name: redis_3
+    working_dir: /data
+    hostname: ivfzhoudockerredis3
+    networks:
+      network:
+        ipv4_address: 172.16.3.133
+    extra_hosts:
+      - "ivfzhoudebian:172.16.3.1"
+    privileged: true
+    #ports:
+    #  - "6383:6383"
+    #  - "16383:16383"
+    volumes:
+      - /home/ivfzhou/volumes/redis/cluster/config:/config
+      - /home/ivfzhou/volumes/redis/cluster/data:/data
+    command:
+      - redis-server
+      - /config/redis_6383.conf
+  redis_4:
+    image: redis:8.0.2
+    working_dir: /data
+    container_name: redis_4
+    hostname: ivfzhoudockerredis4
+    networks:
+      network:
+        ipv4_address: 172.16.3.134
+    extra_hosts:
+      - "ivfzhoudebian:172.16.3.1"
+    privileged: true
+    #ports:
+    #  - "6384:6384"
+    #  - "16384:16384"
+    volumes:
+      - /home/ivfzhou/volumes/redis/cluster/config:/config
+      - /home/ivfzhou/volumes/redis/cluster/data:/data
+    command:
+      - redis-server
+      - /config/redis_6384.conf
+  redis_5:
+    image: redis:8.0.2
+    container_name: redis_5
+    working_dir: /data
+    privileged: true
+    hostname: ivfzhoudockerredis5
+    volumes:
+      - /home/ivfzhou/volumes/redis/cluster/config:/config
+      - /home/ivfzhou/volumes/redis/cluster/data:/data
+    #ports:
+    #  - "6385:6385"
+    #  - "16385:16385"
+    networks:
+      network:
+        ipv4_address: 172.16.3.135
+    extra_hosts:
+      - "ivfzhoudebian:172.16.3.1"
+    command:
+      - redis-server
+      - /config/redis_6385.conf
+  redis_sentinel_0:
+    image: redis:8.0.2
+    container_name: redis_sentinel_0
+    working_dir: /data
+    hostname: ivfzhoudockerredissentinel0
+    networks:
+      network:
+        ipv4_address: 172.16.3.136
+    extra_hosts:
+      - "ivfzhoudebian:172.16.3.1"
+    privileged: true
+    #ports:
+    #  - "6386:6386"
+    volumes:
+      - /home/ivfzhou/volumes/redis/cluster/config:/config
+      - /home/ivfzhou/volumes/redis/cluster/data:/data
+    command:
+      - redis-sentinel
+      - /config/sentinel_6386.conf
+    depends_on:
+      - redis_0
+      - redis_1
+      - redis_2
+      - redis_3
+      - redis_4
+      - redis_5
+  redis_sentinel_1:
+    image: redis:8.0.2
+    container_name: redis_sentinel_1
+    working_dir: /data
+    hostname: ivfzhoudockerredissentinel1
+    networks:
+      network:
+        ipv4_address: 172.16.3.137
+    extra_hosts:
+      - "ivfzhoudebian:172.16.3.1"
+    privileged: true
+    #ports:
+    #  - "6387:6387"
+    volumes:
+      - /home/ivfzhou/volumes/redis/cluster/config:/config
+      - /home/ivfzhou/volumes/redis/cluster/data:/data
+    command:
+      - redis-sentinel
+      - /config/sentinel_6387.conf
+    depends_on:
+      - redis_0
+      - redis_1
+      - redis_2
+      - redis_3
+      - redis_4
+      - redis_5
+  rabbitmq:
+    image: rabbitmq:4.1.1-management
+    container_name: rabbitmq
+    privileged: true
+    hostname: ivfzhoudockerrabbitmq
+    networks:
+      network:
+        ipv4_address: 172.16.3.138
+    extra_hosts:
+      - "ivfzhoudebian:172.16.3.1"
+    volumes:
+      - /home/ivfzhou/volumes/rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf:rw
+      - /home/ivfzhou/volumes/rabbitmq/definitions.json:/etc/rabbitmq/definitions.json:rw
+      - /home/ivfzhou/volumes/rabbitmq/enabled_plugins:/etc/rabbitmq/enabled_plugins:rw
+      - /home/ivfzhou/volumes/rabbitmq/.erlang.cookie:/var/lib/rabbitmq/.erlang.cookie:rw
+      - /home/ivfzhou/volumes/rabbitmq/log:/var/log/rabbitmq:rw
+      - /home/ivfzhou/volumes/rabbitmq/mnesia:/var/lib/rabbitmq/mnesia:rw
+    #ports:
+    #  - "15672:15672"
+    #  - "5672:5672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+      RABBITMQ_DEFAULT_VHOST: /
+  tusd:
+    image: tusproject/tusd:v2.8
+    container_name: tusd
+    hostname: ivfzhoudockertusd
+    privileged: true
+    #ports:
+    #  - "8080:8080"
+    networks:
+      network:
+        ipv4_address: 172.16.3.141
+    extra_hosts:
+      - "ivfzhoudebian:172.16.3.1"
+    volumes:
+      - /home/ivfzhou/volumes/tusd/data:/srv/tusd-data/data:rw
+    entrypoint: "tusd -expose-metrics=false -disable-cors -hooks-enabled-events="
+  nexus:
+    image: sonatype/nexus3:3.80.0
+    container_name: nexus
+    hostname: ivfzhoudockernexus
+    extra_hosts:
+      - "ivfzhoudebian:172.16.3.1"
+    networks:
+      network:
+        ipv4_address: 172.16.3.142
+    privileged: true
+    #ports:
+    #  - "8081:8081"
+    volumes:
+      - /home/ivfzhou/volumes/nexus:/nexus-data:rw
+  zipkin:
+    image: openzipkin/zipkin:3.5
+    container_name: zipkin
+    hostname: ivfzhoudockerzipkin
+    privileged: true
+    #ports:
+    #  - "9411:9411"
+    networks:
+      network:
+        ipv4_address: 172.16.3.143
+    extra_hosts:
+      - "ivfzhoudebian:172.16.3.1"
+  elasticsearch:
+    image: elasticsearch:9.0.2
+    container_name: elasticsearch
+    hostname: ivfzhoudockerelasticsearch
+    privileged: true
+    #ports:
+    #  - "9200:9200"
+    #  - "9300:9300"
+    networks:
+      network:
+        ipv4_address: 172.16.3.144
+    extra_hosts:
+      - "ivfzhoudebian:172.16.3.1"
+    environment:
+      - discovery.type=single-node
+      - xpack.security.authc.api_key.enabled=true
+      - xpack.security.enabled=true
+      - ELASTIC_PASSWORD=123456
+      - ES_JAVA_OPTS=-Xms256m -Xmx1g
+    volumes:
+      - "/home/ivfzhou/volumes/elasticsearch/data:/usr/share/elasticsearch/data:rw"
+      - "/home/ivfzhou/volumes/elasticsearch/config:/usr/share/elasticsearch/config:rw"
+      - "/home/ivfzhou/volumes/elasticsearch/log:/user/share/elasticsearch/logs:rw"
+      - "/home/ivfzhou/volumes/elasticsearch/plugin:/usr/share/elasticsearch/plugins:rw"
+  kibana:
+    image: kibana:9.0.2
+    container_name: kibana
+    hostname: ivfzhoudockerkibana
+    privileged: true
+    #ports:
+    #  - "5601:5601"
+    networks:
+      network:
+        ipv4_address: 172.16.3.145
+    extra_hosts:
+      - "ivfzhoudebian:172.16.3.1"
+      - "ivfzhoudockerelasticsearch:172.16.3.144"
+    depends_on:
+      - elasticsearch
+    environment:
+      - ELASTICSEARCH_HOSTS=http://ivfzhoudockerelasticsearch:9200
+      - ELASTICSEARCH_USERNAME=kibana_system
+      - ELASTICSEARCH_PASSWORD=123456
+    volumes:
+      - "/home/ivfzhou/volumes/kibana/data:/usr/share/kibana/data:rw"
+      - "/home/ivfzhou/volumes/kibana/config:/usr/share/kibana/config:rw"
+      - "/home/ivfzhou/volumes/kibana/log:/user/share/kibana/logs:rw"
+      - "/home/ivfzhou/volumes/kibana/plugin:/usr/share/kibana/plugins:rw"
+  zookeeper:
+    image: zookeeper:3.9.0
+    container_name: zookeeper
+    hostname: ivfzhoudockerzookeeper
+    privileged: true
+    networks:
+      network:
+        ipv4_address: 172.16.3.146
+    #ports:
+    #  - "2181:2181"
+    environment:
+      ZOO_MY_ID: 1
+      ZOO_SERVERS: server.1=ivfzhoudockerzookeeper:2888:3888;2181
+    volumes:
+      - /home/ivfzhou/volumes/zookeeper/data:/data:rw
+      - /home/ivfzhou/volumes/zookeeper/datalog:/datalog:rw
+      - /home/ivfzhou/volumes/zookeeper/logs:/logs:rw
+      - /home/ivfzhou/volumes/zookeeper/conf/zoo.cfg:/conf/zoo.cfg:rw
+  zookeeper_0:
+    image: zookeeper:3.9.0
+    container_name: zookeeper_0
+    hostname: ivfzhoudockerzookeeper_0
+    privileged: true
+    networks:
+      network:
+        ipv4_address: 172.16.3.147
+    #ports:
+    #  - "2182:2181"
+    environment:
+      ZOO_MY_ID: 1
+      ZOO_SERVERS: server.1=zookeeper_0:2888:3888;2181 server.2=zookeeper_1:2888:3888;2181 server.3=zookeeper_2:2888:3888;2181
+    volumes:
+      - /home/ivfzhou/volumes/zookeeper/0/data:/data:rw
+      - /home/ivfzhou/volumes/zookeeper/0/datalog:/datalog:rw
+      - /home/ivfzhou/volumes/zookeeper/0/logs:/logs:rw
+      - /home/ivfzhou/volumes/zookeeper/0/conf/zoo.cfg:/conf/zoo.cfg:rw
+  zookeeper_1:
+    image: zookeeper:3.9.0
+    container_name: zookeeper_1
+    hostname: ivfzhoudockerzookeeper_1
+    privileged: true
+    networks:
+      network:
+        ipv4_address: 172.16.3.148
+    #ports:
+    #  - "2183:2181"
+    environment:
+      ZOO_MY_ID: 2
+      ZOO_SERVERS: server.1=zookeeper_0:2888:3888;2181 server.2=zookeeper_1:2888:3888;2181 server.3=zookeeper_2:2888:3888;2181
+    volumes:
+      - /home/ivfzhou/volumes/zookeeper/1/data:/data:rw
+      - /home/ivfzhou/volumes/zookeeper/1/datalog:/datalog:rw
+      - /home/ivfzhou/volumes/zookeeper/1/logs:/logs:rw
+      - /home/ivfzhou/volumes/zookeeper/1/conf/zoo.cfg:/conf/zoo.cfg:rw
+  zookeeper_2:
+    image: zookeeper:3.9.0
+    container_name: zookeeper_2
+    hostname: ivfzhoudockerzookeeper_2
+    privileged: true
+    networks:
+      network:
+        ipv4_address: 172.16.3.149
+    ports:
+      - "2184:2181"
+    environment:
+      ZOO_MY_ID: 3
+      ZOO_SERVERS: server.1=zookeeper_0:2888:3888;2181 server.2=zookeeper_1:2888:3888;2181 server.3=zookeeper_2:2888:3888;2181
+    volumes:
+      - /home/ivfzhou/volumes/zookeeper/2/data:/data:rw
+      - /home/ivfzhou/volumes/zookeeper/2/datalog:/datalog:rw
+      - /home/ivfzhou/volumes/zookeeper/2/logs:/logs:rw
+      - /home/ivfzhou/volumes/zookeeper/2/conf/zoo.cfg:/conf/zoo.cfg:rw
+  nacos_0:
+    image: nacos/nacos-server:v3.1.0
+    container_name: nacos_0
+    privileged: true
+    hostname: ivfzhoudockernacos0
+    networks:
+      network:
+        ipv4_address: 172.16.3.150
+    environment:
+      - NACOS_SERVERS=172.16.3.150:8848 172.16.3.151:8848 172.16.3.152:8848
+      - MODE=cluster
+      - NACOS_SERVER_IP=172.16.3.150
+      - PREFER_HOST_MODE=ip
+      - NACOS_SERVER_PORT=8848
+      - JVM_XMS=256m # JVM 初始堆大小。
+      - JVM_XMX=512m # JVM 最大堆大小。
+      - JVM_XMN=256m # 新生代（Young Generation）大小。
+      - JVM_MS=128m # 设置 Metaspace 的初始大小。
+      - JVM_MMS=512m # 设置 Metaspace 最大大小。
+      - MYSQL_SERVICE_HOST=172.16.3.153
+      - MYSQL_SERVICE_PORT=3306
+      - MYSQL_SERVICE_DB_NAME=db_nacos
+      - MYSQL_SERVICE_USER=nacos
+      - MYSQL_SERVICE_PASSWORD=nacos
+      - SPRING_DATASOURCE_PLATFORM=mysql
+      - NACOS_AUTH_ENABLE=true
+      - NACOS_AUTH_IDENTITY_KEY=key
+      - NACOS_AUTH_IDENTITY_VALUE=value
+      - NACOS_AUTH_TOKEN=MTIzNDU2Nzg5MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTI=
+      - MYSQL_SERVICE_DB_PARAM=characterEncoding=utf8&connectTimeout=1000&socketTimeout=3000&autoReconnect=true&useSSL=false&allowPublicKeyRetrieval=true
+    volumes:
+      - /home/ivfzhou/volumes/nacos/0/logs:/home/nacos/logs:rw
+      - /home/ivfzhou/volumes/nacos/0/data:/home/nacos/data:rw
+    #ports:
+    #  - "8848:8848"
+    #  - "9848:9848"
+    #  - "9555:9555"
+    depends_on:
+      - nacos_mysql
+  nacos_1:
+    image: nacos/nacos-server:v3.1.0
+    container_name: nacos_1
+    hostname: ivfzhoudockernacos1
+    privileged: true
+    networks:
+      network:
+        ipv4_address: 172.16.3.151
+    environment:
+      - NACOS_SERVERS=172.16.3.150:8848 172.16.3.151:8848 172.16.3.152:8848
+      - MODE=cluster
+      - NACOS_SERVER_IP=172.16.3.151
+      - PREFER_HOST_MODE=ip
+      - NACOS_SERVER_PORT=8848
+      - JVM_XMS=256m
+      - JVM_XMX=512m
+      - JVM_XMN=256m
+      - JVM_MS=128m
+      - JVM_MMS=512m
+      - MYSQL_SERVICE_HOST=172.16.3.153
+      - MYSQL_SERVICE_PORT=3306
+      - MYSQL_SERVICE_DB_NAME=db_nacos
+      - MYSQL_SERVICE_USER=nacos
+      - MYSQL_SERVICE_PASSWORD=nacos
+      - SPRING_DATASOURCE_PLATFORM=mysql
+      - NACOS_AUTH_ENABLE=true
+      - NACOS_AUTH_IDENTITY_KEY=key
+      - NACOS_AUTH_IDENTITY_VALUE=value
+      - NACOS_AUTH_TOKEN=MTIzNDU2Nzg5MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTI=
+      - MYSQL_SERVICE_DB_PARAM=characterEncoding=utf8&connectTimeout=1000&socketTimeout=3000&autoReconnect=true&useSSL=false&allowPublicKeyRetrieval=true
+    volumes:
+      - /home/ivfzhou/volumes/nacos/1/logs:/home/nacos/logs:rw
+      - /home/ivfzhou/volumes/nacos/1/data:/home/nacos/data:rw
+    #ports:
+    #  - "28848:8848"
+    #  - "29848:9848"
+    #  - "29555:29555"
+    depends_on:
+      - nacos_mysql
+  nacos_2:
+    image: nacos/nacos-server:v3.1.0
+    container_name: nacos_2
+    hostname: ivfzhoudockernacos2
+    privileged: true
+    networks:
+      network:
+        ipv4_address: 172.16.3.152
+    environment:
+      - NACOS_SERVERS=172.16.3.150:8848 172.16.3.151:8848 172.16.3.152:8848
+      - MODE=cluster
+      - NACOS_SERVER_IP=172.16.3.152
+      - PREFER_HOST_MODE=ip
+      - NACOS_SERVER_PORT=8848
+      - JVM_XMS=256m
+      - JVM_XMX=512m
+      - JVM_XMN=256m
+      - JVM_MS=128m
+      - JVM_MMS=512m
+      - MYSQL_SERVICE_HOST=172.16.3.153
+      - MYSQL_SERVICE_PORT=3306
+      - MYSQL_SERVICE_DB_NAME=db_nacos
+      - SPRING_DATASOURCE_PLATFORM=mysql
+      - MYSQL_SERVICE_USER=nacos
+      - MYSQL_SERVICE_PASSWORD=nacos
+      - NACOS_AUTH_ENABLE=true
+      - NACOS_AUTH_IDENTITY_KEY=key
+      - NACOS_AUTH_IDENTITY_VALUE=value
+      - NACOS_AUTH_TOKEN=MTIzNDU2Nzg5MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTI=
+      - MYSQL_SERVICE_DB_PARAM=characterEncoding=utf8&connectTimeout=1000&socketTimeout=3000&autoReconnect=true&useSSL=false&allowPublicKeyRetrieval=true
+    volumes:
+      - /home/ivfzhou/volumes/nacos/2/logs:/home/nacos/logs:rw
+      - /home/ivfzhou/volumes/nacos/2/data:/home/nacos/data:rw
+    #ports:
+    #  - "38848:8848"
+    #  - "39848:9848"
+    #  - "39555:39555"
+    depends_on:
+      - nacos_mysql
+  nacos_mysql:
+    container_name: nacos_mysql
+    image: mysql:9.4.0
+    hostname: ivfzhoudockernacosmysql
+    privileged: true
+    networks:
+      network:
+        ipv4_address: 172.16.3.153
+    environment:
+      - MYSQL_ROOT_PASSWORD=123456
+      - MYSQL_DATABASE=db_nacos
+      - MYSQL_USER=nacos
+      - MYSQL_PASSWORD=nacos
+    volumes:
+      - /home/ivfzhou/volumes/nacos/mysql/data:/var/lib/mysql:rw
+      - /home/ivfzhou/src/note/nacos/mysql-schema-v3.1.0.sql:/docker-entrypoint-initdb.d/init.sql:ro
+  prometheus:
+    container_name: prometheus
+    image: prom/prometheus:v2.37.1
+    hostname: ivfzhoudockerprometheus
+    privileged: true
+    networks:
+      network:
+        ipv4_address: 172.16.3.154
+    volumes:
+      - /home/ivfzhou/volumes/prometheus/prometheus-standalone.yml:/etc/prometheus/prometheus.yml:rw
+    #ports:
+    #  - "9090:9090"
+    #depends_on:
+    #  - nacos_0
+    #  - nacos_1
+    #  - nacos_2
+    restart: on-failure
+  grafana:
+    container_name: grafana
+    image: grafana/grafana:10.1.2
+    hostname: ivfzhoudockergrafana
+    networks:
+      network:
+        ipv4_address: 172.16.3.155
+    privileged: true
+    #ports:
+    #  - "3000:3000"
+    #restart: on-failure
+  rocketmq_name_server_0:
+    image: apache/rocketmq:5.1.3
+    container_name: rocketmq_name_server_0
+    hostname: ivfzhoudockerrocketmqnameserver0
+    privileged: true
+    networks:
+      network:
+        ipv4_address: 172.16.3.158
+    volumes:
+      - /home/ivfzhou/volumes/rocketmq/name0/logs:/home/rocketmq/logs/rocketmqlogs:rw
+    #ports:
+    #  - "19876:9876"
+    entrypoint: "./mqnamesrv"
+  rocketmq_name_server_1:
+    image: apache/rocketmq:5.1.3
+    container_name: rocketmq_name_server_1
+    hostname: ivfzhoudockerrocketmqnameserver1
+    privileged: true
+    networks:
+      network:
+        ipv4_address: 172.16.3.159
+    volumes:
+      - /home/ivfzhou/volumes/rocketmq/name1/logs:/home/rocketmq/logs/rocketmqlogs:rw
+    #ports:
+    #  - "29876:9876"
+    entrypoint: "./mqnamesrv"
+  rocketmq_broker_0:
+    image: apache/rocketmq:5.1.3
+    container_name: rocketmq_broker_0
+    hostname: ivfzhoudockerrocketmqbroker0
+    privileged: true
+    networks:
+      network:
+        ipv4_address: 172.16.3.160
+    volumes:
+      - /home/ivfzhou/volumes/rocketmq/broker0/config/broker-a.properties:/home/rocketmq/rocketmq-5.1.3/conf/2m-2s-async/broker-a.properties
+      - /home/ivfzhou/volumes/rocketmq/broker0/logs:/home/rocketmq/logs/rocketmqlogs:rw
+      - /home/ivfzhou/volumes/rocketmq/broker0/store:/home/rocketmq/store:rw
+    #ports:
+    #  - "10909:10909"
+    #  - "10911:10911"
+    #  - "10912:10912"
+    entrypoint: "./mqbroker -n 172.16.3.158:9876;172.16.3.159:9876 -c ../conf/2m-2s-async/broker-a.properties"
+    depends_on:
+      - rocketmq_name_server_0
+      - rocketmq_name_server_1
+  rocketmq_broker_1:
+    image: apache/rocketmq:5.1.3
+    container_name: rocketmq_broker_1
+    hostname: ivfzhoudockerrocketmqbroker1
+    privileged: true
+    networks:
+      network:
+        ipv4_address: 172.16.3.161
+    environment:
+      - JVM_XMX=512m
+    #ports:
+    #  - "10913:10913"
+    #  - "10914:10914"
+    #  - "10915:10915"
+    volumes:
+      - /home/ivfzhou/volumes/rocketmq/broker1/config/broker-b.properties:/home/rocketmq/rocketmq-5.1.3/conf/2m-2s-async/broker-b.properties
+      - /home/ivfzhou/volumes/rocketmq/lbroker1/logs:/home/rocketmq/logs/rocketmqlogs:rw
+      - /home/ivfzhou/volumes/rocketmq/broker1/store:/home/rocketmq/store:rw
+    entrypoint: "./mqbroker -n 172.16.3.158:9876;172.16.3.159:9876 -c ../conf/2m-2s-async/broker-b.properties"
+    depends_on:
+      - rocketmq_name_server_0
+      - rocketmq_name_server_1
+  rocketmq_broker_2:
+    image: apache/rocketmq:5.1.3
+    container_name: rocketmq_broker_2
+    hostname: ivfzhoudockerrocketmqbroker2
+    privileged: true
+    networks:
+      network:
+        ipv4_address: 172.16.3.162
+    #ports:
+    #  - "10916:10916"
+    #  - "10917:10917"
+    #  - "10918:10918"
+    volumes:
+      - /home/ivfzhou/volumes/rocketmq/broker2/config/broker-a-s.properties:/home/rocketmq/rocketmq-5.1.3/conf/2m-2s-async/broker-a-s.properties
+      - /home/ivfzhou/volumes/rocketmq/broker2/logs:/home/rocketmq/logs/rocketmqlogs:rw
+      - /home/ivfzhou/volumes/rocketmq/broker2/store:/home/rocketmq/store:rw
+    entrypoint: "./mqbroker -n 172.16.3.158:9876;172.16.3.159:9876 -c ../conf/2m-2s-async/broker-a-s.properties"
+    depends_on:
+      - rocketmq_name_server_0
+      - rocketmq_name_server_1
+  rocketmq_broker_3:
+    image: apache/rocketmq:5.1.3
+    container_name: rocketmq_broker_3
+    hostname: ivfzhoudockerrocketmqbroker3
+    privileged: true
+    networks:
+      network:
+        ipv4_address: 172.16.3.163
+    #ports:
+    #  - "10919:10919"
+    #  - "10920:10920"
+    #  - "10921:10921"
+    volumes:
+      - /home/ivfzhou/volumes/rocketmq/broker3/config/broker-b-s.properties:/home/rocketmq/rocketmq-5.1.3/conf/2m-2s-async/broker-b-s.properties
+      - /home/ivfzhou/volumes/rocketmq/broker3/logs:/home/rocketmq/logs/rocketmqlogs:rw
+      - /home/ivfzhou/volumes/rocketmq/broker3/store:/home/rocketmq/store:rw
+    entrypoint: "./mqbroker -n 172.16.3.158:9876;172.16.3.159:9876 -c ../conf/2m-2s-async/broker-b-s.properties"
+    depends_on:
+      - rocketmq_name_server_0
+      - rocketmq_name_server_1
+  rocketmq_dashboard:
+    image: apacherocketmq/rocketmq-dashboard:1.0.0
+    container_name: rocketmq_dashboard
+    hostname: ivfzhoudockerrocketmqdashboard
+    networks:
+      network:
+        ipv4_address: 172.16.3.164
+    environment:
+      JAVA_OPTS: "-Drocketmq.namesrv.addr=172.16.3.158:9876;172.16.3.159:9876"
+    #ports:
+    #  - "8080:8080"
+    depends_on:
+      - rocketmq_name_server_0
+      - rocketmq_name_server_1
+networks:
+  network:
+    name: ivfzhou_docker_network
+    driver: bridge
+    attachable: true
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.16.3.0/24
+          gateway: 172.16.3.1

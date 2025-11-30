@@ -1,0 +1,10 @@
+###
+GET http://ivfzhoudebian:10010/get
+
+
+###
+POST http://ivfzhoudebian:10005/actuator/busrefresh/bus:10010
+
+
+###
+GET http://ivfzhoudebian:10005/actuator

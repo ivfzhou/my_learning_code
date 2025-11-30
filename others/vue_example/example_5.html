@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>Next Ticker测试</title>
+</head>
+<body>
+<script src="https://unpkg.com/vue@3.5.3/dist/vue.global.js"></script>
+<div id="app">
+    <button @click="incr">点击触发</button>
+    <label>
+        输入框：
+        <input id="input" ref="input" :value="message"/>
+    </label>
+</div>
+<script>
+    const {nextTick, createApp, ref} = Vue;
+    const app = createApp({
+        setup() {
+            const input = ref(null)
+            const message = ref(0);
+            incr = async () => {
+                message.value++
+                console.log("tick 前 input value 的值", document.querySelector("#input").value)
+                await nextTick()
+                console.log("tick 后 input value 的值", input.value.value)
+            }
+            return {
+                message, input, incr
+            };
+        },
+    });
+    app.mount("#app");
+</script>
+</body>
+</html>

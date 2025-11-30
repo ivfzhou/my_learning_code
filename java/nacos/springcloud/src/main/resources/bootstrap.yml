@@ -1,0 +1,16 @@
+spring:
+  cloud:
+    nacos:
+      config:
+        server-addr: ivfzhoudockernacos0:8848,ivfzhoudockernacos1:8848,ivfzhoudockernacos2:8848
+        password: nacos
+        username: nacos
+        file-extension: yaml
+        enabled: true
+      discovery:
+        server-addr: ivfzhoudockernacos0:8848,ivfzhoudockernacos1:8848,ivfzhoudockernacos2:8848
+        password: nacos
+        username: nacos
+        enabled: true
+  application:
+    name: nacos

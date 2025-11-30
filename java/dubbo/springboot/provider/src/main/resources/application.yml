@@ -1,0 +1,7 @@
+dubbo:
+  registry:
+    port: 2181
+    address: ivfzhoudockerzookeeper
+    protocol: zookeeper
+  application:
+    name: dubbo-provider

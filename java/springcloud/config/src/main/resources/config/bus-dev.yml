@@ -1,0 +1,16 @@
+spring:
+  rabbitmq:
+    host: ivfzhoudockerrabbitmq
+    username: ivfzhou
+    password: 123456
+    port: 5672
+    virtual-host: /springcloud
+eureka:
+  client:
+    service-url:
+      defaultZone: http://ivfzhoudebian:10001/eureka,http://ivfzhoudebian:10002/eureka,http://ivfzhoudebian:10003/eureka
+  instance:
+    prefer-ip-address: true
+business:
+  config:
+    key: change

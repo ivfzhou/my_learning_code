@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: spring_consume-demo
+rocketmq:
+  name-server: 192.168.14.199:19876;192.168.14.199:29876
+  consumer:
+    group: default
+    topic: topic

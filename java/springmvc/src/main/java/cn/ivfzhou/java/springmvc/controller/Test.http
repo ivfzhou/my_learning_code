@@ -1,0 +1,24 @@
+###
+GET http://ivfzhoudebian:8080/springmvc/static/index.html
+
+
+###
+HEAD http://ivfzhoudebian:8080/springmvc/allowCross
+
+
+###
+POST http://ivfzhoudebian:8080/springmvc/toRedirectPage
+
+YES
+
+
+###
+POST http://ivfzhoudebian:8080/springmvc/toForwardPage
+
+NO
+
+
+###
+POST http://ivfzhoudebian:8080/springmvc/ping
+
+yes

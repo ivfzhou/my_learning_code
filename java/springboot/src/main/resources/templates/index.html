@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>SpringBoot</title>
+</head>
+<body>
+Hello Thymeleaf!
+<br/>
+<p th:text="${textual}">静态参数值。无 textual 显示空</p>
+<p th:if="${textual != null}" th:text="${textual}"></p>
+<p th:text="${textual}" th:unless="${textual != null}"></p>
+<p th:text="${textual}" th:unless="${textual == null}"></p>
+<p th:text="${textual == null ? 'is null' : textual}"></p>
+<table>
+    <tr>
+        <td>ID</td>
+        <td>姓名</td>
+    </tr>
+    <tr th:each="v : ${students}">
+        <td th:text="${v.id}"></td>
+        <td th:text="${v.name}"></td>
+    </tr>
+</table>
+</body>
+</html>

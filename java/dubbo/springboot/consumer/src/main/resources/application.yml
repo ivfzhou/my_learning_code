@@ -1,0 +1,7 @@
+server:
+  port: 8081
+dubbo:
+  application:
+    name: dubbo-consumer
+  registry:
+    address: zookeeper://ivfzhoudockerzookeeper:2181

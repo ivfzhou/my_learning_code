@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- status 关闭 log4j2 自身的日志输出 -->
+<Configuration status="OFF">
+    <!-- 日志级别以及优先级排序: OFF > FATAL > ERROR > WARN > INFO > DEBUG > TRACE > ALL -->
+
+    <!-- 变量配置 -->
+    <Properties>
+        <!--
+        格式化输出：
+            %date：表示日期。
+            %thread：表示线程名。
+            %-5level：级别从左显示 5 个字符宽度。
+            %msg：日志消息。
+            %n：是换行符。
+            %c：logger 的名称(%logger)。
+            %t：输出当前线程名称。
+            %p：日志输出格式。
+            %m：日志内容，即 logger.info("message")。
+            %n：换行符。
+            %C：Java 类名(%F)。
+            %L：行号。
+            %M：方法名。
+            %l：输出语句所在的行数, 包括类名、方法名、文件名、行数。
+            hostName: 本地机器名。
+            hostAddress: 本地 IP 地址。
+            %logger{36} 表示 Logger 的名字最长 36 个字符。
+        -->
+        <Property name="LOG_PATTERN" value="%date{yyyy-MM-dd HH:mm:ss.SSS} %pid %level %logger [%M] - %msg%n"/>
+        <!-- 定义日志存储的路径，不要配置相对路径 -->
+        <Property name="FILE_PATH" value="${basedir}/logs/"/>
+        <Property name="FILE_NAME" value="log"/>
+    </Properties>
+
+    <!-- 定义输出器 -->
+    <Appenders>
+
+        <Console name="Console" target="SYSTEM_OUT">
+            <!-- 输出日志的格式 -->
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <!-- 控制台只输出 level 及其以上级别的信息（onMatch），其他的直接拒绝（onMismatch）。 -->
+            <ThresholdFilter level="all" onMatch="ACCEPT" onMismatch="DENY"/>
+        </Console>
+
+        <!-- 文件会打印出所有信息，这个 log 每次运行程序会自动清空，由 append 属性决定，适合临时测试用。 -->
+        <File name="TestFileLog" fileName="${FILE_PATH}/test.log" append="false">
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+        </File>
+
+        <!-- 这个会打印出所有的 info 及以下级别的信息，每次大小超过 size，则这 size 大小的日志会自动存入按年份-月份建立的文件夹下面并进行压缩，作为存档。 -->
+        <RollingFile name="RollingFileInfo" fileName="${FILE_PATH}/info.log"
+                     filePattern="${FILE_PATH}/${FILE_NAME}-INFO-%d{yyyy-MM-dd}_%i.log.gz">
+            <!-- 控制台只输出 level 及以上级别的信息（onMatch），其他的直接拒绝（onMismatch） -->
+            <ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <Policies>
+                <!-- interval 属性用来指定多久滚动一次，默认是 1 hour -->
+                <TimeBasedTriggeringPolicy interval="1"/>
+                <SizeBasedTriggeringPolicy size="10MB"/>
+            </Policies>
+            <!-- DefaultRolloverStrategy 属性如不设置，则默认为最多同一文件夹下 7 个文件开始覆盖 -->
+            <DefaultRolloverStrategy max="15"/>
+        </RollingFile>
+
+        <RollingFile name="RollingFileWarn" fileName="${FILE_PATH}/warn.log"
+                     filePattern="${FILE_PATH}/${FILE_NAME}-WARN-%d{yyyy-MM-dd}_%i.log.gz">
+            <ThresholdFilter level="warn" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1"/>
+                <SizeBasedTriggeringPolicy size="10MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="15"/>
+        </RollingFile>
+
+        <RollingFile name="RollingFileError" fileName="${FILE_PATH}/error.log"
+                     filePattern="${FILE_PATH}/${FILE_NAME}-ERROR-%d{yyyy-MM-dd}_%i.log.gz">
+            <ThresholdFilter level="error" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1"/>
+                <SizeBasedTriggeringPolicy size="10MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="15"/>
+        </RollingFile>
+
+    </Appenders>
+
+    <!-- Logger 节点用来单独指定日志的形式，比如要为指定包下的 class 指定不同的日志级别等。 -->
+    <!-- 然后定义 loggers，只有定义了 logger 并引入的 appender，appender 才会生效 -->
+    <Loggers>
+        <Root level="all">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="TestFileLog"/>
+            <AppenderRef ref="RollingFileInfo"/>
+            <AppenderRef ref="RollingFileWarn"/>
+            <AppenderRef ref="RollingFileError"/>
+        </Root>
+
+        <!-- 第三方日志系统 -->
+        <!-- 过滤掉 spring 和 mybatis 的一些无用的 DEBUG 信息，也可以在 springboot 的 logging.level.org.springframework=FATAL 设置 -->
+        <!-- <logger name="org.springframework" level="INFO"></logger> -->
+        <!-- <logger name="org.mybatis" level="INFO"></logger> -->
+        <!-- <logger name="org.apache.http" level="WARN"/></logger> -->
+    </Loggers>
+
+</Configuration>

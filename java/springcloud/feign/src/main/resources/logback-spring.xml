@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               scan="true"
+               scanPeriod="60 seconds"
+               debug="false"
+               xmlns="http://ch.qos.logback/xml/ns/logback"
+               xsi:schemaLocation="http://ch.qos.logback/xml/ns/logback
+               https://raw.githubusercontent.com/enricopulatzo/logback-XSD/master/src/main/resources/logback.xsd">
+
+    <contextName>springcloud</contextName>
+    <property name="log.path" value="logs"/>
+    <property name="module" value="feign"/>
+
+    <!-- 彩色日志格式 -->
+    <property name="CONSOLE_LOG_PATTERN"
+              value="${CONSOLE_LOG_PATTERN:-%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(%5p) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}"/>
+
+    <!-- 彩色日志依赖的渲染类 -->
+    <conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter"/>
+    <conversionRule conversionWord="wex"
+                    converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter"/>
+    <conversionRule conversionWord="wEx"
+                    converterClass="org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter"/>
+
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <logger name="java.sql.PreparedStatement" level="info"/>
+    <root level="info">
+        <appender-ref ref="console"/>
+    </root>
+
+</configuration>

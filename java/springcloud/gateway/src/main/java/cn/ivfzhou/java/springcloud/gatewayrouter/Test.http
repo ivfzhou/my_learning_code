@@ -1,0 +1,6 @@
+###
+GET http://ivfzhoudebian:10004/feign/ping
+
+
+###
+GET http://ivfzhoudebian:10004/feign/test

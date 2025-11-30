@@ -1,0 +1,13 @@
+###
+POST http://ivfzhoudebian:8080/spring/shiro/login
+Content-Type: application/x-www-form-urlencoded
+
+username = ivfzhou &
+password = 123456
+
+###
+POST http://ivfzhoudebian:8080/spring/shiro/info
+
+
+###
+POST http://ivfzhoudebian:8080/spring/shiro/updateUser

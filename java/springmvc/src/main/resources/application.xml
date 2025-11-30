@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:conext="http://www.springframework.org/schema/context"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/mvc
+       https://springframework.org/schema/mvc/spring-mvc.xsd">
+
+    <!-- 开启注解扫描 -->
+    <conext:component-scan base-package="cn.ivfzhou.java.springmvc"/>
+
+    <!-- mvc 驱动 -->
+    <mvc:annotation-driven/>
+
+    <!-- 开启注解扫描 -->
+    <mvc:default-servlet-handler/>
+
+    <!-- 映射静态资源 -->
+    <mvc:resources mapping="/static/**" location="/static/"/>
+
+    <!-- 视图解析器 -->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/"/>
+        <property name="suffix" value=".html"/>
+    </bean>
+
+    <!-- 拦截器 -->
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/path*"/>
+            <mvc:mapping path="/path/**"/>
+            <mvc:mapping path="/path"/>
+            <mvc:mapping path="/**"/>
+            <mvc:exclude-mapping path="/excludePath"/>
+            <bean class="cn.ivfzhou.java.springmvc.interceptor.MyInterceptor"/>
+        </mvc:interceptor>
+    </mvc:interceptors>
+
+    <!-- 允许跨域请求 -->
+    <!-- allowed-origins="*" -->
+    <!--
+    <mvc:cors>
+        <mvc:mapping path="/"
+                     allowed-origins="ivfzhoudebian"
+                     allowed-methods="POST,GET,OPTIONS,DELETE,PUT,PATCH"
+                     allowed-headers="Content-Type,Access-Control-Allow-Headers,Authorization,X-Requested-With"
+                     allow-credentials="true"/>
+    </mvc:cors>
+    -->
+
+</beans>

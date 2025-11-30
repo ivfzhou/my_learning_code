@@ -1,0 +1,10 @@
+###
+GET http://ivfzhoudebian:8080/config/get
+
+
+###
+GET http://ivfzhoudebian:8080/config/getByDataId/cn.ivfzhou.java.nacos.spring.key
+
+
+###
+GET http://ivfzhoudebian:8080/discovery/get/abc

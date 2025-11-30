@@ -1,0 +1,13 @@
+###
+GET http://ivfzhoudebian:8080/springboot
+
+
+###
+GET http://ivfzhoudebian:8080/springboot/render0
+
+
+###
+GET http://ivfzhoudebian:8080/springboot/render1
+
+###
+POST http://ivfzhoudebian:8080/springboot/render2?textual=YES

@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: spring_producer_demo
+rocketmq:
+  name-server: 192.168.14.199:19876;192.168.14.199:29876
+  producer:
+    send-message-timeout: 3000
+    group: default

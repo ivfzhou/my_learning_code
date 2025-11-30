@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>大胡子表达式限制window属性使用</title>
+</head>
+<body>
+<script src="https://unpkg.com/vue@3.5.3/dist/vue.global.js"></script>
+<div id="app">
+    {{ window.myvar(message) }}
+</div>
+<script>
+    window.myvar = (s) => s + "_myvar"
+    const {createApp, ref} = Vue;
+    const app = createApp({
+        setup() {
+            const message = ref("hello");
+            return {
+                message,
+            };
+        },
+    });
+    app.mount("#app");
+</script>
+</body>
+</html>

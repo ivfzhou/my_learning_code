@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.ivfzhou.java.mybatis.mapper.BlogMapper">
+    <!-- 启用二级缓存 -->
+    <!--<cache eviction="LRU" size="1024" readOnly="false"/>-->
+
+    <!-- 同其它命名空间共用缓存。 -->
+    <!--<cache-ref namespace="BlogMapper"/>-->
+
+    <!-- 自定义缓存。 -->
+    <!--
+    <cache type="cn.ivfzhou.mybatis.cacher.MyChaher">
+        <property name="cacheFile" value="/tmp/my-custom-cache.tmp"/>
+    </cache>
+    -->
+
+    <!--
+    statementType：STATEMENT，PREPARED，CALLABLE。
+    resultSetType：FORWARD_ONLY，SCROLL_SENSITIVE，SCROLL_INSENSITIVE，DEFAULT。
+    -->
+    <select id="selectBlog1" resultMap="blogMap" parameterType="_int" resultType="blog" flushCache="false"
+            useCache="true"
+            statementType="PREPARED" resultSetType="DEFAULT" databaseId="mysql" resultOrdered="false">
+        select b.id           id,
+               b.title        title,
+               b.grade        grade,
+               b.type         type,
+               b.has_coauthor has_coauthor,
+               a.id           author_id,
+               a.name         author_name,
+               coa.id         coauthor_id,
+               coa.name       coauthor_name,
+               c.id           cid,
+               c.comment      comment
+        from t_blog b
+                 left join t_author a on b.author_id = a.id
+                 left join t_author coa on b.coauthor_id = coa.id
+                 left join t_comment c on b.id = c.blog_id
+        where b.id = #{id} /* ${id} '${name}' */
+    </select>
+
+    <resultMap id="blogMap" type="blog">
+        <constructor>
+            <idArg name="id" column="id"/>
+            <!--<arg name="title" column="title"/>-->
+        </constructor>
+        <result property="title" column="title"/>
+        <result property="grade" column="grade"/>
+        <!-- typeHandler="MyTypeHandler" -->
+        <result property="type" column="type" typeHandler="org.apache.ibatis.type.EnumOrdinalTypeHandler"/>
+        <association property="author" columnPrefix="author_">
+            <id property="id" column="id"/>
+            <result property="name" column="name"/>
+        </association>
+        <collection property="comments" ofType="comment">
+            <id property="id" column="cid"/>
+            <result property="comment" column="comment"/>
+        </collection>
+        <discriminator javaType="_boolean" column="has_coauthor">
+            <!--
+            <case value="true">
+                <association property="coauthor">
+                    <id property="id" column="coauthor_id"/>
+                    <result property="name" column="coauthor_name"/>
+                </association>
+            </case>
+            -->
+            <case value="true" resultMap="blogCoauthorMap" resultType="blogExtended"/>
+        </discriminator>
+    </resultMap>
+
+    <resultMap id="blogCoauthorMap" type="blogExtended" extends="blogMap">
+        <association property="coauthor">
+            <id property="id" column="coauthor_id"/>
+            <result property="name" column="coauthor_name"/>
+        </association>
+    </resultMap>
+
+    <select id="selectBlog2" resultType="blog" resultMap="blogMap2">
+        select *
+        from t_blog
+    </select>
+
+    <resultMap id="blogMap2" type="blog">
+        <constructor>
+            <idArg name="id" column="id"/>
+        </constructor>
+        <result property="title" column="title"/>
+        <result property="grade" column="grade"/>
+        <result property="type" column="type" typeHandler="org.apache.ibatis.type.EnumOrdinalTypeHandler"/>
+        <association property="author" column="author_id" foreignColumn="id" select="selectAuthor" fetchType="lazy"/>
+        <collection property="comments" column="id" ofType="comment" foreignColumn="blog_id" select="selectComments"
+                    fetchType="lazy"/>
+    </resultMap>
+
+    <select id="selectAuthor" resultType="author" parameterType="_int">
+        select *
+        from t_author
+        where id = #{id}
+    </select>
+
+    <select id="selectComments" parameterType="_int" resultType="comment">
+        select *
+        from t_comment
+        where blog_id = #{blog_id}
+    </select>
+
+
+    <select id="selectBlog3" resultSets="blog,author" resultType="blog" resultMap="blogMap3" statementType="CALLABLE">
+        call selectBlog(#{param, jdbcType=INTEGER, mode=IN})
+    </select>
+
+    <resultMap id="blogMap3" type="blog">
+        <constructor>
+            <idArg name="id" column="id"/>
+        </constructor>
+        <result property="title" column="title"/>
+        <result property="grade" column="grade"/>
+        <result property="type" column="type" typeHandler="org.apache.ibatis.type.EnumOrdinalTypeHandler"/>
+        <association property="author" resultSet="author">
+            <id property="id" column="id"/>
+            <result property="name" column="name"/>
+        </association>
+    </resultMap>
+
+    <insert id="insertBlog" parameterType="blog" flushCache="true" statementType="PREPARED" keyProperty="id"
+            keyColumn="id" useGeneratedKeys="true">
+        insert into t_blog (title, author_id, grade, `type`) values
+        ('title', 1, #{grade, javaType=double, jdbcType=NUMERIC, numericScale=2},
+        #{type, typeHandler=org.apache.ibatis.type.EnumOrdinalTypeHandler})
+        <selectKey keyProperty="id" resultType="_int" order="AFTER" statementType="PREPARED">
+            SELECT last_insert_id();
+        </selectKey>
+    </insert>
+
+    <update id="updateBlog" flushCache="true" statementType="PREPARED" useGeneratedKeys="false"
+            lang="cn.ivfzhou.java.mybatis.languagedriver.MyLanguageDriver">
+        <where>
+            <if test="author != null and author.name != null">
+                AND author_name like #{author.name}
+            </if>
+            <if test="_databaseId == 'oracle'">
+            </if>
+        </where>
+        <choose>
+            <when test="title != null">
+                AND title like #{title}
+            </when>
+            <when test="author != null and author.name != null">
+                AND author_name like #{author.name}
+            </when>
+            <otherwise>
+                AND featured = 1
+            </otherwise>
+        </choose>
+        <set>
+            <if test="username != null">username=#{username},</if>
+            <if test="bio != null">bio=#{bio}</if>
+        </set>
+        <trim prefix="SET" suffixOverrides=","></trim>
+        <trim prefix="WHERE" prefixOverrides="AND |OR "></trim>
+        <foreach item="item" index="index" collection="list" open="ID in (" separator="," close=")" nullable="true">
+            #{item}
+        </foreach>
+        <bind name="pattern" value="'%' + _parameter.getTitle() + '%'"/>
+        #{pattern}
+    </update>
+
+    <delete id="deleteBlog"></delete>
+
+</mapper>

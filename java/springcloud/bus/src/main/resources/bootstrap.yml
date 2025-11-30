@@ -1,0 +1,10 @@
+server:
+  port: 10010
+spring:
+  application:
+    name: bus
+  cloud:
+    config:
+      uri: http://ivfzhoudebian:10005/
+      profile: dev
+      name: bus

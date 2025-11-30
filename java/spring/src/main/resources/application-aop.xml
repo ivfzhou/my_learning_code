@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/aop
+       https://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <!-- 支持 AOP 注解。等价于 @EnableAspectJAutoProxy -->
+    <!--<aop:aspectj-autoproxy proxy-target-class="true"/>-->
+
+    <!--<bean id="myAOP" class="cn.ivfzhou.java.spring.aop.MyAOP"/>-->
+
+    <!--<bean id="target" class="cn.ivfzhou.java.spring.aop.Target"/>-->
+
+    <!--
+    <aop:config>
+        <aop:pointcut id="cutter" expression="execution(* cn.ivfzhou.java.spring.aop.Target.*.*(..))"/>
+        <aop:aspect ref="myAOP">
+            <aop:around method="around" pointcut-ref="cutter"/>
+            <aop:before method="before" pointcut-ref="cutter"/>
+            <aop:after method="after" pointcut-ref="cutter"/>
+            <aop:after-throwing method="afterThrowing" throwing="e" pointcut-ref="cutter"/>
+            <aop:after-returning method="afterReturning" returning="obj" pointcut-ref="cutter"/>
+        </aop:aspect>
+    </aop:config>
+    -->
+
+</beans>

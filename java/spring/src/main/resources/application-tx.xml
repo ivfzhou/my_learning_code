@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+    <!-- 支持事务注解。扫描并启用 @Transactional 注解，用 AOP 代理机制实现声明式事务管理 -->
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+
+    <!--
+    <tx:advice id="advice" transaction-manager="transactionManager">
+        <tx:attributes>
+            &lt;!&ndash;
+            REQUIRED：如果当前没有事务，就创建一个新事务，如果当前存在事务，就加入该事务，该设置是最常用的设置。
+            SUPPORTS：支持当前事务，如果当前存在事务，就加入该事务，如果当前不存在事务，就以非事务执行。
+            MANDATORY：支持当前事务，如果当前存在事务，就加入该事务，如果当前不存在事务，就抛出异常。
+            REQUIRES_NEW：创建新事务，无论当前存不存在事务，都创建新事务。
+            NOT_SUPPORTED：以非事务方式执行操作，如果当前存在事务，就把当前事务挂起。
+            NEVER：以非事务方式执行，如果当前存在事务，则抛出异常。
+            NESTED：如果当前存在事务，则在嵌套事务内执行。如果当前没有事务，则执行与 PROPAGATION_REQUIRED 类似的操作。
+            &ndash;&gt;
+            <tx:method name="insert" isolation="DEFAULT" propagation="REQUIRED"/>
+        </tx:attributes>
+    </tx:advice>
+    -->
+
+    <!--
+    <aop:config proxy-target-class="true">
+        <aop:pointcut id="txCutter" expression="execution(* cn.ivfzhou.java.spring.tx.MyTX.*(..))"/>
+        <aop:advisor advice-ref="advice" pointcut-ref="txCutter"/>
+    </aop:config>
+    -->
+
+    <bean id="druid" class="com.alibaba.druid.pool.DruidDataSource" p:driverClassName="com.mysql.cj.jdbc.Driver"
+          p:url="${mysql.url}" p:username="${mysql.user}" p:password="${mysql.password}"/>
+
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager"
+          p:dataSource-ref="druid"/>
+
+    <bean id="jdbc" class="org.springframework.jdbc.core.JdbcTemplate" p:dataSource-ref="druid"/>
+
+    <!--<bean id="myTX" class="cn.ivfzhou.java.spring.tx.MyTX" c:jdbcTemplate-ref="jdbc"/>-->
+</beans>

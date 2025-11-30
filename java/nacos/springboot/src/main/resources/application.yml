@@ -1,0 +1,25 @@
+nacos:
+  config:
+    server-addr: ivfzhoudockernacos0:8848,ivfzhoudockernacos1:8848,ivfzhoudockernacos2:8848
+    auto-refresh: true
+    password: nacos
+    username: nacos
+    group: DEFAULT_GROUP
+    bootstrap:
+      enable: true
+    data-id: cn.ivfzhou.java.nacos.spring.key
+  discovery:
+    server-addr: ivfzhoudockernacos0:8848,ivfzhoudockernacos1:8848,ivfzhoudockernacos2:8848
+    password: nacos
+    username: nacos
+    register:
+      group-name: DEFAULT_GROUP
+      enabled: true
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: health,info,nacos-config

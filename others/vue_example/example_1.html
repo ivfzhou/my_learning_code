@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>测试 v-html 表现</title>
+</head>
+<body>
+<script type="importmap">
+    {
+        "imports": {
+            "vue": "https://unpkg.com/vue@3.5.3/dist/vue.esm-browser.prod.js"
+        }
+    }
+</script>
+<div id="app">
+    This is span
+    <span v-html="htmlContent"></span>
+</div>
+<script type="module">
+    import {createApp, ref} from "vue";
+    createApp({
+        setup() {
+            const htmlContent = ref("<strong>I am span</strong>");
+            return {
+                htmlContent,
+            };
+        },
+    }).mount("#app");
+</script>
+</body>
+</html>

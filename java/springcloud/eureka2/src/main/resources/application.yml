@@ -1,0 +1,14 @@
+server:
+  port: 10002
+spring:
+  application:
+    name: eureka
+eureka:
+  instance:
+    hostname: 127.0.0.1
+    prefer-ip-address: true
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    service-url:
+      defaultZone: http://ivfzhoudebian:10001/eureka,http://ivfzhoudebian:10003/eureka

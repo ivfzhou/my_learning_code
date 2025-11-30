@@ -1,0 +1,14 @@
+server:
+  port: 10001
+spring:
+  application:
+    name: eureka # spring 应用的一个别名。
+eureka:
+  instance:
+    hostname: 127.0.0.1 # 设置当前实例的主机名称。
+    prefer-ip-address: true # Eureka 修改注册服务的标识名称与 IP 显示。
+  client:
+    registerWithEureka: true # 向服务注册中心进行注册，这里通常设置为 false（默认为true），因为该工程本身就是服务注册中心，不会提供服务，所以无需向服务注册中心进行注册（自我注册）。
+    fetchRegistry: true
+    service-url: # 指定服务注册中心地址，类型为 HashMap，并设置有一组默认值，默认的 Key 为 defaultZone，默认的 Value 为 http://localhost:8761/eureka，多个注册中心地址以逗号分隔。
+      defaultZone: http://ivfzhoudebian:10002/eureka,http://ivfzhoudebian:10003/eureka

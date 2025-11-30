@@ -1,0 +1,25 @@
+server:
+  port: 10005
+spring:
+  application:
+    name: config
+  cloud:
+    config:
+      server:
+        native:
+          search-locations: classpath:config/
+        #git:
+        #  uri: https://www.gitee.com/ivfzhou/xxx.git
+  profiles:
+    active: native
+  rabbitmq: # 连接 rabbitmq 作为消息总线的消息中间件。
+    host: ivfzhoudockerrabbitmq
+    username: ivfzhou
+    password: 123456
+    port: 5672
+    virtual-host: /springcloud
+management: # 暴露所有节点（包括 busrefresh）。
+  endpoints:
+    web:
+      exposure:
+        include: "*"
