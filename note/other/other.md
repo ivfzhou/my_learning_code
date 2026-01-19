@@ -84,3 +84,10 @@ REM 在策略项下添加 DisableAntiSpyware=1
 reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender" /v DisableAntiSpyware /t REG_DWORD /d 1 /f
 ```
 
+
+# 八、下载 Visual Studio 2022
+
+```cmd
+winget show --versions "Microsoft.VisualStudio.2022.Community"
+winget install -v 17.9.1 "Microsoft.VisualStudio.2022.Community"
+```
