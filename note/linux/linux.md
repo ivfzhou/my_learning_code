@@ -330,13 +330,9 @@ w
 # 九、添加字体
 
 ```shell
-sudo mkdir /usr/share/fonts/myfonts
-sudo mv fonts/* /usr/share/fonts/myfonts/
-sudo chmod 644 /usr/share/fonts/myfonts/*
-cd /usr/share/fonts/myfonts/
-sudo mkfontscale
-sudo mkfontdir
-sudo fc-cache
+sudo mkdir /usr/share/fonts/custom
+sudo mv fonts/* /usr/share/fonts/custom/
+sudo fc-cache -fv
 ```
 
 # 十、设置交换分区
