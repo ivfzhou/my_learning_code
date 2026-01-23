@@ -1,30 +1,30 @@
 # 一、笔记
 
-1. /ect/default/grub 的一些参数：`GRUB_CMDLINE_LINUX_DEFAULT="quiet splash i8042.redirect i8042.dumbkbd i8042.reset=0 i915.enable_psr=0"`。
+1. /ect/default/grub 的一些参数：`GRUB_CMDLINE_LINUX_DEFAULT="quiet splash"`。
 
-2. 设置 grub 启动黑色背景：`splash video=efifb:off`。
+1. ctrl+z 挂起当前进程。ctrl+d 结束命令。
 
-3. ctrl+z 挂起当前进程。ctrl+d 结束命令。
+1. ~{account} 表示这个 account 的家目录，- 表示上次所在目录。
 
-4. ~{account} 表示这个 account 的家目录，- 表示上次所在目录。
+1. /dev/sd*x* 盘信息，主设备号（磁盘驱动程序），从设备号（访问地址）。
 
-5. /dev/sd*x* 盘信息，主设备号（磁盘驱动程序），从设备号（访问地址）。
+1. ls -l 输出中的第二字段表示文件夹说明子文件个数。
 
-6. ls -l 输出中的第二字段表示文件夹说明子文件个数。
+1. umask 文件是 777 umask 111，文件夹 777 umask。
 
-7. umask 文件是 777 umask 111，文件夹 777 umask。
+1. cron 书写格式：分 小时 天 月 星期 命令。
 
-8. cron 书写格式：分 小时 天 月 星期 命令。
+1. LVM 一些名称：PE LE PV VG LV。
 
-9. LVM 一些名称：PE LE PV VG LV。
+1. Chrome 浏览器下载地址：https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb。
 
-10. Chrome 浏览器下载地址：https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb。
+1. ssh 复制文件：scp src ivfzhou@ivfzhoudebian:~/src。
 
-11. ssh 复制文件：scp src ivfzhou@ivfzhoudebian:~/src。
+1. Debian12 缩放配置：优化 1.85、vscode 0.5、Jetbians 界面 27 字体 25.7 间隔 1.1。
 
-12. Debian12 缩放配置：优化 1.85、vscode 0.5、Jetbians 界面 27 字体 25.7 间隔 1.1。
+1. UID 类型：1-999 虚拟用户，1000+ 普通用户。
 
-13 UID 类型：1-999 虚拟用户，1000+ 普通用户。
+1. 安装拼音输入法：`sudo apt install ibus-libpinyin`
 
 # 二、文件类型
 
@@ -58,20 +58,20 @@
 
 # 四、Debian 软件源配置
 
-1. 配置所在路径：/etc/apt/sources.list。源配置例子，把 https 协议改成 http 仍然可用。
+1. 配置所在路径：/etc/apt/sources.list。源配置例子。
 
     ```
-    deb https://mirrors.163.com/debian bookworm main non-free non-free-firmware contrib
-    deb-src https://mirrors.163.com/debian bookworm main non-free non-free-firmware contrib
+    deb http://ftp.cn.debian.org/debian bookworm main non-free non-free-firmware contrib
+    deb-src http://ftp.cn.debian.org/debian bookworm main non-free non-free-firmware contrib
     
-    deb https://mirrors.163.com/debian-security bookworm-security main
-    deb-src https://mirrors.163.com/debian-security bookworm-security main
+    deb http://ftp.cn.debian.org/debian-security bookworm-security main
+    deb-src http://ftp.cn.debian.org/debian-security bookworm-security main
     
-    deb https://mirrors.163.com/debian/ bookworm-updates main non-free non-free-firmware contrib
-    deb-src https://mirrors.163.com/debian bookworm-updates main non-free non-free-firmware contrib
+    deb http://ftp.cn.debian.org/debian/ bookworm-updates main non-free non-free-firmware contrib
+    deb-src http://ftp.cn.debian.org/debian bookworm-updates main non-free non-free-firmware contrib
     
-    deb https://mirrors.163.com/debian/ bookworm-backports main non-free non-free-firmware contrib
-    deb-src https://mirrors.163.com/debian bookworm-backports main non-free non-free-firmware contrib
+    deb http://ftp.cn.debian.org/debian/ bookworm-backports main non-free non-free-firmware contrib
+    deb-src http://ftp.cn.debian.org/debian bookworm-backports main non-free non-free-firmware contrib
     ```
 
 2. Debian WSL 上的默认配置：
@@ -237,7 +237,7 @@ w
 
 - 用户图标位置：$HOME/.local/share/applications
 
-- 图标配置例子：
+- 图标配置例子 code.desktop：
 
     ```desktop
     [Desktop Entry]
@@ -250,8 +250,8 @@ w
     Categories=Development;IDE;
     Terminal=false
     StartupNotify=true
-    StartupWMClass=Code
-    ``
+    StartupWMClass=code
+    ```
 
 ## 5. 启动脚本目录
 
@@ -464,16 +464,36 @@ sudo iptables -F # 清空规则，机器重启后失效。
 # 十六、设置 Grub 界面字大小和背景
 
 ```shell
-sudo grub-mkfont --output=/boot/grub/fonts/DejaVuSansMono28.pf2 --size=28 /usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf
-sudo echo "set menu_color_normal=white/black" >> /etc/grub.d/05_custom
-sudo echo "set menu_color_highlight=black/white" >> /etc/grub.d/05_custom
-sudo vim /etc/default/grub
-GRUB_FONT=/boot/grub/fonts/DejaVuSansMono28.pf2
-GRUB_BACKGROUND=
+sudo grub-mkfont -o /boot/grub/DejaVuSansMono.ttf -s 28 /usr/share/fonts/truetype/dejavu/DejaVuSansMono28.ttf
+```
+
+可能需要关闭安全启动。
+
+```shell
+vim /etc/default/grub
+```
+```txt
+# 设置分辨率
 GRUB_GFXMODE=2880x1800
+
+# 控制从 GRUB 过渡到 Linux 内核时的图形模式保持
 GRUB_GFXPAYLOAD_LINUX=keep
-GRUB_LANG=en
+
+# 设置背景图片
+GRUB_BACKGROUND=/boot/grub/black2880x1800.png
+
+# 使用图形终端输出
+GRUB_TERMINAL_OUTPUT=gfxterm
+
+# 设置字体文件
+GRUB_FONT=/boot/grub/DejaVuSansMono28.ttf
+
+# 设置语言
+GRUB_LANG=en_US
 LANG=en_US
+```
+
+```shell
 sudo update-grub
 ```
 
