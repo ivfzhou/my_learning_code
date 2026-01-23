@@ -1,6 +1,6 @@
 # 一、笔记
 
-1. /ect/default/grub 的一些参数：`GRUB_CMDLINE_LINUX_DEFAULT="quiet splash"`。
+1. /ect/default/grub 的一些参数：`GRUB_CMDLINE_LINUX_DEFAULT="quiet splash loglevel=3"`。
 
 1. ctrl+z 挂起当前进程。ctrl+d 结束命令。
 
