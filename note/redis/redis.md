@@ -5,7 +5,9 @@
 
 # 二、安装
 
-## 1. Docker-Compose 安装
+## 1. 通过 Docker-Compose
+
+docker compose yaml 配置：
 
 ```yaml
 services:
@@ -29,19 +31,18 @@ services:
       - redis-server
       - /config/redis.conf
 ```
-- mkdir -p volumes/redis/config
+运行命令：
 
-- mkdir -p volumes/redis/data
-
-- cp src/note/redis/redis.conf volumes/redis/config/redis.conf
-
-- sudo chown -R 999:999 volumes/redis
-
-- sudo tee -a /etc/hosts <<EOF
-  172.16.3.129 ivfzhoudockerredis
-  EOF
-
-- docker-compose -f src/note/docker/docker-compose.yml up -d redis
+```shell
+mkdir -p ~/volumes/redis/config
+mkdir -p ~/volumes/redis/data
+cp ~/src/my_learning_code/note/redis/redis.conf ~/volumes/redis/config/redis.conf
+sudo chown -R 999:999 volumes/redis
+sudo tee -a /etc/hosts <<EOF
+172.16.3.129 ivfzhoudockerredis
+EOF
+docker-compose -f src/my_learning_code/note/docker/docker-compose.yml up -d redis
+```
 
 ## 2. Docker 安装
 

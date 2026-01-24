@@ -170,15 +170,15 @@ sudo systemctl restart docker
 
 2. 解压，设置环境变量。
 
-3. 运行 sudo env PATH=$PATH:/sbin dockerd。
+3. 运行 `sudo env PATH=$PATH:/sbin dockerd`。
 
-# 六、Debian 二进制包安装 docker-compose
+# 六、Debian 下载 docker-compose
 
-1. 运行 mkdir bin。
-
-2. 运行 curl -SL https://github.com/docker/compose/releases/download/v2.37.2/docker-compose-linux-x86_64 -o ~/bin/docker-compose。
-
-3. 运行 chmod +x ~/bin/docker-compose。
+```shell
+mkdir ~/bin
+curl -SL https://github.com/docker/compose/releases/download/v5.0.2/docker-compose-linux-x86_64 -o ~/bin/docker-compose
+chmod +x ~/bin/docker-compose
+```
 
 # 七、网络代理配置
 

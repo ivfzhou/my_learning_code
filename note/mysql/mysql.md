@@ -596,7 +596,7 @@
 
 # 五、安装
 
-## 1. Docker-Compose 运行
+## 1. 使用 Docker-Compose
 
 ```yml
 services:
@@ -639,12 +639,14 @@ networks:
           gateway: 172.16.3.1
 ```
 
-- mkdir -p /home/ivfzhou/volumes/mysql
-- sudo chown -R 999:999 /home/ivfzhou/volumes/mysql
-- sudo tee -a /etc/hosts <<EOF
-   172.16.3.128 ivfzhoudockermysql
-   EOF 
-- docker-compose -f src/note/docker/docker-compose.yml up -d mysql
+```shell
+mkdir -p ~/volumes/mysql
+sudo chown -R 999:999 ~/volumes/mysql
+sudo tee -a /etc/hosts <<EOF
+172.16.3.128 ivfzhoudockermysql
+EOF
+docker-compose -f ~/src/my_learning_code/note/docker/docker-compose.yml up -d mysql
+```
 
 ## 2. Docker 安装
 

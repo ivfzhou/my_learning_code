@@ -237,7 +237,7 @@ w
 
 - 用户图标位置：$HOME/.local/share/applications
 
-- 图标配置例子 code.desktop：
+- 图标配置例子 vscode.desktop：
 
     ```desktop
     [Desktop Entry]

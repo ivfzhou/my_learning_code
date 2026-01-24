@@ -1,4 +1,6 @@
-# 一、Docker-Compose 安装
+# 一、通过 Docker-Compose 安装运行
+
+docker compose yaml 配置：
 
 ```yml
 services:
@@ -18,9 +20,14 @@ services:
       - /home/ivfzhou/volumes/tusd/data:/srv/srv/tusd-data/data:rw
     entrypoint: "tusd -expose-metrics=false -disable-cors -hooks-enabled-events="
 ```
-1. mkdir -p volumes/tusd/data
-1. sudo chown 1000:1000 -R volumes/tusd
-1. sudo tee -a /etc/hosts <<EOF
-   172.16.3.141 ivfzhoudockertusd
-   EOF
-1. docker-compose -f src/note/docker/docker-compose.yml up -d tusd
+运行命令：
+
+```shell
+mkdir -p ~/volumes/tusd/data
+sudo chown 1000:1000 -R ~/volumes/tusd
+sudo tee -a /etc/hosts <<EOF
+172.16.3.141 ivfzhoudockertusd
+EOF
+docker-compose -f src/my_learning_code/note/docker/docker-compose.yml up -d tusd
+```
+

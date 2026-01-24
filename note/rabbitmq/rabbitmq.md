@@ -1,6 +1,8 @@
 # 一、安装
 
-## 1. Docker-Compose 安装
+## 1. 通过 Docker-Compose
+
+docker compose ymal 配置：
 
 ```yml
 services:
@@ -30,25 +32,20 @@ services:
       RABBITMQ_DEFAULT_VHOST: /
 ```
 
-1. mkdir -p volumes/rabbitmq
+运行命令：
 
-1. cp src/note/rabbitmq/rabbitmq.conf volumes/rabbitmq/
-
-1. cp src/note/rabbitmq/enabled_plugins volumes/rabbitmq/
-
-1. cp src/note/rabbitmq/.erlang.cookie volumes/rabbitmq/
-
-1. cp src/note/rabbitmq/definitions.json volumes/rabbitmq/
-
-1. chmod 400 volumes/rabbitmq/.erlang.cookie
-
-1. sudo chown -R 999:999 volumes/rabbitmq
-
-1. sudo tee -a /etc/hosts <<EOF
-   172.16.3.138 ivfzhoudockerrabbitmq
-   EOF
-
-1. docker-compose -f src/note/docker/docker-compose.yml up -d rabbitmq
+```shell
+mkdir -p ~/volumes/rabbitmq
+cp ~/src/my_learning_code/note/rabbitmq/rabbitmq.conf ~/volumes/rabbitmq/
+cp ~/src/my_learning_code/note/rabbitmq/enabled_plugins ~/volumes/rabbitmq/
+cp ~/src/my_learning_code/note/rabbitmq/.erlang.cookie ~/volumes/rabbitmq/
+cp ~/src/my_learning_code/note/rabbitmq/definitions.json ~/volumes/rabbitmq/
+chmod 400 ~/volumes/rabbitmq/.erlang.cookie
+sudo tee -a /etc/hosts <<EOF
+172.16.3.138 ivfzhoudockerrabbitmq
+EOF
+docker-compose -f ~/src/my_learning_code/note/docker/docker-compose.yml up -d rabbitmq
+```
 
 ## 2. Docker 安装
 
