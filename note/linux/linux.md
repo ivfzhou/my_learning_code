@@ -356,19 +356,36 @@ echo '/dev/sdax none swap sw 0 0' | sudo tee -a /etc/fstab
 
 # 十一、设置时区时间
 
-1. export TZ='Asia/Shanghai'
-
-2. sudo rm -f /etc/localtime
-
-3. sudo ln -s /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
-
 ```shell
-timedatectl # 查看时区。
-timedatectl list-timezones # 列出可用时区。
-sudo timedatectl set-timezone Asia/Shanghai # 设置系统时区。
+# 查看时区。
+timedatectl
+
+# 列出可用时区。
+timedatectl list-timezones
+
+# 设置系统时区。
+sudo timedatectl set-timezone Asia/Shanghai
+
+# 手动设置时间。
+sudo timedatectl set-time "YYYY-MM-DD HH:MM:SS"
+
+# 启用 NTP 同步。
+sudo timedatectl set-ntp true
+
+# 安装 NTP 服务。
 sudo apt install systemd-timesyncd
-sudo systemctl enable systemd-timesyncd
-sudo systemctl start systemd-timesyncd
+
+# 检查 NTP 服务状态。
+sudo systemctl status systemd-timesyncd
+
+# 时区的环境变量。
+export TZ='Asia/Shanghai'
+
+# 时区设置文件位置。
+ls -alhtc /etc/localtime
+
+# 直接设置时区文件。
+sudo ln -s /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 ```
 
 # 十二、设置 apt 网络代理
@@ -431,11 +448,22 @@ sudo systemctl start systemd-timesyncd
 # 十四、设置系统语言
 
 ```shell
-# sudo vim /etc/locale.gen
-# sudo locale-gen
-localectl status # 查看语言。
-sudo localectl set-locale LANG=en_US.UTF-8 # zh_CN.UTF-8
+# 生成语言环境。
+sudo vim /etc/locale.gen
+sudo locale-gen
+
+# 查看语言。
+localectl status
+
+# 设置默认语言。
+sudo localectl set-locale LANG=zh_CN.UTF-8 
 cat /etc/default/locale
+
+# 设置用户语言。LANG=zh_CN.UTF-8 LC_ALL=zh_CN.UTF-8
+vim ~/.profile
+vim ~/.bashrc
+
+# 重新登陆会话生效。
 sudo reboot
 ```
 
