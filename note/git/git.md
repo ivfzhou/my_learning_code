@@ -1,20 +1,19 @@
-# 一、Debian 编译安装
+# 一、在 Debian 编译安装
 
 运行命令：
 
 ```shell
 cd ~/src/
-git clone git@github.com:git/git.git -o gitee
+git clone git@github.com:git/git.git -o github
 sudo apt install libcurl4-openssl-dev zlib1g-dev libssl-dev libexpat1-dev gettext
 make clean
 make NO_DOC=1 NO_TCLTK=1 prefix=~/programs/git install
-
 ```
 
-# 二、设置 Git 访问远程仓库账密
+# 二、设置访问远程仓库账密
 
 1. 开启账密存储：`git config --global credential.helper store`。
-2. 用户家目录下文件 `.git-credentials` 添加 `https://$user:token@host.com`。`.netrc` 添加 `machine github.com login USERNAME password APIKEY`。
+2. 用户家目录下文件 `.git-credentials` 添加 `https://user:token@host.com`。`.netrc` 添加 `machine github.com login USERNAME password APIKEY`。
 
 # 三、常用命令
 
@@ -36,19 +35,22 @@ make NO_DOC=1 NO_TCLTK=1 prefix=~/programs/git install
 
 ### 2.1 配置 ssh 网络代理
 
-- sudo apt install connect-proxy
-- vim .ssh/config
-- 添加：
-    ```config
-    Host github.com
-    User git
-    ProxyCommand connect-proxy -S 127.0.0.1:1089 %h %p
-    ```
+```shell
+sudo apt install connect-proxy
+vim .ssh/config
+```
+
+添加：
+```txt
+Host github.com
+User git
+ProxyCommand connect-proxy -S 127.0.0.1:1089 %h %p
+```
 
 ## 3. 初始化仓库
 
 - `git init <dir>`：初始化仓库。
-- `git clone -o <origin> -b <branch> <dir>`：克隆远程仓库。
+- `git clone <url> -o <origin> -b <branch> <dir>`：克隆远程仓库。
 
 ## 4. 添加与提交
 
@@ -59,8 +61,8 @@ make NO_DOC=1 NO_TCLTK=1 prefix=~/programs/git install
 - `git checkout <filename>`：暂存区覆盖工作区。
 - `git checkout .`：暂存区覆盖工作区。
 - `git rm --cached -rf <filename>`：删除暂存区文件。
-- `git status -s`：显示文件是否新添加暂存区，是否有修改，是否未追踪。
-- `git commit -m <注释>`：工作区提交到仓库。
+- `git status -s`：显示文件是否新添加到暂存区，是否有修改，是否未追踪。
+- `git commit -m <注释>`：暂存区提交到仓库。
 - `git commit -am <注释>`：将工作区所有修改的追踪文件提交暂存区和本地仓库。
 - `git commit --amend -m <注释>`：重新上次提交。
 - `git reset <filename>`：本地仓库覆盖暂存区。
@@ -77,6 +79,8 @@ make NO_DOC=1 NO_TCLTK=1 prefix=~/programs/git install
 - `git remote rm <origin>`：删除远程仓库。
 - `git remote rename <origin> <newname>`：修改远程仓库名称。
 - `git fetch --all`：获取远程仓库数据信息。
+- `git ls-remote --heads <remote>`：查看远程分支。
+- `git ls-remote --tags <remote>`：查看远程标签。
 
 ## 6. 标签
 
@@ -127,22 +131,5 @@ make NO_DOC=1 NO_TCLTK=1 prefix=~/programs/git install
 - `git cherry-pick <commitId>`： 应用某个提交记录的改动。
 - `git rebase <branch>`： 当前分支与 branch 分支变基。
 - `git blame <file>`： 显示最后修改人。
-- `git ls-remote --heads <remote>`：查看远程分支。
-- `git ls-remote --tags <remote>`：查看远程标签。
 - `git rev-parse HEAD`：获取 HEAD 的提交 HASH。
 
-## 12. 其他
-
-- `git rev-list`
-- `git archive`
-- `git show-ref`
-- `git show-index`
-- `git fsck`
-- `git prune`
-- `git gc`
-- `git describe`
-- `git name-rev`
-- `git check-ref-format`
-- `git format-patch`
-- `git am`
-- `git commit-tree`
