@@ -291,7 +291,7 @@ import (
     - **bug**：弹出浏览器提交缺陷报告。
     - **get** *参数* *build_flags* *packages_or_module_paths*：更新修改模块依赖，编译安装包。可用通配符：all ....。默认作用为当前运行目录。当需要改动某个依赖版本号但又与参数指定的版本号不一致时，会有报告错误提示。对于retracted、deprecated依赖会有警告提示。编译生成的程序将放置 $GOBIN 或者 $GOPATH/bin 或者 $HOME/go/bin 下。
         - -d：不构建安装，仅更新修改依赖。go1.18 默认开启。
-        - -u=*patch*：获取最新版本。=path 表示获取最新的补丁版依赖。
+        - -u：获取最新版本。-u=patch 表示获取最新的补丁版依赖。
         - -t：编译对应的测试包，同 -u 使用将更新测试包的依赖。
         - -insecure：允许使用 HTTP 等不安全的方式下载依赖源码。
     - **install** *build_flags* *packages*：安装或者构建缓存包。在 $GOROOT 下的包安装到 $GOROOT/bin|$GOTOOLDIR 下。带有版本号查询后缀时将是安装项目，不带则意味着作用当前项目。版本查询后缀需要一致。<=go1.15 不支持版本查询后缀。

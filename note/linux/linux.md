@@ -526,21 +526,16 @@ sudo update-grub
 ## 1. 常用命令
 
 - 查看系统信息：lscpu free fdisk top printenv
-
+  - uptime：查看系统启动时间、运行时间。
+  - nproc：打印 CPU 核心数量。
+  
 - 基础配置：localectl timedatectl date hwclock
-
 - 管理用户：useradd id passwd cracklib-unpacker create-cracklib-dict usermod userdel groupadd groupmod groupdel newgrp
-
 - 管理软件包：vi dnf createrepo
-
 - 管理服务：systemctl ln
-
 - 管理进程：who ps top kill at crontab jobs fg bg atrm atq nice renice kill killall nohub
-
 - 配置网络：nmcli ip ifup ifdown modprobe modinfo ss route nslookup
-
 - LVM：pvcreate pvdisplay pvremove pvchange vgcreate vgdisplay vgchange vgextend vgreduce vgremove lvcreate lvresize lvextend lvreduce lvremove mkfs mount umount blkid resize2fs e2fsck lvchange
-
 - 其他：uptimevmstat sar ps top free lsblk lspci ethtool dmidecode
 
 ## 2. more
