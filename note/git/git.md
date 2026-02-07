@@ -32,6 +32,9 @@ make NO_DOC=1 NO_TCLTK=1 prefix=~/programs/git install
 - `git config -l`：查看配置信息。
 - `git config --global https.proxy https://proxyuser:password@proxyserver:port`
 - `git config --global http.proxy http://proxyuser:password@proxyserver:port`：配置网络代理。
+- `git config --global core.quotepath false`：控制非ASCII字符在终端的显示方式，设置 true 转义为八进制格式显示。
+- `i18n.commitEncoding`：提交内容的编码格式。
+- `i18n.logOutputEncoding`：日志输出时的编码格式。
 
 ### 2.1 配置 ssh 网络代理
 
@@ -117,6 +120,8 @@ ProxyCommand connect-proxy -S 127.0.0.1:1089 %h %p
 
 ## 10. 比较
 
+- `diff -u file1 file2 > diff.txt`：比较不同。
+- `patch -R file2 < diff.txt`：应用差异。
 - `git diff <file>`：暂存区与工作区的不同。
 - `git diff --cached <file>`：仓库与暂存区的不同。
 - `git diff <commitId> <file>`：提交记录与工作区的不同。
