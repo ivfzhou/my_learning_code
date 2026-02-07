@@ -73,17 +73,23 @@
 ## 5. 表
 
 - CREATE TABLE [IF NOT EXISTS] *表名* (
-    *字段名* 数据类型(大小) 约束 COMMENT '注释内容' CHARSET *ANSCII* COLLATE utf8mb4_unicode_ci DEFAULT 函数或者值 ON UPDATE 函数或者值,  [UNIQUE INDEX *索引名*(*字段名*(*长度*),...)],
-    [KEY *索引名*(*字段名*,...)],
-    [CONSTRAINT *约束名* FOREIGN KEY(*字段名*,...) REFERENCES *目标表名*(*目标字段名*,...)],
-    [PRIMARY KEY(*字段*,...)],
-    [UNIQUE KEY(*字段*,...)],
-    [CONTRAINT CHECK(*表达式*)],
-    ) [CHARSET=*字符名*] COMMENT '*注释内容*' ENGINE *储存引擎* AUTO_INCREMENT=*数字*：新建表，两表之间外键列的数据类型一定要与关联的主键的类型一致。
+        *字段名* *数据类型*(*大小*) *约束* COMMENT '*注释内容*' CHARSET ANSCII COLLATE utf8mb4_unicode_ci DEFAULT *函数或者值* ON UPDATE *函数或者值*,
+        [UNIQUE INDEX *索引名*(*字段名*(*长度*),...)],
+        [KEY *索引名*(*字段名*,...)],
+        [CONSTRAINT *约束名* FOREIGN KEY(*字段名*,...) REFERENCES *目标表名*(*目标字段名*,...)],
+        [PRIMARY KEY(*字段*,...)],
+        [UNIQUE KEY(*字段*,...)],
+        [CONTRAINT CHECK(*表达式*)],
+    ) CHARSET=*字符名* COMMENT '*注释内容*' ENGINE *储存引擎* AUTO_INCREMENT=*数字*：新建表，两表之间外键列的数据类型一定要与关联的主键的类型一致。
+    
 - ALTER TABLE *表名* CONVERT TO CHARACTER SET *utf8mb4* COLLATE utf8mb4_general_ci
+
 - ALTER TABLE *表名* DEFAULT CHARACTER SET *xxx* COLLATE *xxx*
+
 - CREATE TABLE *表名* [AS] SELECT *查询语句*
+
 - CREATE TABLE *表名* LIKE *其它表名*：创建表，结构和参考表一样。
+
 - ALTER TABLE *表名*
 
       - ADD *字段名* *数据类型*(*大小*) *约束* COMMENT '*注释内容*' [FIRST | AFTER *参考字段*]：添加表字段。
