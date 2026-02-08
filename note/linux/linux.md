@@ -485,6 +485,11 @@ sudo iptables-restore  /etc/iptables/xxx # 应用配置文件的规则。
 sudo iptables -F # 清空规则，机器重启后失效。
 ```
 
+```shell
+# 允许某一个网段的请求。
+sudo iptables -A INPUT -s 192.168.3.0/24 -j ACCEPT
+```
+
 # 十六、设置 Grub 界面字大小和背景
 
 ```shell
