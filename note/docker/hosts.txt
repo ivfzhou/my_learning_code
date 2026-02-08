@@ -9,7 +9,7 @@
 172.16.3.136 ivfzhoudockerredissentinel0
 172.16.3.137 ivfzhoudockerredissentinel1
 172.16.3.138 ivfzhoudockerrabbitmq
-
+172.16.3.139 ivfzhoudockernginx
 
 172.16.3.141 ivfzhoudockertusd
 172.16.3.143 ivfzhoudockerzipkin

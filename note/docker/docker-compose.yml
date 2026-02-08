@@ -677,6 +677,19 @@ services:
     depends_on:
       - rocketmq_name_server_0
       - rocketmq_name_server_1
+  nginx:
+    image: nginx:1.25.2
+    container_name: nginx
+    hostname: ivfzhoudcokernginx
+    networks:
+      network:
+        ipv4_address: 172.16.3.139
+    #ports:
+    #  - "80:80"
+    volumes:
+      - /home/ivfzhou/volumes/nginx/config/nginx.conf:/etc/nginx/nginx.conf:rw
+      - /home/ivfzhou/volumes/nginx/config/conf.d:/etc/nginx/conf.d:rw
+      - /home/ivfzhou/volumes/nginx/logs:/var/log/nginx:rw
 networks:
   network:
     name: ivfzhou_docker_network
