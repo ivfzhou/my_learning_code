@@ -688,13 +688,12 @@ docker-compose -f ~/src/my_learning_code/note/docker/docker-compose.yml up -d my
 
 ## 5. Windows 安装
 
-- 下载 MySQL 程序包并解压，https://dev.mysql.com/downloads/mysql/。
-- 在程序目录创建文件夹 data。
-- 在程序目录创建文件 my.ini。[my.cnf](./my.cnf)
-- 管理员账号下运行：.\bin\mysqld.exe --initialize-insecure –-console --defaults-file=my.ini。
-- 管理员账号下运行：.\bin\mysqld.exe -–install。
-- 管理员账号下运行：net start mysql。
-- 修改 root 用户密码：mysql -u root -p; alter user root@localhost identified by '123456';。
+1. 访问 https://dev.mysql.com/downloads/mysql 下载 MySQL 程序 ZIP 包。
+1. 在程序目录创建文件 [my.ini](./my.ini)。
+1. 管理员角色下运行初始化：`.\bin\mysqld.exe --initialize-insecure –-console`。
+1. 管理员角色下运行安装系统服务：`.\bin\mysqld.exe -–install`。
+1. 管理员账号下运行：`net start mysql`。
+1. 修改 root 用户密码：`mysql -u root -p`、`alter user root@localhost identified by '123456';`。
 
 ## 6. Debian apt 安装
 
