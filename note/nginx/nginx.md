@@ -46,6 +46,8 @@ services:
         ipv4_address: 172.16.3.139
     ports:
       - "80:80"
+      - "8000:8000"
+      - "443:4"
     volumes:
       - /home/ivfzhou/volumes/nginx/config/nginx.conf:/etc/nginx/nginx.conf:rw
       - /home/ivfzhou/volumes/nginx/config/conf.d:/etc/nginx/conf.d:rw

@@ -25,16 +25,22 @@ make NO_DOC=1 NO_TCLTK=1 prefix=~/programs/git install
 ## 2. 配置
 
 - `git --version`：打印版本号。
+- `--system`：全部用户下生效的配置。`--global`：当前用户下生效的配置。默认：当前仓库下生效的配置。
 - `git config --global user.name <user>`：全局配置在家目录下 .gitconfig，项目配置在 .git/config。
 - `git config --global user.email <email>`
-- `git config --global init.defaultBranch <name>`：设置初始化仓库默认分支名。
-- `git config --global http.sslVerify false`
+- `git config -e`：打开配置进行编辑。
+- `GIT_CONFIG=test.ini git config a.b.c.d 'hello'`：使用 git 编辑 ini 文件。
+- `GIT_CONFIG=test.ini git config a.b.c.d`：使用 git 读取 ini 文件配置。
+- `init.defaultBranch <name>`：设置初始化仓库默认分支名。
+- `http.sslVerify false`
 - `git config -l`：查看配置信息。
-- `git config --global https.proxy https://proxyuser:password@proxyserver:port`
-- `git config --global http.proxy http://proxyuser:password@proxyserver:port`：配置网络代理。
-- `git config --global core.quotepath false`：控制非ASCII字符在终端的显示方式，设置 true 转义为八进制格式显示。
+- `https.proxy https://proxyuser:password@proxyserver:port`
+- `http.proxy http://proxyuser:password@proxyserver:port`：配置网络代理。
+- `core.quotepath false`：控制非ASCII字符在终端的显示方式，设置 true 转义为八进制格式显示。
 - `i18n.commitEncoding`：提交内容的编码格式。
 - `i18n.logOutputEncoding`：日志输出时的编码格式。
+- `aliase.ci commit`：设置命令别名。
+- `color.ui true`：开启颜色展示。
 
 ### 2.1 配置 ssh 网络代理
 
@@ -68,6 +74,7 @@ ProxyCommand connect-proxy -S 127.0.0.1:1089 %h %p
 - `git commit -m <注释>`：暂存区提交到仓库。
 - `git commit -am <注释>`：将工作区所有修改的追踪文件提交暂存区和本地仓库。
 - `git commit --amend -m <注释>`：重新上次提交。
+- `git commit --allow-empty`：空白提交。
 - `git reset <filename>`：本地仓库覆盖暂存区。
 - `git reset --hard HEAD^`：回退上一个版本。`^^` 或者 `~2`。本地仓库覆盖暂存区和工作区。
 - `git reset --hard <commit_id>`：回退到这个版本覆盖三区。
@@ -137,4 +144,9 @@ ProxyCommand connect-proxy -S 127.0.0.1:1089 %h %p
 - `git rebase <branch>`： 当前分支与 branch 分支变基。
 - `git blame <file>`： 显示最后修改人。
 - `git rev-parse HEAD`：获取 HEAD 的提交 HASH。
+- `git grep '文件内容'`：搜索文件。
+- `git rev-parse --git-dir`：显示版本库目录位置。
+- `git rev-parse --show-toplevel`：显示工作区根目录。
+- `git rev-parse --show-prefix`：相对于工作区根目录的相对目录。
+- `git rev-parse --show-cdup`：显示从当前目录后退到工作区的根深度。
 
