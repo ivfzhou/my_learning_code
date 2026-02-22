@@ -11,16 +11,18 @@ import (
 )
 
 var (
-	skipSuffix string
-	directory  string
-	verbose    bool
+	skipSuffixes  string
+	skipSuffixes2 []string
+	directory     string
+	verbose       bool
 )
 
 func init() {
-	flag.StringVar(&skipSuffix, "s", "", "skip files in directory")
+	flag.StringVar(&skipSuffixes, "s", "", "skip files in directory, comma separated")
 	flag.StringVar(&directory, "d", "./", "directory want to check")
 	flag.BoolVar(&verbose, "v", false, "verbose mode")
 	flag.Parse()
+	skipSuffixes2 = strings.Split(skipSuffixes, ",")
 }
 
 func main() {
@@ -63,11 +65,15 @@ func seekFiles(dir string) []string {
 }
 
 func checkGoFile(workDirectory, filePath string) {
-	if len(skipSuffix) > 0 && strings.HasSuffix(filePath, skipSuffix) {
-		if verbose {
-			fmt.Printf("%s: skiped\n", filePath)
+	if len(skipSuffixes2) > 0 {
+		for _, skipSuffix := range skipSuffixes2 {
+			if strings.HasSuffix(filePath, skipSuffix) {
+				if verbose {
+					fmt.Printf("%s: skiped\n", filePath)
+				}
+				return
+			}
 		}
-		return
 	}
 
 	command := exec.Command("gopls", "check", "--severity=hint", filePath)
