@@ -19,7 +19,7 @@ make NO_DOC=1 NO_TCLTK=1 prefix=~/programs/git install
 
 ## 1. 公钥密钥
 
-- `ssh-keygen -t rsa -C <email>`：生成 rsa 密钥对。
+- `ssh-keygen -t rsa -C <email>`：生成 RSA 密钥对。
 - `ssh -T git@github.com`：测试与 github 链接。
 
 ## 2. 配置
@@ -36,10 +36,10 @@ make NO_DOC=1 NO_TCLTK=1 prefix=~/programs/git install
 - `git config -l`：查看配置信息。
 - `https.proxy https://proxyuser:password@proxyserver:port`
 - `http.proxy http://proxyuser:password@proxyserver:port`：配置网络代理。
-- `core.quotepath false`：控制非ASCII字符在终端的显示方式，设置 true 转义为八进制格式显示。
+- `core.quotepath false`：控制非 ASCII 字符在终端的显示方式，设置 true 转义为八进制格式显示。
 - `i18n.commitEncoding`：提交内容的编码格式。
 - `i18n.logOutputEncoding`：日志输出时的编码格式。
-- `aliase.ci commit`：设置命令别名。
+- `aliase.ci "commit -s"`：设置命令别名。
 - `color.ui true`：开启颜色展示。
 
 ### 2.1 配置 ssh 网络代理
@@ -53,7 +53,7 @@ vim .ssh/config
 ```txt
 Host github.com
 User git
-ProxyCommand connect-proxy -S 127.0.0.1:1089 %h %p
+ProxyCommand connect-proxy -S 127.0.0.1:7897 %h %p
 ```
 
 ## 3. 初始化仓库
@@ -117,6 +117,7 @@ ProxyCommand connect-proxy -S 127.0.0.1:1089 %h %p
 - `git log --pretty=oneline`：查看提交记录。
 - `git log --graph --pretty=oneline --abbrev=commit`：查看提交记录。
 - `git log --oneline`：查看提交记录。
+- `git log --stat`：简单展示提交日志。
 
 ## 9. 暂存
 
@@ -138,15 +139,38 @@ ProxyCommand connect-proxy -S 127.0.0.1:1089 %h %p
 ## 11. 查看操作提交
 
 - `git revert <commitId>`：回滚到这个提交记录。
+
 - `git ls-tree <commitId>`：查看提交记录下的文件。
-- `git cat-file <id>`：查看文件内容。
+
+- `git ls-tree -l HEAD`：查看 HEAD 指向的目录树。
+
+- `git ls-files -s`：显示暂存区目录树。
+
+- `git cat-file -p <id>`：查看文件内容。
+
+- `git cat-file -t <id>`：查看 ID 类型。
+
+- `git cat-file commit HEAD`：查看 HEAD 对应的提交内容。
+
 - `git cherry-pick <commitId>`： 应用某个提交记录的改动。
+
 - `git rebase <branch>`： 当前分支与 branch 分支变基。
+
 - `git blame <file>`： 显示最后修改人。
+
 - `git rev-parse HEAD`：获取 HEAD 的提交 HASH。
+
 - `git grep '文件内容'`：搜索文件。
+
 - `git rev-parse --git-dir`：显示版本库目录位置。
+
 - `git rev-parse --show-toplevel`：显示工作区根目录。
+
 - `git rev-parse --show-prefix`：相对于工作区根目录的相对目录。
+
 - `git rev-parse --show-cdup`：显示从当前目录后退到工作区的根深度。
+
+- `git rev-parse master`：显示提交 ID。
+
+  
 
