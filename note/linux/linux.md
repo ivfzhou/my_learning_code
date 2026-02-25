@@ -1,29 +1,16 @@
 # 一、笔记
 
 1. /ect/default/grub 的一些参数：`GRUB_CMDLINE_LINUX_DEFAULT="quiet splash loglevel=3"`。
-
 1. ctrl+z 挂起当前进程。ctrl+d 结束命令。
-
 1. ~{account} 表示这个 account 的家目录，- 表示上次所在目录。
-
 1. /dev/sd*x* 盘信息，主设备号（磁盘驱动程序），从设备号（访问地址）。
-
 1. ls -l 输出中的第二字段表示文件夹说明子文件个数。
-
 1. umask 文件是 777 umask 111，文件夹 777 umask。
-
 1. cron 书写格式：分 小时 天 月 星期 命令。
-
 1. LVM 一些名称：PE LE PV VG LV。
-
 1. Chrome 浏览器下载地址：https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb。
-
 1. ssh 复制文件：scp src ivfzhou@ivfzhoudebian:~/src。
-
-1. Debian12 缩放配置：优化 1.85、vscode 0.5、Jetbians 界面 27 字体 25.7 间隔 1.1。
-
 1. UID 类型：1-999 虚拟用户，1000+ 普通用户。
-
 1. 安装拼音输入法：`sudo apt install ibus-libpinyin`
 
 # 二、文件类型
