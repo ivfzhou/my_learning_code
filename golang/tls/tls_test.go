@@ -10,7 +10,7 @@ import (
 
 /*
 openssl genrsa -out ca.key 2048
-openssl req -x509 -new -nodes -key ca.key -subj "/CN=IvfzhouRootCA" -days 365 -out ca.crt
+openssl req -x509 -new -nodes -key ca.key -subj "/CN=IvfzhouRootCA" -days 3650 -out ca.crt
 
 openssl genrsa -out server.key 2048
 openssl req -new -key server.key -config csr.ini -out server.csr
@@ -20,7 +20,7 @@ openssl genrsa -out client.key 2048
 openssl req -new -key client.key -config csr.ini -out client.csr
 openssl x509 -req -in client.csr -CA ca.crt -CAkey ca.key -CAcreateserial -days 3650 -extensions v3_ext -extfile csr.ini -out client.crt
 openssl pkcs12 -export -in client.crt -inkey client.key -out client.pfx
-cat client.key client.crt > client.pem2
+cat client.key client.crt > client.pem
 
 解析 pfx
 openssl pkcs12 -in .pfx -clcert -nokeys -out .crt
