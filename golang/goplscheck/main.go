@@ -67,6 +67,9 @@ func seekFiles(dir string) []string {
 func checkGoFile(workDirectory, filePath string) {
 	if len(skipSuffixes2) > 0 {
 		for _, skipSuffix := range skipSuffixes2 {
+			if len(skipSuffix) <= 0 {
+				continue
+			}
 			if strings.HasSuffix(filePath, skipSuffix) {
 				if verbose {
 					fmt.Printf("%s: skiped\n", filePath)
