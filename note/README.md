@@ -29,7 +29,7 @@
 
 1. [Gmock](./gmock/gmock.md)
 1. [Gradle](./gradle/gradle.md)
-1. [CMAKE](./cmake/cmake.md)
+1. [CMake](./cmake/cmake.md)
 1. [Docker](./docker/docker.md)
 1. [GDB](./gdb/gdb.md)
 1. [Git](./git/git.md)
