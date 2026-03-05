@@ -14,7 +14,7 @@ else()
     ExternalProject_Add(
         jwt-cpp
         PREFIX ${JWT_CPP_DEPENDENCIES_PREFIX}
-        URL https://github.com/Thalhammer/jwt-cpp/archive/refs/tags/v0.7.1.zip
+        URL https://github.com/Thalhammer/jwt-cpp/archive/refs/tags/v0.7.2.zip
         CONFIGURE_COMMAND cd ${JWT_CPP_DEPENDENCIES_PREFIX}/src &&rm -rf jwt-cpp-build && mkdir -p jwt-cpp-build
         BUILD_COMMAND cd ${JWT_CPP_DEPENDENCIES_PREFIX}/src/jwt-cpp-build && ${CMAKE_COMMAND} -DCMAKE_INSTALL_PREFIX=${JWT_CPP_DEPENDENCIES_PREFIX} -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DBUILD_SHARED_LIBS=OFF -DOPENSSL_INCLUDE_DIRS=${OPENSSL_INCLUDE_DIR} -DOPENSSL_LIBRARY_DIRS=${OPENSSL_LIB_DIR} -DOPENSSL_LIBRARIES=${CRYPTO_LIB} ../jwt-cpp
         INSTALL_COMMAND cd ${JWT_CPP_DEPENDENCIES_PREFIX}/src/jwt-cpp-build && ${CMAKE_COMMAND} --build . --target install
