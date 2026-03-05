@@ -2,8 +2,8 @@
 
 克隆源码：
 ```shell
-git clone https://gitee.com/ivfzhou/study_cpp.git
-cd study_cpp
+git clone https://gitee.com/ivfzhou/my_learning_code.git
+cd my_learning_code/cpp
 ```
 
 ## 1.1 Windows
