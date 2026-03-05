@@ -29,8 +29,7 @@ else()
         openssl
         PREFIX ${OPENSSL_DEPENDENCIES_PREFIX}
         URL https://github.com/openssl/openssl/archive/refs/tags/openssl-3.4.1.zip
-        CONFIGURE_COMMAND cd ${OPENSSL_DEPENDENCIES_PREFIX}/src/openssl &&
-        perl Configure no-shared no-deprecated --prefix=${OPENSSL_DEPENDENCIES_PREFIX} --${OPENSSL_BUILD_TYPE}
+        CONFIGURE_COMMAND cd ${OPENSSL_DEPENDENCIES_PREFIX}/src/openssl && perl Configure no-shared no-deprecated --prefix=${OPENSSL_DEPENDENCIES_PREFIX} --${OPENSSL_BUILD_TYPE}
         BUILD_COMMAND cd ${OPENSSL_DEPENDENCIES_PREFIX}/src/openssl && nmake /I .
         INSTALL_COMMAND cd ${OPENSSL_DEPENDENCIES_PREFIX}/src/openssl && nmake install /I .
     )

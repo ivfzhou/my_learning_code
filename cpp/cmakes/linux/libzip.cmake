@@ -22,9 +22,7 @@ else()
         PREFIX ${LIBZIP_DEPENDENCIES_PREFIX}
         URL https://github.com/nih-at/libzip/archive/refs/tags/v1.11.3.zip
         CONFIGURE_COMMAND cd ${LIBZIP_DEPENDENCIES_PREFIX}/src && rm -rf libzip-build && mkdir -p libzip-build
-        BUILD_COMMAND cd ${LIBZIP_DEPENDENCIES_PREFIX}/src/libzip-build &&
-        ${CMAKE_COMMAND} -DCMAKE_INSTALL_PREFIX=${LIBZIP_DEPENDENCIES_PREFIX} -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
-        -DBUILD_SHARED_LIBS=OFF ../libzip
+        BUILD_COMMAND cd ${LIBZIP_DEPENDENCIES_PREFIX}/src/libzip-build && ${CMAKE_COMMAND} -DCMAKE_INSTALL_PREFIX=${LIBZIP_DEPENDENCIES_PREFIX} -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DBUILD_SHARED_LIBS=OFF ../libzip
         INSTALL_COMMAND cd ${LIBZIP_DEPENDENCIES_PREFIX}/src/libzip-build && ${CMAKE_COMMAND} --build . --target install
     )
     set(LIBZIP_INCLUDE_DIR ${LIBZIP_DEPENDENCIES_PREFIX}/include)

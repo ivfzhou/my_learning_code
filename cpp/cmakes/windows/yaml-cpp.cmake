@@ -25,14 +25,9 @@ else()
         yaml-cpp
         PREFIX ${YAML_CPP_DEPENDENCIES_PREFIX}
         URL https://github.com/jbeder/yaml-cpp/archive/refs/tags/0.8.0.zip
-        CONFIGURE_COMMAND cd ${YAML_CPP_DEPENDENCIES_PREFIX}/src &&
-        rd /s /q yaml-cpp-build && md yaml-cpp-build
-        BUILD_COMMAND cd ${YAML_CPP_DEPENDENCIES_PREFIX}/src/yaml-cpp-build &&
-        ${CMAKE_COMMAND} -DCMAKE_INSTALL_PREFIX=${YAML_CPP_DEPENDENCIES_PREFIX}
-        -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DBUILD_SHARED_LIBS=OFF -DYAML_MSVC_SHARED_RT=OFF
-        -DCMAKE_MSVC_RUNTIME_LIBRARY=${CMAKE_MSVC_RUNTIME_LIBRARY} ../yaml-cpp
-        INSTALL_COMMAND cd ${YAML_CPP_DEPENDENCIES_PREFIX}/src/yaml-cpp-build &&
-        ${CMAKE_COMMAND} --build . --target install --config ${CMAKE_BUILD_TYPE}
+        CONFIGURE_COMMAND cd ${YAML_CPP_DEPENDENCIES_PREFIX}/src && rd /s /q yaml-cpp-build && md yaml-cpp-build
+        BUILD_COMMAND cd ${YAML_CPP_DEPENDENCIES_PREFIX}/src/yaml-cpp-build && ${CMAKE_COMMAND} -DCMAKE_INSTALL_PREFIX=${YAML_CPP_DEPENDENCIES_PREFIX} -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DBUILD_SHARED_LIBS=OFF -DYAML_MSVC_SHARED_RT=OFF -DCMAKE_MSVC_RUNTIME_LIBRARY=${CMAKE_MSVC_RUNTIME_LIBRARY} ../yaml-cpp
+        INSTALL_COMMAND cd ${YAML_CPP_DEPENDENCIES_PREFIX}/src/yaml-cpp-build && ${CMAKE_COMMAND} --build . --target install --config ${CMAKE_BUILD_TYPE}
     )
     set(YAML_CPP_LIB ${YAML_CPP_DEPENDENCIES_PREFIX}/lib/${YAML_CPP_LIB_NAME})
     set(YAML_CPP_INCLUDE_DIR ${YAML_CPP_DEPENDENCIES_PREFIX}/include)

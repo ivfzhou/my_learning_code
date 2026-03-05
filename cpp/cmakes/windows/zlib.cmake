@@ -25,13 +25,9 @@ else()
         zlib
         PREFIX ${ZLIB_DEPENDENCIES_PREFIX}
         URL https://github.com/madler/zlib/archive/refs/tags/v1.3.1.zip
-        CONFIGURE_COMMAND cd ${ZLIB_DEPENDENCIES_PREFIX}/src &&
-        rd /s /q zlib-build && md zlib-build
-        BUILD_COMMAND cd ${ZLIB_DEPENDENCIES_PREFIX}/src/zlib-build &&
-        ${CMAKE_COMMAND} -DCMAKE_INSTALL_PREFIX=${ZLIB_DEPENDENCIES_PREFIX} -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
-        -DBUILD_SHARED_LIBS=OFF -DZLIB_BUILD_EXAMPLES=OFF ../zlib
-        INSTALL_COMMAND cd ${ZLIB_DEPENDENCIES_PREFIX}/src/zlib-build &&
-        ${CMAKE_COMMAND} --build . --target install --config ${CMAKE_BUILD_TYPE}
+        CONFIGURE_COMMAND cd ${ZLIB_DEPENDENCIES_PREFIX}/src && rd /s /q zlib-build && md zlib-build
+        BUILD_COMMAND cd ${ZLIB_DEPENDENCIES_PREFIX}/src/zlib-build && ${CMAKE_COMMAND} -DCMAKE_INSTALL_PREFIX=${ZLIB_DEPENDENCIES_PREFIX} -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DBUILD_SHARED_LIBS=OFF -DZLIB_BUILD_EXAMPLES=OFF ../zlib
+        INSTALL_COMMAND cd ${ZLIB_DEPENDENCIES_PREFIX}/src/zlib-build && ${CMAKE_COMMAND} --build . --target install --config ${CMAKE_BUILD_TYPE}
     )
     set(ZLIB_LIB ${ZLIB_DEPENDENCIES_PREFIX}/lib/${ZLIB_LIB_NAME})
     set(ZLIB_INCLUDE_DIR ${ZLIB_DEPENDENCIES_PREFIX}/include)

@@ -26,11 +26,8 @@ else()
         PREFIX ${YAML_CPP_DEPENDENCIES_PREFIX}
         URL https://github.com/jbeder/yaml-cpp/archive/refs/tags/0.8.0.zip
         CONFIGURE_COMMAND cd ${YAML_CPP_DEPENDENCIES_PREFIX}/src && rm -rf yaml-cpp-build && mkdir -p yaml-cpp-build
-        BUILD_COMMAND cd ${YAML_CPP_DEPENDENCIES_PREFIX}/src/yaml-cpp-build &&
-        ${CMAKE_COMMAND} -DCMAKE_INSTALL_PREFIX=${YAML_CPP_DEPENDENCIES_PREFIX} -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
-        -DBUILD_SHARED_LIBS=OFF ../yaml-cpp
-        INSTALL_COMMAND cd ${YAML_CPP_DEPENDENCIES_PREFIX}/src/yaml-cpp-build &&
-        ${CMAKE_COMMAND} --build . --target install
+        BUILD_COMMAND cd ${YAML_CPP_DEPENDENCIES_PREFIX}/src/yaml-cpp-build && ${CMAKE_COMMAND} -DCMAKE_INSTALL_PREFIX=${YAML_CPP_DEPENDENCIES_PREFIX} -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DBUILD_SHARED_LIBS=OFF ../yaml-cpp
+        INSTALL_COMMAND cd ${YAML_CPP_DEPENDENCIES_PREFIX}/src/yaml-cpp-build && ${CMAKE_COMMAND} --build . --target install
     )
     set(YAML_CPP_INCLUDE_DIR ${YAML_CPP_DEPENDENCIES_PREFIX}/include)
     set(YAML_CPP_LIB ${YAML_CPP_DEPENDENCIES_PREFIX}/lib/${YAML_CPP_LIB_NAME})
