@@ -26,7 +26,7 @@ namespace gitee::com::ivfzhou::cpp::jwtivf {
             "E4u4g6VALD7oPdZQV2lgtfSya7ofIqmyAhKFxhuAo");
         try {
             jwt::verify().allow_algorithm(jwt::algorithm::hs256("91fd0314d30d11ef969012c7e349893c1")).verify(s);
-        } catch (jwt::error::signature_verification_exception&& e) {
+        } catch (jwt::error::signature_verification_exception& e) {
             cout << e.what() << endl;
         } catch (...) {
             cout << "Unknown exception" << endl;
