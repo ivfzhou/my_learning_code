@@ -8,6 +8,11 @@ cd my_learning_code/cpp
 
 ## 1.1 Windows
 
+|  工具   |   版本   |
+|:-----:|:------:|
+| CMake | 3.31.6-msvc6  |
+|  cl.exe  | 19.44.35223 |
+
 - Debug 模式：
     ```cmd
     cmake.exe -DCMAKE_BUILD_TYPE=Debug -G "Visual Studio 17 2022" -S . -B build-debug
