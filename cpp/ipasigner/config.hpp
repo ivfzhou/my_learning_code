@@ -1,19 +1,19 @@
 #ifndef IPASIGNER_CONFIG_HPP
 #define IPASIGNER_CONFIG_HPP
 
-#include <string>
+#include <iostream>
 #include <list>
 #include <map>
-#include <iostream>
+#include <string>
 
 namespace ipasigner {
 
     class config {
 
         // 打印
-        friend std::ostream &operator<<(std::ostream &o, const config &cfg);
+        friend std::ostream& operator<<(std::ostream& o, const config& cfg);
 
-    public:
+      public:
         // 待签名文件路径，可以是文件夹，文件名中可以使用通配符*
         std::string ipa_path;
 
@@ -59,7 +59,6 @@ namespace ipasigner {
 
         // appx 包对应的子描述文件，用于多签的情况
         std::map<std::string, std::string> appx_provision_ids;
-
     };
 
 }
@@ -67,10 +66,10 @@ namespace ipasigner {
 // 实现序列和反序列化
 template<>
 class YAML::convert<ipasigner::config> {
-public:
-    static Node encode(const ipasigner::config &cfg);
+  public:
+    static Node encode(const ipasigner::config& cfg);
 
-    static bool decode(const Node &node, ipasigner::config &cfg);
+    static bool decode(const Node& node, ipasigner::config& cfg);
 };
 
 

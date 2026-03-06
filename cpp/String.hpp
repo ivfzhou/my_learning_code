@@ -1,18 +1,16 @@
 #ifndef GITEE_COM_IVFZHOU_CPP_STRING
 #define GITEE_COM_IVFZHOU_CPP_STRING
 
-#include <string>
 #include <iostream>
+#include <string>
 
 namespace gitee::com::ivfzhou::cpp {
     class String {
         char* value = nullptr;
 
-        friend std::ostream& operator<<(std::ostream& os, const String& s) {
-            return os << s.value;
-        }
+        friend std::ostream& operator<<(std::ostream& os, const String& s) { return os << s.value; }
 
-    public:
+      public:
         String() = default;
 
         String(const String&);

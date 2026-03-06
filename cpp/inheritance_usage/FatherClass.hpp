@@ -3,7 +3,7 @@
 
 namespace gitee::com::ivfzhou::cpp {
     class FatherClass {
-    public:
+      public:
         int publicField = 0;
 
         explicit FatherClass(int field = 0);

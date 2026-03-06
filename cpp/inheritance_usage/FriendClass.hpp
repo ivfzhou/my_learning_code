@@ -4,13 +4,13 @@
 #include "template_usage/TemplateClass.hpp"
 
 namespace gitee::com::ivfzhou::cpp {
-    template <typename T, typename E>
+    template<typename T, typename E>
     class FriendClass {
         TemplateClass<T, E> c;
 
         int field = 0;
 
-    public:
+      public:
         void friendClassMethod();
     };
 }

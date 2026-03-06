@@ -3,16 +3,45 @@
 #include "config.hpp"
 
 namespace ipasigner {
-    std::ostream &operator<<(std::ostream &out, const config &cfg) {
+    std::ostream& operator<<(std::ostream& out, const config& cfg) {
         std::string buf;
-        buf.append("{ ").append("ipa_path=").append(cfg.ipa_path).append(", ").append("dest_dir=").append(cfg.dest_dir).
-                append(", ").append("dest_ipa=").append(cfg.dest_ipa).append(", ").append("ipa_suffix=").
-                append(cfg.ipa_suffix).append(", ").append("cert_path=").append(cfg.cert_path).append(", ").
-                append("provision_path=").append(cfg.provision_path).append(", ").append("provision_path=").
-                append(cfg.provision_path).append(", ").append("force=").append(std::to_string(cfg.force)).append(", ").
-                append("bundle_id=").append(cfg.bundle_id).append(", ").append("bundle_name=").append(cfg.bundle_name).
-                append(", ").append("bundle_version=").append(std::to_string(cfg.bundle_version)).append(", ").
-                append("skip_archive=").append(std::to_string(cfg.skip_archive)).append(", ");
+        buf.append("{ ")
+            .append("ipa_path=")
+            .append(cfg.ipa_path)
+            .append(", ")
+            .append("dest_dir=")
+            .append(cfg.dest_dir)
+            .append(", ")
+            .append("dest_ipa=")
+            .append(cfg.dest_ipa)
+            .append(", ")
+            .append("ipa_suffix=")
+            .append(cfg.ipa_suffix)
+            .append(", ")
+            .append("cert_path=")
+            .append(cfg.cert_path)
+            .append(", ")
+            .append("provision_path=")
+            .append(cfg.provision_path)
+            .append(", ")
+            .append("provision_path=")
+            .append(cfg.provision_path)
+            .append(", ")
+            .append("force=")
+            .append(std::to_string(cfg.force))
+            .append(", ")
+            .append("bundle_id=")
+            .append(cfg.bundle_id)
+            .append(", ")
+            .append("bundle_name=")
+            .append(cfg.bundle_name)
+            .append(", ")
+            .append("bundle_version=")
+            .append(std::to_string(cfg.bundle_version))
+            .append(", ")
+            .append("skip_archive=")
+            .append(std::to_string(cfg.skip_archive))
+            .append(", ");
 
         if (cfg.ul_domains.empty()) {
             buf.append("ul_domains=[], ");
@@ -75,7 +104,7 @@ namespace ipasigner {
     }
 }
 
-YAML::Node YAML::convert<ipasigner::config>::encode(const ipasigner::config &cfg) {
+YAML::Node YAML::convert<ipasigner::config>::encode(const ipasigner::config& cfg) {
     YAML::Node node;
     node["ipa_path"] = cfg.ipa_path;
     node["dest_dir"] = cfg.dest_dir;
@@ -88,15 +117,15 @@ YAML::Node YAML::convert<ipasigner::config>::encode(const ipasigner::config &cfg
     node["bundle_name"] = cfg.bundle_name;
     node["bundle_version"] = cfg.bundle_version;
     node["skip_archive"] = cfg.skip_archive;
-    for (const auto &v: cfg.ul_domains) node["ul_domains"].push_back(v);
-    for (const auto &v: cfg.keychain_access_group) node["keychain_access_group"].push_back(v);
-    for (const auto &v: cfg.security_group) node["security_group"].push_back(v);
-    for (const auto &v: cfg.info) node["info"][v.first] = v.second;
-    for (const auto &v: cfg.appx_provision_ids) node["appx_provision_ids"][v.first] = v.second;
+    for (const auto& v : cfg.ul_domains) node["ul_domains"].push_back(v);
+    for (const auto& v : cfg.keychain_access_group) node["keychain_access_group"].push_back(v);
+    for (const auto& v : cfg.security_group) node["security_group"].push_back(v);
+    for (const auto& v : cfg.info) node["info"][v.first] = v.second;
+    for (const auto& v : cfg.appx_provision_ids) node["appx_provision_ids"][v.first] = v.second;
     return node;
 }
 
-bool YAML::convert<ipasigner::config>::decode(const YAML::Node &node, ipasigner::config &cfg) {
+bool YAML::convert<ipasigner::config>::decode(const YAML::Node& node, ipasigner::config& cfg) {
     if (node["ipa_path"] && node["ipa_path"].Type() == YAML::NodeType::Scalar)
         cfg.ipa_path = node["ipa_path"].as<std::string>();
     if (node["dest_dir"] && node["dest_dir"].Type() == YAML::NodeType::Scalar)
@@ -109,8 +138,7 @@ bool YAML::convert<ipasigner::config>::decode(const YAML::Node &node, ipasigner:
         cfg.cert_path = node["cert_path"].as<std::string>();
     if (node["provision_path"] && node["provision_path"].Type() == YAML::NodeType::Scalar)
         cfg.provision_path = node["provision_path"].as<std::string>();
-    if (node["force"] && node["force"].Type() == YAML::NodeType::Scalar)
-        cfg.force = node["force"].as<bool>();
+    if (node["force"] && node["force"].Type() == YAML::NodeType::Scalar) cfg.force = node["force"].as<bool>();
     if (node["bundle_id"] && node["bundle_id"].Type() == YAML::NodeType::Scalar)
         cfg.bundle_id = node["bundle_id"].as<std::string>();
     if (node["bundle_name"] && node["bundle_name"].Type() == YAML::NodeType::Scalar)

@@ -5,7 +5,7 @@ namespace gitee::com::ivfzhou::cpp {
     class MovementClass {
         char* data = nullptr;
 
-    public:
+      public:
         MovementClass() = default;
 
         explicit MovementClass(const char*);
@@ -16,9 +16,7 @@ namespace gitee::com::ivfzhou::cpp {
         // 移动赋值运算符，默认提供。
         MovementClass& operator=(MovementClass&&) noexcept;
 
-        ~MovementClass() {
-            delete[] data;
-        };
+        ~MovementClass() { delete[] data; };
     };
 }
 

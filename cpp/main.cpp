@@ -153,7 +153,7 @@ static void testInitialization() {
     std::cout << "x is " << z << std::endl;
 
     int arr[1][2] = {1, 2}; // 两个元素的数组，每个元素为 int[1]。
-    int(*ptr)[2](arr);
+    int (*ptr)[2](arr);
     std::cout << "ptr is " << ptr << std::endl;
 
     TemplateClass<int, int> c0 = {1}; // 调用构造函数。
@@ -612,11 +612,11 @@ static void testCurrentPath() {
 // 切换当前文件夹。
 static void testChangeWorkDirectory() {
     using namespace std;
-    #if defined WINDOWS
-        cout << WINDOWS << endl;
-    #elif defined LINUX
-        cout << LINUX << endl;
-    #endif
+#if defined WINDOWS
+    cout << WINDOWS << endl;
+#elif defined LINUX
+    cout << LINUX << endl;
+#endif
 }
 
 // 获取机器 IP。

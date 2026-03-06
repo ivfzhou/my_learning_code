@@ -11,7 +11,7 @@ namespace gitee::com::ivfzhou::cpp::friend_member_operator_overload {
 
         int x = 0;
 
-    public:
+      public:
         TestClass();
 
         explicit TestClass(int);

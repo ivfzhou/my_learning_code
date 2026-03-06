@@ -5,32 +5,32 @@
 
 namespace gitee::com::ivfzhou::cpp {
     // 向前声明。
-    template <typename T, typename E>
+    template<typename T, typename E>
     class FriendClass;
 
     // 模板类。
     // =、复制构造和析构默认提供。
-    template <typename T, typename E>
+    template<typename T, typename E>
     class TemplateClass {
         // 友元类，这个类的所有成员函数都是友元函数了。
         friend class FriendClass<T, E>;
 
         // 友元函数。
-        template <typename A, typename B>
+        template<typename A, typename B>
         friend void friendMethod(TemplateClass<A, B>&);
 
         // 友元函数重载运算符。
-        template <typename A, typename B>
+        template<typename A, typename B>
         friend void operator-(TemplateClass<A, B>&);
 
-        template <typename A, typename B>
+        template<typename A, typename B>
         friend std::ostream& operator<<(std::ostream&, TemplateClass<A, B>&);
 
         // 友元方法。
-        template <typename A, typename B>
+        template<typename A, typename B>
         friend void FriendClass<A, B>::friendClassMethod();
 
-    public:
+      public:
         const static int constStaticField;
 
         static int staticField;
@@ -90,20 +90,20 @@ namespace gitee::com::ivfzhou::cpp {
 
         // 嵌套类
         class InnerClass {
-        public:
+          public:
             void innerClassMethod();
         };
 
         // 默认私有。
-    private:
+      private:
         int privateField;
 
-    protected:
+      protected:
         int protectedField;
     };
 
     // 非成员运算符重载函数。
-    template <typename T, typename E>
+    template<typename T, typename E>
     void operator*(const TemplateClass<T, E>&, const TemplateClass<T, E>&);
 }
 

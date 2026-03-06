@@ -13,7 +13,7 @@ namespace gitee::com::ivfzhou::cpp {
     // private 继承父类公有和保护成员且变成私有，默认。
     // virtual 虚基类，解决多继承二义性。
     class SonClass : virtual public FatherClass {
-    public:
+      public:
         int publicField = 0;
 
         String name;
@@ -36,7 +36,7 @@ namespace gitee::com::ivfzhou::cpp {
     class GrandsonClass : public SonClass {
         void virtualMethod() override;
 
-    public:
+      public:
         virtual void otherMethod();
 
         ~GrandsonClass() override;

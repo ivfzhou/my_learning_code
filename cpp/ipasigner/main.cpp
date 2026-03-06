@@ -10,26 +10,24 @@
  * See the Mulan PSL v2 for more details.
  */
 
-#include <iostream>
 #include <fstream>
+#include <iostream>
 
-#include <yaml-cpp/yaml.h>
 #include <argparse/argparse.hpp>
+#include <yaml-cpp/yaml.h>
 
 #include "config.hpp"
 
-int main(int argv, char *argc[]) {
+int main(int argv, char* argc[]) {
     // 解析命令行参数
-    argparse::ArgumentParser argParser(
-            "ipasigner",
-            std::string("v").append(VERSION).append("+").append(BUILT_TIME));
+    argparse::ArgumentParser argParser("ipasigner", std::string("v").append(VERSION).append("+").append(BUILT_TIME));
     argParser.set_prefix_chars("/-");
     argParser.add_description("Used to signing .ipa file");
     argParser.add_epilog("Author email is ivfzhou@126.com");
     argParser.add_argument("-c", "--config").help("yaml format sign config").required();
     try {
         argParser.parse_args(argv, argc);
-    } catch (const std::exception &e) {
+    } catch (const std::exception& e) {
         std::cerr << e.what() << std::endl;
         std::cerr << argParser << std::endl;
         return 1;
@@ -39,7 +37,7 @@ int main(int argv, char *argc[]) {
     // 解析 yml 数据
     std::cout << "parse yml config" << std::endl;
     YAML::Node node = YAML::LoadFile(cfgPath);
-    const auto &cfg = node.as<ipasigner::config>();
+    const auto& cfg = node.as<ipasigner::config>();
     std::cout << cfg << std::endl;
 
 

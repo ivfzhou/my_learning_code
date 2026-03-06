@@ -5,7 +5,7 @@
 
 namespace gitee::com::ivfzhou::cpp::assignment_copy_operation {
     class TestClass {
-    public:
+      public:
         int x = 0;
 
         std::string name = "";
