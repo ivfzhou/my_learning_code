@@ -703,11 +703,10 @@ static void testAll() {
     TestHttpAll();
 }
 
-int main(const int argv, const char* argc[]) {
+int main(const int argc, const char* argv[]) {
     std::setlocale(LC_ALL, "en_US.UTF-8");
-    Version();
 
-    testAll();
+    using namespace gitee::com::ivfzhou;
 
     std::cout << "OK 完成" << std::endl;
     return 0;

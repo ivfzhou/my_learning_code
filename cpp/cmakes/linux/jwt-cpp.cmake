@@ -3,7 +3,7 @@ set(JWT_CPP_DIRECTORY ${DEPENDENCIES_DIRECTORY}/jwt-cpp/${JWT_CPP_VERSION})
 
 find_path(
     JWT_CPP_INCLUDE_DIRECTORY
-    NAMES jwt
+    NAMES jwt-cpp/jwt.h
     PATHS ${JWT_CPP_DIRECTORY}/include
     NO_DEFAULT_PATH
 )

@@ -27,7 +27,7 @@ else()
         PREFIX ${YAML_CPP_DIRECTORY}
         URL https://github.com/jbeder/yaml-cpp/archive/refs/tags/${YAML_CPP_VERSION}.zip
         CONFIGURE_COMMAND cd ${YAML_CPP_DIRECTORY}/src && rm -rf yaml-cpp-build && mkdir -p yaml-cpp-build
-        BUILD_COMMAND cd ${YAML_CPP_DIRECTORY}/src/yaml-cpp-build && ${CMAKE_COMMAND} -DCMAKE_INSTALL_PREFIX=${YAML_CPP_DIRECTORY} -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DBUILD_SHARED_LIBS=OFF ../yaml-cpp
+        BUILD_COMMAND cd ${YAML_CPP_DIRECTORY}/src/yaml-cpp-build && ${CMAKE_COMMAND} -DCMAKE_INSTALL_PREFIX=${YAML_CPP_DIRECTORY} -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DBUILD_SHARED_LIBS=OFF -DYAML_USE_SYSTEM_GTEST=OFF ../yaml-cpp
         INSTALL_COMMAND cd ${YAML_CPP_DIRECTORY}/src/yaml-cpp-build && ${CMAKE_COMMAND} --build . --target install
     )
     set(YAML_CPP_INCLUDE_DIRECTORY ${YAML_CPP_DIRECTORY}/include)
