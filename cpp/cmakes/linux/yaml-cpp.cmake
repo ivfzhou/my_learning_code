@@ -35,6 +35,7 @@ if (YAML_CPP_LIBRARY AND YAML_CPP_INCLUDE_DIRECTORY)
     message(STATUS "found yaml-cpp library: ${YAML_CPP_LIBRARY}")
 else ()
     include(ExternalProject)
+    set(YAML_CPP_COMPILE_FLAGS_DEBUG "-g -D_GLIBCXX_DEBUG")
     ExternalProject_Add(
             yaml-cpp
             PREFIX ${YAML_CPP_DIRECTORY}
@@ -46,6 +47,7 @@ else ()
                 -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
                 -DYAML_BUILD_SHARED_LIBS=OFF
                 -DYAML_CPP_BUILD_TESTS=OFF
+                -DCMAKE_CXX_FLAGS_DEBUG=${YAML_CPP_COMPILE_FLAGS_DEBUG}
             BUILD_COMMAND ${CMAKE_COMMAND} --build ${YAML_CPP_BUILD_DIRECTORY} --config ${CMAKE_BUILD_TYPE} --parallel --clean-first
             INSTALL_COMMAND ${CMAKE_COMMAND} --build ${YAML_CPP_BUILD_DIRECTORY} --config ${CMAKE_BUILD_TYPE} --target install
     )
