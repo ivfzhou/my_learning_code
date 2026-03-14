@@ -11,6 +11,27 @@
 #include "inheritance_usage/FriendClass.hpp"
 #include "inheritance_usage/SonClass.hpp"
 #include "template_usage/TemplateClass.hpp"
+#include "yaml-cpp/convert_by_custom_type.hpp"
+#include "yaml-cpp/generator.hpp"
+#include "yaml-cpp/parser.hpp"
+
+void run_yaml_cpp_examples() {
+    using namespace gitee::com::ivfzhou::cpp::yaml_cpp;
+    example_1();
+    example_2();
+    example_3();
+    example_4();
+    example_5();
+    example_6();
+    example_7();
+    example_8();
+    example_9();
+    example_10();
+    example_11();
+    example_12();
+    example_13();
+    example_14();
+}
 
 extern void TestAssignmentCopyOperation();
 
@@ -655,7 +676,6 @@ static void testAll() {
     TestTypename();
     TestMovementClass();
     TestHttp();
-    TestYaml();
     TestJwt();
 
     testConstantPointerAssignment();
@@ -695,8 +715,6 @@ static void testAll() {
     testReference();
     testReturnRef();
 
-    extern void TestYamlAll();
-    TestYamlAll();
     extern void TestJwtAll();
     TestJwtAll();
     extern void TestHttpAll();
@@ -706,7 +724,7 @@ static void testAll() {
 int main(const int argc, const char* argv[]) {
     std::setlocale(LC_ALL, "en_US.UTF-8");
 
-    using namespace gitee::com::ivfzhou;
+    run_yaml_cpp_examples();
 
     std::cout << "OK 完成" << std::endl;
     return 0;

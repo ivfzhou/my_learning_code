@@ -1,0 +1,28 @@
+lastLogin: 2026-03-14 16:34:00
+
+scalarType: 1
+sequenceType:
+  - 1
+  - 2
+  - 3
+mapType:
+  key1: value1
+  key2: value2
+  key3: value3
+nullType:
+
+sequenceType2:
+  - 1
+  - 2
+  - 3
+sequenceType3: [ 1, 2, 3 ]
+sequenceType4:
+  - 1
+  - a
+  - 1.1
+
+mapType2: { key1: value1, key2: value2 }
+mapType3:
+  key1: value2
+  1: value3
+  1.1: value4
