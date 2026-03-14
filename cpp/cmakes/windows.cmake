@@ -1,4 +1,4 @@
-# 设置编译参数
+# 设置编译参数。
 # MT：静态链接运行时库（Release 模式）
 # MTd：静态链接运行时库（Debug 模式）
 # MD：动态链接运行时库（Release 模式）
@@ -23,12 +23,17 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     set(CMAKE_MSVC_RUNTIME_LIBRARY MultiThreadedDebug)
 endif()
 
-# 添加依赖
+# 添加依赖。
+include(cmakes/windows/argparse.cmake)
+include(cmakes/windows/bzip2.cmake)
+include(cmakes/windows/cpp-httplib.cmake)
+include(cmakes/windows/pugixml.cmake)
+include(cmakes/windows/xz.cmake)
+include(cmakes/windows/yaml-cpp.cmake)
+include(cmakes/windows/zlib.cmake)
+include(cmakes/windows/zstd.cmake)
 include(cmakes/windows/openssl.cmake)
 include(cmakes/windows/jwt-cpp.cmake)
-include(cmakes/windows/cpp-httplib.cmake)
-include(cmakes/windows/zlib.cmake)
 include(cmakes/windows/libzip.cmake)
-include(cmakes/windows/yaml-cpp.cmake)
 
 add_definitions(-DWINDOWS=${BIT_SIZE})

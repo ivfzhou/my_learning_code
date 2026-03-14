@@ -1,38 +1,61 @@
+# 设置版本号、头文件名、依赖库名称。
 set(YAML_CPP_VERSION yaml-cpp-0.9.0)
-set(YAML_CPP_DIRECTORY ${DEPENDENCIES_DIRECTORY}/yaml-cpp/${YAML_CPP_VERSION})
-
-find_path(
-    YAML_CPP_INCLUDE_DIRECTORY
-    NAMES yaml-cpp
-    PATHS ${YAML_CPP_DIRECTORY}/include
-    NO_DEFAULT_PATH
-)
+set(YAML_CPP_HEADER_NAME yaml-cpp/yaml.h)
 set(YAML_CPP_LIBRARY_NAME yaml-cpp.lib)
-if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     set(YAML_CPP_LIBRARY_NAME yaml-cppd.lib)
-endif()
+endif ()
+
+# 设置依赖安装目录。
+set(YAML_CPP_DIRECTORY ${DEPENDENCIES_DIRECTORY}/yaml-cpp)
+file(MAKE_DIRECTORY ${YAML_CPP_DIRECTORY})
+set(YAML_CPP_BUILD_DIRECTORY ${YAML_CPP_DIRECTORY}/build)
+set(YAML_CPP_SOURCE_DIRECTORY ${YAML_CPP_DIRECTORY}/source)
+set(YAML_CPP_INSTALL_DIRECTORY ${YAML_CPP_DIRECTORY}/install)
+
+# 设置依赖库路径。
 find_library(
-    YAML_CPP_LIBRARY
-    NAMES ${YAML_CPP_LIBRARY_NAME}
-    PATHS ${YAML_CPP_DIRECTORY}/lib
-    NO_DEFAULT_PATH
+        YAML_CPP_LIBRARY
+        NAMES ${YAML_CPP_LIBRARY_NAME}
+        PATHS ${YAML_CPP_INSTALL_DIRECTORY}/lib
+        NO_DEFAULT_PATH
 )
 
-if(YAML_CPP_LIBRARY AND YAML_CPP_INCLUDE_DIRECTORY)
+# 设置依赖头文件路径。
+find_path(
+        YAML_CPP_INCLUDE_DIRECTORY
+        NAMES ${YAML_CPP_HEADER_NAME}
+        PATHS ${YAML_CPP_INSTALL_DIRECTORY}/include
+        NO_DEFAULT_PATH
+)
+
+# 如果找到依赖库和头文件，则设置依赖库和头文件的路径。
+if (YAML_CPP_LIBRARY AND YAML_CPP_INCLUDE_DIRECTORY)
     message(STATUS "found yaml-cpp library: ${YAML_CPP_LIBRARY}")
     message(STATUS "found yaml-cpp include directory: ${YAML_CPP_INCLUDE_DIRECTORY}")
-else()
+else ()
+    include(ExternalProject)
     ExternalProject_Add(
-        yaml-cpp
-        PREFIX ${YAML_CPP_DIRECTORY}
-        URL https://github.com/jbeder/yaml-cpp/archive/refs/tags/${YAML_CPP_VERSION}.zip
-        CONFIGURE_COMMAND cd ${YAML_CPP_DIRECTORY}/src && rd /s /q yaml-cpp-build && md yaml-cpp-build
-        BUILD_COMMAND cd ${YAML_CPP_DIRECTORY}/src/yaml-cpp-build && ${CMAKE_COMMAND} -DCMAKE_INSTALL_PREFIX=${YAML_CPP_DIRECTORY} -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DBUILD_SHARED_LIBS=OFF -DYAML_MSVC_SHARED_RT=OFF -DCMAKE_MSVC_RUNTIME_LIBRARY=${CMAKE_MSVC_RUNTIME_LIBRARY} -DYAML_USE_SYSTEM_GTEST=OFF ../yaml-cpp
-        INSTALL_COMMAND cd ${YAML_CPP_DIRECTORY}/src/yaml-cpp-build && ${CMAKE_COMMAND} --build . --target install --config ${CMAKE_BUILD_TYPE}
+            yaml-cpp
+            PREFIX ${YAML_CPP_DIRECTORY}
+            URL https://github.com/jbeder/yaml-cpp/archive/refs/tags/${YAML_CPP_VERSION}.zip
+            SOURCE_DIR ${YAML_CPP_SOURCE_DIRECTORY}
+            BINARY_DIR ${YAML_CPP_BUILD_DIRECTORY}
+            CONFIGURE_COMMAND ${CMAKE_COMMAND} --fresh -S ${YAML_CPP_SOURCE_DIRECTORY} -B ${YAML_CPP_BUILD_DIRECTORY}
+                -DCMAKE_INSTALL_PREFIX=${YAML_CPP_INSTALL_DIRECTORY}
+                -DCMAKE_CONFIGURATION_TYPES=${CMAKE_BUILD_TYPE}
+                -DCMAKE_MSVC_RUNTIME_LIBRARY=${CMAKE_MSVC_RUNTIME_LIBRARY}
+                -DCMAKE_CXX_FLAGS_RELEASE=${COMPILER_FLAGS_RELEASE}
+                -DCMAKE_CXX_FLAGS_DEBUG=${COMPILER_FLAGS_DEBUG}
+                -DYAML_BUILD_SHARED_LIBS=OFF
+                -DYAML_MSVC_SHARED_RT=OFF
+                -DYAML_CPP_BUILD_TESTS=OFF
+            BUILD_COMMAND ${CMAKE_COMMAND} --build ${YAML_CPP_BUILD_DIRECTORY} --config ${CMAKE_BUILD_TYPE} --parallel --clean-first
+            INSTALL_COMMAND ${CMAKE_COMMAND} --build ${YAML_CPP_BUILD_DIRECTORY} --config ${CMAKE_BUILD_TYPE} --target install
     )
-    set(YAML_CPP_LIBRARY ${YAML_CPP_DIRECTORY}/lib/${YAML_CPP_LIBRARY_NAME})
-    set(YAML_CPP_INCLUDE_DIRECTORY ${YAML_CPP_DIRECTORY}/include)
-endif()
+    set(YAML_CPP_LIBRARY ${YAML_CPP_INSTALL_DIRECTORY}/lib/${YAML_CPP_LIBRARY_NAME})
+    set(YAML_CPP_INCLUDE_DIRECTORY ${YAML_CPP_INSTALL_DIRECTORY}/include)
+endif ()
 
 add_definitions(-DYAML_CPP_STATIC_DEFINE=1)
 include_directories(${YAML_CPP_INCLUDE_DIRECTORY})

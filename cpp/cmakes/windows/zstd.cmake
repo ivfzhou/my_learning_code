@@ -1,7 +1,10 @@
 # 设置版本号、头文件名、依赖库名称。
 set(ZSTD_VERSION v1.5.7)
 set(ZSTD_HEADER_NAME zstd.h)
-set(ZSTD_LIBRARY_NAME libzstd.a)
+set(ZSTD_LIBRARY_NAME zstd_static.lib)
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+    set(ZSTD_LIBRARY_NAME zstd_static.lib)
+endif ()
 
 # 设置依赖安装目录。
 set(ZSTD_DIRECTORY ${DEPENDENCIES_DIRECTORY}/zstd)
@@ -40,7 +43,12 @@ else ()
             BINARY_DIR ${ZSTD_BUILD_DIRECTORY}
             CONFIGURE_COMMAND ${CMAKE_COMMAND} --fresh -S ${ZSTD_SOURCE_DIRECTORY}/build/cmake -B ${ZSTD_BUILD_DIRECTORY}
                 -DCMAKE_INSTALL_PREFIX=${ZSTD_INSTALL_DIRECTORY}
-                -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
+                -DCMAKE_CONFIGURATION_TYPES=${CMAKE_BUILD_TYPE}
+                -DCMAKE_MSVC_RUNTIME_LIBRARY=${CMAKE_MSVC_RUNTIME_LIBRARY}
+                -DCMAKE_C_FLAGS_RELEASE=${COMPILER_FLAGS_RELEASE}
+                -DCMAKE_C_FLAGS_DEBUG=${COMPILER_FLAGS_DEBUG}
+                -DCMAKE_CXX_FLAGS_RELEASE=${COMPILER_FLAGS_RELEASE}
+                -DCMAKE_CXX_FLAGS_DEBUG=${COMPILER_FLAGS_DEBUG}
                 -DZSTD_BUILD_TESTS=OFF
             BUILD_COMMAND ${CMAKE_COMMAND} --build ${ZSTD_BUILD_DIRECTORY} --config ${CMAKE_BUILD_TYPE} --parallel --clean-first
             INSTALL_COMMAND ${CMAKE_COMMAND} --build ${ZSTD_BUILD_DIRECTORY} --config ${CMAKE_BUILD_TYPE} --target install

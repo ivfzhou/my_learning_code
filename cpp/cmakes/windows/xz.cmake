@@ -1,7 +1,10 @@
 # 设置版本号、头文件名、依赖库名称。
 set(XZ_VERSION v5.8.2)
 set(XZ_HEADER_NAME lzma.h)
-set(XZ_LIBRARY_NAME liblzma.a)
+set(XZ_LIBRARY_NAME lzma.lib)
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+    set(XZ_LIBRARY_NAME lzma.lib)
+endif ()
 
 # 设置依赖安装目录。
 set(XZ_DIRECTORY ${DEPENDENCIES_DIRECTORY}/xz)
@@ -40,7 +43,10 @@ else ()
             BINARY_DIR ${XZ_BUILD_DIRECTORY}
             CONFIGURE_COMMAND ${CMAKE_COMMAND} --fresh -S ${XZ_SOURCE_DIRECTORY} -B ${XZ_BUILD_DIRECTORY}
                 -DCMAKE_INSTALL_PREFIX=${XZ_INSTALL_DIRECTORY}
-                -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
+                -DCMAKE_CONFIGURATION_TYPES=${CMAKE_BUILD_TYPE}
+                -DCMAKE_MSVC_RUNTIME_LIBRARY=${CMAKE_MSVC_RUNTIME_LIBRARY}
+                -DCMAKE_C_FLAGS_RELEASE=${COMPILER_FLAGS_RELEASE}
+                -DCMAKE_C_FLAGS_DEBUG=${COMPILER_FLAGS_DEBUG}
                 -DXZ_DOC=OFF
             BUILD_COMMAND ${CMAKE_COMMAND} --build ${XZ_BUILD_DIRECTORY} --config ${CMAKE_BUILD_TYPE} --parallel --clean-first
             INSTALL_COMMAND ${CMAKE_COMMAND} --build ${XZ_BUILD_DIRECTORY} --config ${CMAKE_BUILD_TYPE} --target install
