@@ -7,15 +7,18 @@
 #include <iostream>
 #include <vector>
 
+#include "forward_reference.hpp"
 #include "inheritance_usage/FatherClass.hpp"
 #include "inheritance_usage/FriendClass.hpp"
 #include "inheritance_usage/SonClass.hpp"
+#include "pugixml/pugixml.hpp"
+#include "std_forward.hpp"
 #include "template_usage/TemplateClass.hpp"
 #include "yaml-cpp/convert_by_custom_type.hpp"
 #include "yaml-cpp/generator.hpp"
 #include "yaml-cpp/parser.hpp"
 
-void run_yaml_cpp_examples() {
+static void run_yaml_cpp_examples() {
     using namespace gitee::com::ivfzhou::cpp::yaml_cpp;
     example_1();
     example_2();
@@ -31,6 +34,21 @@ void run_yaml_cpp_examples() {
     example_12();
     example_13();
     example_14();
+}
+
+static void run_pugixml_example() {
+    using namespace gitee::com::ivfzhou::cpp::pugixml;
+    example_1();
+    example_2();
+    example_3();
+}
+
+static void run_tests() {
+    using namespace gitee::com::ivfzhou::cpp;
+    test_std_forward();
+    test_std_move();
+    test_diy_move();
+    forward_reference_and_recursive_template();
 }
 
 extern void TestAssignmentCopyOperation();
@@ -667,7 +685,6 @@ static void testAll() {
     TestTemplate();
     TestTemplateStaticMember();
     TestValarray();
-    TestVariableArgument();
     TestMemberInitializerList();
     TestMultipleInheritance();
     TestSmartPointer();
@@ -725,7 +742,10 @@ int main(const int argc, const char* argv[]) {
     std::setlocale(LC_ALL, "en_US.UTF-8");
 
     run_yaml_cpp_examples();
+    run_pugixml_example();
+    run_tests();
 
-    std::cout << "OK 完成" << std::endl;
+
+    log("OK 完成");
     return 0;
 }
