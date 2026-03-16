@@ -1,0 +1,10 @@
+<root>
+    <hello stringAttr="a" integerAttr="1" booleanAttr="false" findAttr="any">world</hello>
+
+    <hello2>
+        <a>a</a>
+        <b>a</b>
+    </hello2>
+
+    <!-- comment -->
+</root>

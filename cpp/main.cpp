@@ -41,6 +41,10 @@ static void run_pugixml_example() {
     example_1();
     example_2();
     example_3();
+    example_4();
+    example_5();
+    example_6();
+    example_7();
 }
 
 static void run_tests() {
@@ -742,10 +746,10 @@ int main(const int argc, const char* argv[]) {
     std::setlocale(LC_ALL, "en_US.UTF-8");
 
     run_yaml_cpp_examples();
-    run_pugixml_example();
     run_tests();
-
+    run_pugixml_example();
 
     log("OK 完成");
+    LOG("OK 完成");
     return 0;
 }
