@@ -17,14 +17,14 @@ cd my_learning_code/cpp
 
 - Debug 模式：
     ```cmd
-    cmake.exe -DCMAKE_BUILD_TYPE=Debug -G "Visual Studio 17 2022" -S . -B .\build-debug
-    cmake.exe --build -B .\build-debug --config Debug --target yaml-cpp argparse zlib bzip2 xz zstd openssl libzip cpp-httplib jwt-cpp pugixml
+    cmake.exe -DCMAKE_BUILD_TYPE=Debug -G "Visual Studio 17 2022" --fresh -S . -B .\build-debug
+    cmake.exe --build .\build-debug --config Debug --target yaml-cpp argparse zlib bzip2 xz zstd openssl libzip cpp-httplib jwt-cpp pugixml
     ```
 
 - Release 模式：
     ```cmd
-    cmake.exe -DCMAKE_BUILD_TYPE=Release -G "Visual Studio 17 2022" -S . -B .\build-release
-    cmake.exe --build -B .\build-debug --config Release --target yaml-cpp argparse zlib bzip2 xz zstd openssl libzip cpp-httplib jwt-cpp pugixml
+    cmake.exe -DCMAKE_BUILD_TYPE=Release -G "Visual Studio 17 2022" --fresh -S . -B .\build-release
+    cmake.exe --build .\build-debug --config Release --target yaml-cpp argparse zlib bzip2 xz zstd openssl libzip cpp-httplib jwt-cpp pugixml
     ```
 
 ## 1.2 Linux
