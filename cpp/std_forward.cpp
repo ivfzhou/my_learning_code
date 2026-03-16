@@ -1,16 +1,23 @@
+#include <exception>
+#include <format>
 #include <iostream>
+#include <ostream>
+#include <string>
+#include <type_traits>
+#include <utility>
 
+#include "forward_reference.hpp"
 #include "std_forward.hpp"
 
 namespace gitee::com::ivfzhou::cpp {
     template<typename T>
     static void receive(T& t) {
-        std::cout << "left_reference_receive: " << t << std::endl;
+        LOG("left_reference_receive", t);
     }
 
     template<typename T>
     static void receive(T&& t) {
-        std::cout << "right_reference_receive: " << t << std::endl;
+        LOG("right_reference_receive", t);
     }
 
     template<typename T>
@@ -29,7 +36,7 @@ namespace gitee::com::ivfzhou::cpp {
             forward(constLeftValue);
             forward(1);
         } catch (std::exception& e) {
-            std::cout << "发生错误: " << e.what() << std::endl;
+            LOG("发生错误：", e.what());
         }
 
         std::cout << "结束 - 测试转发表现" << std::endl << std::endl;
@@ -45,10 +52,10 @@ namespace gitee::com::ivfzhou::cpp {
             int& leftValue = value;
             modify_value(std::move(leftValue));
             modify_value(std::move(value));
-            std::cout << leftValue << std::endl;
-            std::cout << value << std::endl;
+            LOG(leftValue);
+            LOG(value);
         } catch (std::exception& e) {
-            std::cout << "发生错误: " << e.what() << std::endl;
+            LOG("发生错误：", e.what());
         }
 
         std::cout << "结束 - 测试 move 后的值修改表现" << std::endl << std::endl;
@@ -67,10 +74,10 @@ namespace gitee::com::ivfzhou::cpp {
             int& leftValue = value;
             modify_value(move(leftValue));
             modify_value(move(value));
-            std::cout << leftValue << std::endl;
-            std::cout << value << std::endl;
+            LOG(leftValue);
+            LOG(value);
         } catch (std::exception& e) {
-            std::cout << "发生错误: " << e.what() << std::endl;
+            LOG("发生错误：", e.what());
         }
 
         std::cout << "结束 - 测试自定义实现的 move 效果" << std::endl << std::endl;

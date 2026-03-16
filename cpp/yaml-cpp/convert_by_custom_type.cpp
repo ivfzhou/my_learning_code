@@ -1,7 +1,12 @@
 #include <exception>
 #include <iostream>
+#include <map>
+#include <ostream>
+#include <string>
+#include <vector>
 
 #include "convert_by_custom_type.hpp"
+#include "forward_reference.hpp"
 
 namespace gitee::com::ivfzhou::cpp::yaml_cpp {
     // 自定义数据类与 yaml 节点的互相转换。
@@ -21,7 +26,7 @@ namespace gitee::com::ivfzhou::cpp::yaml_cpp {
 
             const auto& data2 = node.as<custom_type>();
         } catch (const std::exception& e) {
-            std::cout << "发生错误: " << e.what() << std::endl;
+            LOG("发生错误: ", e.what());
         }
 
         std::cout << "[yaml-cpp] 结束 - 自定义数据类与 yaml 节点的互相转换" << std::endl << std::endl;

@@ -1,11 +1,14 @@
 #include <exception>
+#include <ios>
 #include <iostream>
 #include <map>
+#include <ostream>
 #include <string>
 #include <vector>
 
 #include <yaml-cpp/yaml.h>
 
+#include "forward_reference.hpp"
 #include "generator.hpp"
 
 namespace gitee::com::ivfzhou::cpp::yaml_cpp {
@@ -59,7 +62,7 @@ namespace gitee::com::ivfzhou::cpp::yaml_cpp {
             node[5] = "d"; // 转成映射类型。
             std::cout << node << std::endl;
         } catch (const std::exception& e) {
-            std::cout << "发生错误: " << e.what() << std::endl;
+            LOG("发生错误：", e.what());
         }
 
         std::cout << "[yaml-cpp] 结束 - 节点类型从序列变成映射" << std::endl << std::endl;
@@ -88,10 +91,10 @@ namespace gitee::com::ivfzhou::cpp::yaml_cpp {
             emitter << YAML::Comment("输入裸字符串");
             emitter << YAML::Literal << "A\n B\n  C";
 
-            std::cout << std::boolalpha << emitter.good() << std::endl;
+            LOG(std::boolalpha, emitter.good());
             std::cout << emitter.c_str() << std::endl;
         } catch (const std::exception& e) {
-            std::cout << "发生错误: " << e.what() << std::endl;
+            LOG("发生错误：", e.what());
         }
 
         std::cout << "[yaml-cpp] 结束 - 使用 YAML::Emitter 构建 yaml 数据" << std::endl << std::endl;
@@ -112,7 +115,7 @@ namespace gitee::com::ivfzhou::cpp::yaml_cpp {
 
             std::cout << emitter.c_str() << std::endl;
         } catch (const std::exception& e) {
-            std::cout << "发生错误: " << e.what() << std::endl;
+            LOG("发生错误：", e.what());
         }
 
         std::cout << "[yaml-cpp] 结束 - YAML::Emitter 构建 yaml 数据时使用引用" << std::endl << std::endl;
@@ -144,7 +147,7 @@ namespace gitee::com::ivfzhou::cpp::yaml_cpp {
 
             std::cout << emitter.c_str() << std::endl;
         } catch (const std::exception& e) {
-            std::cout << "发生错误: " << e.what() << std::endl;
+            LOG("发生错误：", e.what());
         }
 
         std::cout << "[yaml-cpp] 结束 - YAML::Emitter 结合 STL 使用" << std::endl << std::endl;
@@ -178,7 +181,7 @@ namespace gitee::com::ivfzhou::cpp::yaml_cpp {
 
             std::cout << emitter.c_str() << std::endl;
         } catch (const std::exception& e) {
-            std::cout << "发生错误: " << e.what() << std::endl;
+            LOG("发生错误：", e.what());
         }
 
         std::cout << "[yaml-cpp] 结束 - 控制 YAML::Emitter 输出格式" << std::endl << std::endl;
@@ -195,7 +198,7 @@ namespace gitee::com::ivfzhou::cpp::yaml_cpp {
             emitter << node;
             std::cout << emitter.c_str() << std::endl;
         } catch (const std::exception& e) {
-            std::cout << "发生错误: " << e.what() << std::endl;
+            LOG("发生错误：", e.what());
         }
 
         std::cout << "[yaml-cpp] 结束 - 将 YAML::Node 发送给 YAML::Emitter" << std::endl << std::endl;
