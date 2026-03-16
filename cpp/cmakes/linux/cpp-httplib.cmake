@@ -16,6 +16,7 @@ find_path(
 if(CPP_HTTPLIB_INCLUDE_DIRECTORY)
     message(STATUS "found cpp-httplib include directory: ${CPP_HTTPLIB_INCLUDE_DIRECTORY}")
 else()
+    include(ExternalProject)
     ExternalProject_Add(
         cpp-httplib
         PREFIX ${CPP_HTTPLIB_DIRECTORY}

@@ -6,18 +6,8 @@
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /utf-8 /MT")
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /utf-8 /MTd")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /utf-8 /MT")
-set(CompilerFlags
-    CMAKE_CXX_FLAGS
-    CMAKE_CXX_FLAGS_DEBUG
-    CMAKE_CXX_FLAGS_RELEASE
-    CMAKE_C_FLAGS
-    CMAKE_C_FLAGS_DEBUG
-    CMAKE_C_FLAGS_RELEASE
-)
-foreach(CompilerFlag ${CompilerFlags})
-    string(REPLACE "/MD" "/MT" ${CompilerFlag} "${${CompilerFlag}}")
-    string(REPLACE "/MDd" "/MTd" ${CompilerFlag} "${${CompilerFlag}}")
-endforeach()
+set(COMPILER_FLAGS_RELEASE "/MT")
+set(COMPILER_FLAGS_DEBUG "/MTd")
 set(CMAKE_MSVC_RUNTIME_LIBRARY MultiThreaded)
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     set(CMAKE_MSVC_RUNTIME_LIBRARY MultiThreadedDebug)
@@ -36,4 +26,4 @@ include(cmakes/windows/openssl.cmake)
 include(cmakes/windows/jwt-cpp.cmake)
 include(cmakes/windows/libzip.cmake)
 
-add_definitions(-DWINDOWS=${BIT_SIZE})
+add_definitions(-DWINDOWS)

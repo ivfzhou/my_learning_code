@@ -16,6 +16,7 @@ find_path(
 if(JWT_CPP_INCLUDE_DIRECTORY)
     message(STATUS "found jwt-cpp include directory: ${JWT_CPP_INCLUDE_DIRECTORY}")
 else()
+    include(ExternalProject)
     ExternalProject_Add(
         jwt-cpp
         PREFIX ${JWT_CPP_DIRECTORY}

@@ -16,6 +16,7 @@ find_path(
 if(CPP_HTTPLIB_INCLUDE_DIRECTORY)
     message(STATUS "found cpp-httplib include directory: ${CPP_HTTPLIB_INCLUDE_DIRECTORY}")
 else()
+    include(ExternalProject)
     ExternalProject_Add(
             cpp-httplib
             PREFIX ${CPP_HTTPLIB_DIRECTORY}
@@ -26,8 +27,6 @@ else()
                 -DCMAKE_INSTALL_PREFIX=${CPP_HTTPLIB_INSTALL_DIRECTORY}
                 -DCMAKE_CONFIGURATION_TYPES=${CMAKE_BUILD_TYPE}
                 -DCMAKE_MSVC_RUNTIME_LIBRARY=${CMAKE_MSVC_RUNTIME_LIBRARY}
-                -DCMAKE_C_FLAGS_RELEASE=${COMPILER_FLAGS_RELEASE}
-                -DCMAKE_C_FLAGS_DEBUG=${COMPILER_FLAGS_DEBUG}
                 -DCMAKE_CXX_FLAGS_RELEASE=${COMPILER_FLAGS_RELEASE}
                 -DCMAKE_CXX_FLAGS_DEBUG=${COMPILER_FLAGS_DEBUG}
                 -DBUILD_SHARED_LIBS=OFF

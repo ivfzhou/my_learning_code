@@ -15,4 +15,4 @@ include(cmakes/linux/openssl.cmake)
 include(cmakes/linux/jwt-cpp.cmake)
 include(cmakes/linux/libzip.cmake)
 
-add_definitions(-DLINUX=${BIT_SIZE})
+add_definitions(-DLINUX)
