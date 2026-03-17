@@ -45,8 +45,7 @@ else ()
                 -DCMAKE_INSTALL_PREFIX=${XZ_INSTALL_DIRECTORY}
                 -DCMAKE_CONFIGURATION_TYPES=${CMAKE_BUILD_TYPE}
                 -DCMAKE_MSVC_RUNTIME_LIBRARY=${CMAKE_MSVC_RUNTIME_LIBRARY}
-                -DCMAKE_C_FLAGS_RELEASE=${COMPILER_FLAGS_RELEASE}
-                -DCMAKE_C_FLAGS_DEBUG=${COMPILER_FLAGS_DEBUG}
+                -DCMAKE_C_FLAGS=${COMPILER_FLAGS}
                 -DXZ_DOC=OFF
             BUILD_COMMAND ${CMAKE_COMMAND} --build ${XZ_BUILD_DIRECTORY} --config ${CMAKE_BUILD_TYPE} --parallel --clean-first
             INSTALL_COMMAND ${CMAKE_COMMAND} --build ${XZ_BUILD_DIRECTORY} --config ${CMAKE_BUILD_TYPE} --target install

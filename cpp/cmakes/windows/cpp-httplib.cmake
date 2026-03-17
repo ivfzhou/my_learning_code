@@ -13,9 +13,9 @@ find_path(
         NO_DEFAULT_PATH
 )
 
-if(CPP_HTTPLIB_INCLUDE_DIRECTORY)
+if (CPP_HTTPLIB_INCLUDE_DIRECTORY)
     message(STATUS "found cpp-httplib include directory: ${CPP_HTTPLIB_INCLUDE_DIRECTORY}")
-else()
+else ()
     include(ExternalProject)
     ExternalProject_Add(
             cpp-httplib
@@ -27,13 +27,12 @@ else()
                 -DCMAKE_INSTALL_PREFIX=${CPP_HTTPLIB_INSTALL_DIRECTORY}
                 -DCMAKE_CONFIGURATION_TYPES=${CMAKE_BUILD_TYPE}
                 -DCMAKE_MSVC_RUNTIME_LIBRARY=${CMAKE_MSVC_RUNTIME_LIBRARY}
-                -DCMAKE_CXX_FLAGS_RELEASE=${COMPILER_FLAGS_RELEASE}
-                -DCMAKE_CXX_FLAGS_DEBUG=${COMPILER_FLAGS_DEBUG}
+                -DCMAKE_CXX_FLAGS=${COMPILER_FLAGS}
                 -DBUILD_SHARED_LIBS=OFF
             BUILD_COMMAND ${CMAKE_COMMAND} --build ${CPP_HTTPLIB_BUILD_DIRECTORY} --parallel --config ${CMAKE_BUILD_TYPE} --clean-first
             INSTALL_COMMAND ${CMAKE_COMMAND} --build ${CPP_HTTPLIB_BUILD_DIRECTORY} --config ${CMAKE_BUILD_TYPE} --target install
     )
     set(CPP_HTTPLIB_INCLUDE_DIRECTORY ${CPP_HTTPLIB_INSTALL_DIRECTORY}/include)
-endif()
+endif ()
 
 include_directories(${CPP_HTTPLIB_INCLUDE_DIRECTORY})

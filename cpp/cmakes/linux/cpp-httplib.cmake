@@ -7,30 +7,31 @@ set(CPP_HTTPLIB_SOURCE_DIRECTORY ${CPP_HTTPLIB_DIRECTORY}/source)
 set(CPP_HTTPLIB_INSTALL_DIRECTORY ${CPP_HTTPLIB_DIRECTORY}/install)
 
 find_path(
-    CPP_HTTPLIB_INCLUDE_DIRECTORY
-    NAMES httplib.h
-    PATHS ${CPP_HTTPLIB_INSTALL_DIRECTORY}/include
-    NO_DEFAULT_PATH
+        CPP_HTTPLIB_INCLUDE_DIRECTORY
+        NAMES httplib.h
+        PATHS ${CPP_HTTPLIB_INSTALL_DIRECTORY}/include
+        NO_DEFAULT_PATH
 )
 
-if(CPP_HTTPLIB_INCLUDE_DIRECTORY)
+if (CPP_HTTPLIB_INCLUDE_DIRECTORY)
     message(STATUS "found cpp-httplib include directory: ${CPP_HTTPLIB_INCLUDE_DIRECTORY}")
-else()
+else ()
     include(ExternalProject)
     ExternalProject_Add(
-        cpp-httplib
-        PREFIX ${CPP_HTTPLIB_DIRECTORY}
-        URL https://github.com/yhirose/cpp-httplib/archive/refs/tags/${CPP_HTTPLIB_VERSION}.zip
-        SOURCE_DIR ${CPP_HTTPLIB_SOURCE_DIRECTORY}
-        BINARY_DIR ${CPP_HTTPLIB_BUILD_DIRECTORY}
-        CONFIGURE_COMMAND ${CMAKE_COMMAND} --fresh -S ${CPP_HTTPLIB_SOURCE_DIRECTORY} -B ${CPP_HTTPLIB_BUILD_DIRECTORY}
-            -DCMAKE_INSTALL_PREFIX=${CPP_HTTPLIB_INSTALL_DIRECTORY}
-            -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
-            -DBUILD_SHARED_LIBS=OFF
-        BUILD_COMMAND ${CMAKE_COMMAND} --build ${CPP_HTTPLIB_BUILD_DIRECTORY} --parallel --config ${CMAKE_BUILD_TYPE} --clean-first
-        INSTALL_COMMAND ${CMAKE_COMMAND} --build ${CPP_HTTPLIB_BUILD_DIRECTORY} --config ${CMAKE_BUILD_TYPE} --target install
+            cpp-httplib
+            PREFIX ${CPP_HTTPLIB_DIRECTORY}
+            URL https://github.com/yhirose/cpp-httplib/archive/refs/tags/${CPP_HTTPLIB_VERSION}.zip
+            SOURCE_DIR ${CPP_HTTPLIB_SOURCE_DIRECTORY}
+            BINARY_DIR ${CPP_HTTPLIB_BUILD_DIRECTORY}
+            CONFIGURE_COMMAND ${CMAKE_COMMAND} --fresh -S ${CPP_HTTPLIB_SOURCE_DIRECTORY} -B ${CPP_HTTPLIB_BUILD_DIRECTORY}
+                -DCMAKE_INSTALL_PREFIX=${CPP_HTTPLIB_INSTALL_DIRECTORY}
+                -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
+                -DCMAKE_CXX_FLAGS=${COMPILER_FLAGS}
+                -DBUILD_SHARED_LIBS=OFF
+            BUILD_COMMAND ${CMAKE_COMMAND} --build ${CPP_HTTPLIB_BUILD_DIRECTORY} --parallel --config ${CMAKE_BUILD_TYPE} --clean-first
+            INSTALL_COMMAND ${CMAKE_COMMAND} --build ${CPP_HTTPLIB_BUILD_DIRECTORY} --config ${CMAKE_BUILD_TYPE} --target install
     )
     set(CPP_HTTPLIB_INCLUDE_DIRECTORY ${CPP_HTTPLIB_INSTALL_DIRECTORY}/include)
-endif()
+endif ()
 
 include_directories(${CPP_HTTPLIB_INCLUDE_DIRECTORY})

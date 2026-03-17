@@ -41,6 +41,8 @@ else ()
             CONFIGURE_COMMAND ${CMAKE_COMMAND} --fresh -S ${ZSTD_SOURCE_DIRECTORY}/build/cmake -B ${ZSTD_BUILD_DIRECTORY}
                 -DCMAKE_INSTALL_PREFIX=${ZSTD_INSTALL_DIRECTORY}
                 -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
+                -DCMAKE_C_FLAGS=${COMPILER_FLAGS}
+                -DCMAKE_CXX_FLAGS=${COMPILER_FLAGS}
                 -DZSTD_BUILD_TESTS=OFF
             BUILD_COMMAND ${CMAKE_COMMAND} --build ${ZSTD_BUILD_DIRECTORY} --config ${CMAKE_BUILD_TYPE} --parallel --clean-first
             INSTALL_COMMAND ${CMAKE_COMMAND} --build ${ZSTD_BUILD_DIRECTORY} --config ${CMAKE_BUILD_TYPE} --target install

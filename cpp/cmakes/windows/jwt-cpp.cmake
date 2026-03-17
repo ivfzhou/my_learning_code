@@ -13,9 +13,9 @@ find_path(
         NO_DEFAULT_PATH
 )
 
-if(JWT_CPP_INCLUDE_DIRECTORY)
+if (JWT_CPP_INCLUDE_DIRECTORY)
     message(STATUS "found jwt-cpp include directory: ${JWT_CPP_INCLUDE_DIRECTORY}")
-else()
+else ()
     include(ExternalProject)
     ExternalProject_Add(
             jwt-cpp
@@ -27,8 +27,7 @@ else()
                 -DCMAKE_INSTALL_PREFIX=${JWT_CPP_INSTALL_DIRECTORY}
                 -DCMAKE_CONFIGURATION_TYPES=${CMAKE_BUILD_TYPE}
                 -DCMAKE_MSVC_RUNTIME_LIBRARY=${CMAKE_MSVC_RUNTIME_LIBRARY}
-                -DCMAKE_CXX_FLAGS_RELEASE=${COMPILER_FLAGS_RELEASE}
-                -DCMAKE_CXX_FLAGS_DEBUG=${COMPILER_FLAGS_DEBUG}
+                -DCMAKE_CXX_FLAGS_RELEASE=${COMPILER_FLAGS}
                 -DBUILD_SHARED_LIBS=OFF
                 -DOPENSSL_LIBRARIES=${CRYPTO_LIBRARY}
                 -DOPENSSL_ROOT_DIR=${OPENSSL_INSTALL_DIRECTORY}
@@ -37,6 +36,6 @@ else()
             INSTALL_COMMAND ${CMAKE_COMMAND} --build ${JWT_CPP_BUILD_DIRECTORY} --config ${CMAKE_BUILD_TYPE} --target install
     )
     set(JWT_CPP_INCLUDE_DIRECTORY ${JWT_CPP_INSTALL_DIRECTORY}/include)
-endif()
+endif ()
 
 include_directories(${JWT_CPP_INCLUDE_DIRECTORY})

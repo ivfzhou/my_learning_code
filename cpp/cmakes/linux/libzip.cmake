@@ -35,6 +35,7 @@ if (LIBZIP_LIBRARY AND LIBZIP_INCLUDE_DIRECTORY)
     message(STATUS "found libzip include directory: ${LIBZIP_INCLUDE_DIRECTORY}")
 else ()
     include(ExternalProject)
+    set(LIBZIP_COMPILE_FLAGS "${COMPILER_FLAGS} -DLZMA_API_STATIC")
     ExternalProject_Add(
             libzip
             PREFIX ${LIBZIP_DIRECTORY}
@@ -44,6 +45,7 @@ else ()
             CONFIGURE_COMMAND ${CMAKE_COMMAND} --fresh -S ${LIBZIP_SOURCE_DIRECTORY} -B ${LIBZIP_BUILD_DIRECTORY}
                 -DCMAKE_INSTALL_PREFIX=${LIBZIP_INSTALL_DIRECTORY}
                 -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
+                -DCMAKE_C_FLAGS=${LIBZIP_COMPILE_FLAGS}
                 -DZLIB_LIBRARY=${ZLIB_LIBRARY}
                 -DZLIB_INCLUDE_DIR=${ZLIB_INCLUDE_DIRECTORY}
                 -DBZIP2_LIBRARY_DEBUG=${BZIP2_LIBRARY}
@@ -56,8 +58,6 @@ else ()
                 -Dzstd_INCLUDE_DIR=${ZSTD_INCLUDE_DIRECTORY}
                 -DOPENSSL_ROOT_DIR=${OPENSSL_DIRECTORY}
                 -DBUILD_SHARED_LIBS=OFF
-                -DCMAKE_C_FLAGS_RELEASE="-DLZMA_API_STATIC"
-                -DCMAKE_C_FLAGS_DEBUG="-DLZMA_API_STATIC"
             BUILD_COMMAND ${CMAKE_COMMAND} --build ${LIBZIP_BUILD_DIRECTORY} --config ${CMAKE_BUILD_TYPE} --parallel --clean-first
             INSTALL_COMMAND ${CMAKE_COMMAND} --build ${LIBZIP_BUILD_DIRECTORY} --config ${CMAKE_BUILD_TYPE} --target install
     )

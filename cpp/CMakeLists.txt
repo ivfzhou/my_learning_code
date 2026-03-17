@@ -28,22 +28,22 @@ message(STATUS "CMAKE_C_FLAGS_DEBUG is ${CMAKE_C_FLAGS_DEBUG}")
 message(STATUS "CMAKE_C_FLAGS_RELEASE is ${CMAKE_C_FLAGS_RELEASE}")
 message(STATUS "THREADS_PREFER_PTHREAD_FLAG is ${THREADS_PREFER_PTHREAD_FLAG}")
 message(STATUS "MSVC is ${MSVC}")
-message(STATUS "MSVC_RUNTIME_LIBRARY is ${MSVC_RUNTIME_LIBRARY}")
+message(STATUS "CMAKE_MSVC_RUNTIME_LIBRARY is ${CMAKE_MSVC_RUNTIME_LIBRARY}")
 
 # 定义一些宏。
 string(TIMESTAMP DATETIME "%Y%m%d%H%M%S")
-if(NOT DEFINED PROJECT_VERSION)
+if (NOT DEFINED PROJECT_VERSION)
     set(PROJECT_VERSION "unknown")
-endif()
+endif ()
 execute_process(
-    COMMAND git rev-parse --short HEAD
-    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-    OUTPUT_VARIABLE GIT_COMMIT_ID
-    OUTPUT_STRIP_TRAILING_WHITESPACE
+        COMMAND git rev-parse --short HEAD
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+        OUTPUT_VARIABLE GIT_COMMIT_ID
+        OUTPUT_STRIP_TRAILING_WHITESPACE
 )
-if(NOT DEFINED GIT_COMMIT_ID OR GIT_COMMIT_ID STREQUAL "")
+if (NOT DEFINED GIT_COMMIT_ID OR GIT_COMMIT_ID STREQUAL "")
     set(GIT_COMMIT_ID "unknown")
-endif()
+endif ()
 add_definitions(-DBUILD_DATETIME="${DATETIME}")
 add_definitions(-DBUILD_VERSION="${PROJECT_VERSION}")
 add_definitions(-DGIT_COMMIT_ID="${GIT_COMMIT_ID}")
@@ -54,38 +54,46 @@ message(STATUS "GIT_COMMIT_ID is ${GIT_COMMIT_ID}")
 
 # 搜集源码和头文件。
 file(GLOB SOURCES
-    ${CMAKE_SOURCE_DIR}/*.cpp
-    ${CMAKE_SOURCE_DIR}/inheritance_usage/*.cpp
-    ${CMAKE_SOURCE_DIR}/template_usage/*.cpp
-    ${CMAKE_SOURCE_DIR}/yaml-cpp/*.cpp
-    ${CMAKE_SOURCE_DIR}/pugixml/*.cpp
-    ${CMAKE_SOURCE_DIR}/http_usage/*.cpp
-    ${CMAKE_SOURCE_DIR}/jwt_usage/*.cpp
+        ${CMAKE_SOURCE_DIR}/*.cpp
+        ${CMAKE_SOURCE_DIR}/inheritance_usage/*.cpp
+        ${CMAKE_SOURCE_DIR}/template_usage/*.cpp
+        ${CMAKE_SOURCE_DIR}/yaml-cpp/*.cpp
+        ${CMAKE_SOURCE_DIR}/pugixml/*.cpp
+        ${CMAKE_SOURCE_DIR}/http_usage/*.cpp
+        ${CMAKE_SOURCE_DIR}/jwt_usage/*.cpp
 )
 include_directories(${CMAKE_SOURCE_DIR})
 
 # 设置构建类型。
-if(NOT DEFINED CMAKE_BUILD_TYPE)
+if (NOT DEFINED CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE "Debug")
-elseif((NOT CMAKE_BUILD_TYPE STREQUAL "Debug") AND (NOT CMAKE_BUILD_TYPE STREQUAL "Release"))
+elseif ((NOT CMAKE_BUILD_TYPE STREQUAL "Debug") AND (NOT CMAKE_BUILD_TYPE STREQUAL "Release"))
     set(CMAKE_BUILD_TYPE "Debug")
-endif()
+endif ()
 message(STATUS "Actual CMAKE_BUILD_TYPE is ${CMAKE_BUILD_TYPE}")
+
+# 编译成动态库还是静态库。
+set(COMPILE_DYNAMIC_MODE OFF)
 
 # 创建依赖安装编译文件夹。
 math(EXPR BIT_SIZE "${CMAKE_SIZEOF_VOID_P} * 8")
-set(DEPENDENCIES_DIRECTORY ${CMAKE_SOURCE_DIR}/dependencies/${CMAKE_BUILD_TYPE}/${BIT_SIZE})
+if (COMPILE_DYNAMIC_MODE)
+    set(DEPENDENCIES_DIRECTORY ${CMAKE_SOURCE_DIR}/dependencies/${CMAKE_SYSTEM_NAME}_${BIT_SIZE}_${CMAKE_BUILD_TYPE}_dynamic)
+else ()
+    set(DEPENDENCIES_DIRECTORY ${CMAKE_SOURCE_DIR}/dependencies/${CMAKE_SYSTEM_NAME}_${BIT_SIZE}_${CMAKE_BUILD_TYPE}_static)
+endif ()
 file(MAKE_DIRECTORY ${DEPENDENCIES_DIRECTORY})
 
 # 包含其它脚本。
-if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
     include(cmakes/windows.cmake)
-elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+elseif (CMAKE_SYSTEM_NAME STREQUAL "Linux")
     include(cmakes/linux.cmake)
-elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
-else()
+elseif (CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+    include(cmakes/darwin.cmake)
+else ()
     message(FATAL_ERROR "unknown operating system: ${CMAKE_SYSTEM_NAME}")
-endif()
+endif ()
 
 # 编译对象文件。
 message(STATUS "SOURCES is ${SOURCES}")

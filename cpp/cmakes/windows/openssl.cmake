@@ -4,10 +4,10 @@ set(OPENSSL_HEADER_NAME openssl)
 set(OPENSSL_LIBRARY_NAME libssl.lib)
 set(CRYPTO_LIBRARY_NAME libcrypto.lib)
 set(OPENSSL_BUILD_TYPE --release)
-set(OPENSSL_COMPILE_FLAG "-MT")
+set(OPENSSL_COMPILE_FLAGS "-MT")
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     set(OPENSSL_BUILD_TYPE --debug)
-    set(OPENSSL_COMPILE_FLAG "-MTd")
+    set(OPENSSL_COMPILE_FLAGS "-MTd")
 endif ()
 
 # 设置依赖安装目录。
@@ -66,7 +66,7 @@ else ()
                 no-tests
                 zlib
                 enable-zstd
-                ${OPENSSL_COMPILE_FLAG}
+                ${OPENSSL_COMPILE_FLAGS}
             BUILD_COMMAND call "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Auxiliary\\Build\\vcvars64.bat" && nmake
             INSTALL_COMMAND call "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Auxiliary\\Build\\vcvars64.bat" && nmake install
     )
