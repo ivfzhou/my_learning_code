@@ -18,13 +18,13 @@ cd my_learning_code/cpp
 - Debug 模式：
     ```cmd
     cmake.exe -DCMAKE_BUILD_TYPE=Debug -G "Visual Studio 17 2022" --fresh -S . -B .\build-debug
-    cmake.exe --build .\build-debug --config Debug --target yaml-cpp argparse zlib bzip2 xz zstd openssl libzip cpp-httplib jwt-cpp pugixml
+    cmake.exe --build .\build-debug --config Debug --clean-first --parallel --target argparse bzip2 cpp-httplib pugixml xz yaml-cpp zlib zstd openssl jwt-cpp libzip
     ```
 
 - Release 模式：
     ```cmd
     cmake.exe -DCMAKE_BUILD_TYPE=Release -G "Visual Studio 17 2022" --fresh -S . -B .\build-release
-    cmake.exe --build .\build-debug --config Release --target yaml-cpp argparse zlib bzip2 xz zstd openssl libzip cpp-httplib jwt-cpp pugixml
+    cmake.exe --build .\build-release --config Release --clean-first --parallel --target argparse bzip2 cpp-httplib pugixml xz yaml-cpp zlib zstd openssl jwt-cpp libzip
     ```
 
 ## 1.2 Linux
@@ -38,10 +38,10 @@ cd my_learning_code/cpp
 - Debug 模式：
     ```shell
     cmake -DCMAKE_BUILD_TYPE=Debug --fresh -G "Unix Makefiles" -S . -B ./build-debug
-    cmake --build ./build-debug --config Debug --target argparse bzip2 cpp-httplib pugixml xz yaml-cpp zlib zstd openssl jwt-cpp libzip
+    cmake --build ./build-debug --config Debug --clean-first --parallel --target argparse bzip2 cpp-httplib pugixml xz yaml-cpp zlib zstd openssl jwt-cpp libzip
     ```
 - Release 模式：
     ```shell
     cmake -DCMAKE_BUILD_TYPE=Release --fresh -G "Unix Makefiles" -S . -B ./build-release
-    cmake --build ./build-release --config Release --target argparse bzip2 cpp-httplib pugixml xz yaml-cpp zlib zstd openssl jwt-cpp libzip
+    cmake --build ./build-release --config Release --clean-first --parallel --target argparse bzip2 cpp-httplib pugixml xz yaml-cpp zlib zstd openssl jwt-cpp libzip
     ```
