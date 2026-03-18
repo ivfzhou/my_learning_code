@@ -1,53 +1,67 @@
-# 设置版本号、头文件名、依赖库名称。
+# 设置版本号、头文件名、代码库名称等。
 set(OPENSSL_VERSION openssl-3.6.1)
 set(OPENSSL_HEADER_NAME openssl)
 set(OPENSSL_LIBRARY_NAME libssl.lib)
 set(CRYPTO_LIBRARY_NAME libcrypto.lib)
-set(OPENSSL_BUILD_TYPE --release)
-set(OPENSSL_COMPILE_FLAGS "-MT")
-if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-    set(OPENSSL_BUILD_TYPE --debug)
-    set(OPENSSL_COMPILE_FLAGS "-MTd")
-endif ()
-
-# 设置依赖安装目录。
 set(OPENSSL_DIRECTORY ${DEPENDENCIES_DIRECTORY}/openssl)
-file(MAKE_DIRECTORY ${OPENSSL_DIRECTORY})
-set(OPENSSL_BUILD_DIRECTORY ${OPENSSL_DIRECTORY}/build)
-set(OPENSSL_SOURCE_DIRECTORY ${OPENSSL_DIRECTORY}/source)
 set(OPENSSL_INSTALL_DIRECTORY ${OPENSSL_DIRECTORY}/install)
+set(OPENSSL_HEADERS_DIRECTORY ${OPENSSL_INSTALL_DIRECTORY}/include)
+set(OPENSSL_LIBRARY_DIRECTORY ${OPENSSL_INSTALL_DIRECTORY}/lib)
 
-# 设置依赖库路径。
-find_library(
-        OPENSSL_LIBRARY
-        NAMES ${OPENSSL_LIBRARY_NAME}
-        PATHS ${OPENSSL_INSTALL_DIRECTORY}/lib
-        NO_DEFAULT_PATH
-)
-find_library(
-        CRYPTO_LIBRARY
-        NAMES ${CRYPTO_LIBRARY_NAME}
-        PATHS ${OPENSSL_INSTALL_DIRECTORY}/lib
-        NO_DEFAULT_PATH
-)
-
-# 设置依赖头文件路径。
+# 查找头文件所在文件夹。
 find_path(
         OPENSSL_INCLUDE_DIRECTORY
         NAMES ${OPENSSL_HEADER_NAME}
-        PATHS ${OPENSSL_INSTALL_DIRECTORY}/include
+        PATHS ${OPENSSL_HEADERS_DIRECTORY}
         NO_DEFAULT_PATH
 )
+if (OPENSSL_INCLUDE_DIRECTORY)
+    message(STATUS "found openssl include directory ${OPENSSL_INCLUDE_DIRECTORY}")
+endif ()
 
-# 如果找到依赖库和头文件，则设置依赖库和头文件的路径。
-if (OPENSSL_LIBRARY AND OPENSSL_INCLUDE_DIRECTORY AND CRYPTO_LIBRARY)
-    message(STATUS "found openssl library: ${OPENSSL_LIBRARY}")
-    message(STATUS "found crypto library: ${CRYPTO_LIBRARY}")
-    message(STATUS "found openssl include directory: ${OPENSSL_INCLUDE_DIRECTORY}")
-else ()
+# 查找库文件。
+find_library(
+        OPENSSL_LIBRARY
+        NAMES ${OPENSSL_LIBRARY_NAME}
+        PATHS ${OPENSSL_LIBRARY_DIRECTORY}
+        NO_DEFAULT_PATH
+)
+if (OPENSSL_LIBRARY)
+    message(STATUS "found openssl library ${OPENSSL_LIBRARY}")
+endif ()
+find_library(
+        CRYPTO_LIBRARY
+        NAMES ${CRYPTO_LIBRARY_NAME}
+        PATHS ${OPENSSL_LIBRARY_DIRECTORY}
+        NO_DEFAULT_PATH
+)
+if (CRYPTO_LIBRARY)
+    message(STATUS "found crypto library ${CRYPTO_LIBRARY}")
+endif ()
+
+# 添加外部构建项目。
+if (NOT (OPENSSL_LIBRARY AND OPENSSL_INCLUDE_DIRECTORY AND CRYPTO_LIBRARY))
     include(ExternalProject)
+    set(OPENSSL_BUILD_DIRECTORY ${OPENSSL_DIRECTORY}/build)
+    set(OPENSSL_SOURCE_DIRECTORY ${OPENSSL_DIRECTORY}/source)
+    set(OPENSSL_BUILD_TYPE --release)
+    set(OPENSSL_COMPILE_FLAGS "-MT")
+    set(OPENSSL_NAME openssl-static)
+    if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+        set(OPENSSL_BUILD_TYPE --debug)
+    endif ()
+    if (COMPILE_STATIC_MODE AND (CMAKE_BUILD_TYPE STREQUAL "Debug"))
+        set(OPENSSL_COMPILE_FLAGS "-MTd")
+    endif ()
+    if (COMPILE_DYNAMIC_MODE)
+        set(OPENSSL_NAME openssl-dynamic)
+        set(OPENSSL_COMPILE_FLAGS "-MD")
+        if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+            set(OPENSSL_COMPILE_FLAGS "-MDd")
+        endif ()
+    endif ()
     ExternalProject_Add(
-            openssl
+            ${OPENSSL_NAME}
             PREFIX ${OPENSSL_DIRECTORY}
             URL https://github.com/openssl/openssl/archive/refs/tags/${OPENSSL_VERSION}.zip
             SOURCE_DIR ${OPENSSL_SOURCE_DIRECTORY}
@@ -70,10 +84,12 @@ else ()
             BUILD_COMMAND call "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Auxiliary\\Build\\vcvars64.bat" && nmake
             INSTALL_COMMAND call "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Auxiliary\\Build\\vcvars64.bat" && nmake install
     )
-    set(OPENSSL_LIBRARY ${OPENSSL_INSTALL_DIRECTORY}/lib/${OPENSSL_LIBRARY_NAME})
-    set(CRYPTO_LIBRARY ${OPENSSL_INSTALL_DIRECTORY}/lib/${CRYPTO_LIBRARY_NAME})
-    set(OPENSSL_INCLUDE_DIRECTORY ${OPENSSL_INSTALL_DIRECTORY}/include)
+    set(OPENSSL_LIBRARY ${OPENSSL_LIBRARY_DIRECTORY}/${OPENSSL_LIBRARY_NAME})
+    set(CRYPTO_LIBRARY ${OPENSSL_LIBRARY_DIRECTORY}/${CRYPTO_LIBRARY_NAME})
+    set(OPENSSL_INCLUDE_DIRECTORY ${OPENSSL_HEADERS_DIRECTORY})
+    list(APPEND DEPENDENCIES ${OPENSSL_NAME})
 endif ()
 
+# 导入头文件文件夹、链接代码库、复制动态代码库。
 include_directories(${OPENSSL_INCLUDE_DIRECTORY})
 list(APPEND LIBRARIES ${CRYPTO_LIBRARY} ${OPENSSL_LIBRARY} ws2_32 crypt32 bcrypt)

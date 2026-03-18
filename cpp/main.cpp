@@ -743,6 +743,8 @@ static void testAll() {
 }
 
 int main(const int argc, const char* argv[]) {
+    using namespace gitee::com::ivfzhou::cpp;
+
     std::setlocale(LC_ALL, "en_US.UTF-8");
 
     run_yaml_cpp_examples();

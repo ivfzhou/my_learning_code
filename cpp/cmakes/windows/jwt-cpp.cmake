@@ -1,24 +1,32 @@
+# 设置版本号、头文件名、代码库名称等。
 set(JWT_CPP_VERSION v0.7.2)
-
+set(JWT_CPP_HEADER_NAME jwt-cpp/jwt.h)
 set(JWT_CPP_DIRECTORY ${DEPENDENCIES_DIRECTORY}/jwt-cpp)
-file(MAKE_DIRECTORY ${JWT_CPP_DIRECTORY})
-set(JWT_CPP_BUILD_DIRECTORY ${JWT_CPP_DIRECTORY}/build)
-set(JWT_CPP_SOURCE_DIRECTORY ${JWT_CPP_DIRECTORY}/source)
 set(JWT_CPP_INSTALL_DIRECTORY ${JWT_CPP_DIRECTORY}/install)
+set(JWT_CPP_HEADERS_DIRECTORY ${JWT_CPP_INSTALL_DIRECTORY}/include)
 
+# 查找头文件所在文件夹。
 find_path(
         JWT_CPP_INCLUDE_DIRECTORY
-        NAMES jwt-cpp/jwt.h
-        PATHS ${JWT_CPP_INSTALL_DIRECTORY}/include
+        NAMES ${JWT_CPP_HEADER_NAME}
+        PATHS ${JWT_CPP_HEADERS_DIRECTORY}
         NO_DEFAULT_PATH
 )
-
 if (JWT_CPP_INCLUDE_DIRECTORY)
-    message(STATUS "found jwt-cpp include directory: ${JWT_CPP_INCLUDE_DIRECTORY}")
-else ()
+    message(STATUS "found jwt-cpp include directory ${JWT_CPP_INCLUDE_DIRECTORY}")
+endif ()
+
+# 添加外部构建项目。
+if (NOT JWT_CPP_INCLUDE_DIRECTORY)
     include(ExternalProject)
+    set(JWT_CPP_BUILD_DIRECTORY ${JWT_CPP_DIRECTORY}/build)
+    set(JWT_CPP_SOURCE_DIRECTORY ${JWT_CPP_DIRECTORY}/source)
+    set(JWT_CPP_NAME jwt-cpp-static)
+    if (COMPILE_DYNAMIC_MODE)
+        set(JWT_CPP_NAME jwt-cpp-dynamic)
+    endif ()
     ExternalProject_Add(
-            jwt-cpp
+            ${JWT_CPP_NAME}
             PREFIX ${JWT_CPP_DIRECTORY}
             URL https://github.com/Thalhammer/jwt-cpp/archive/refs/tags/${JWT_CPP_VERSION}.zip
             SOURCE_DIR ${JWT_CPP_SOURCE_DIRECTORY}
@@ -30,14 +38,17 @@ else ()
                 -DCMAKE_CXX_FLAGS=${LIBRARY_COMPILE_CXX_FLAGS}
                 -DCMAKE_CXX_FLAGS_DEBUG=${LIBRARY_COMPILE_CXX_FLAGS_DEBUG}
                 -DCMAKE_CXX_FLAGS_RELEASE=${LIBRARY_COMPILE_CXX_FLAGS_RELEASE}
-                -DBUILD_SHARED_LIBS=OFF
+                -DCMAKE_WINDOWS_EXPORT_ALL_SYMBOLS:BOOL=${COMPILE_DYNAMIC_MODE}
+                -DBUILD_SHARED_LIBS:BOOL=${COMPILE_DYNAMIC_MODE}
                 -DOPENSSL_LIBRARIES=${CRYPTO_LIBRARY}
                 -DOPENSSL_ROOT_DIR=${OPENSSL_INSTALL_DIRECTORY}
                 -DJWT_BUILD_EXAMPLES=OFF
             BUILD_COMMAND ${CMAKE_COMMAND} --build ${JWT_CPP_BUILD_DIRECTORY} --parallel --config ${CMAKE_BUILD_TYPE} --clean-first
             INSTALL_COMMAND ${CMAKE_COMMAND} --build ${JWT_CPP_BUILD_DIRECTORY} --config ${CMAKE_BUILD_TYPE} --target install
     )
-    set(JWT_CPP_INCLUDE_DIRECTORY ${JWT_CPP_INSTALL_DIRECTORY}/include)
+    set(JWT_CPP_INCLUDE_DIRECTORY ${JWT_CPP_HEADERS_DIRECTORY})
+    list(APPEND DEPENDENCIES ${JWT_CPP_NAME})
 endif ()
 
+# 导入头文件文件夹、链接代码库、复制动态代码库。
 include_directories(${JWT_CPP_INCLUDE_DIRECTORY})

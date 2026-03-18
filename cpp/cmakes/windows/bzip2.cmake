@@ -1,39 +1,45 @@
-# 设置版本号、头文件名、依赖库名称。
+# 设置版本号、头文件名、代码库名称等。
 set(BZIP2_VERSION 1ea1ac188ad4b9cb662e3f8314673c63df95a589)
 set(BZIP2_HEADER_NAME bzlib.h)
 set(BZIP2_LIBRARY_NAME bz2_static.lib)
-
-# 设置依赖安装目录。
 set(BZIP2_DIRECTORY ${DEPENDENCIES_DIRECTORY}/bzip2)
-file(MAKE_DIRECTORY ${BZIP2_DIRECTORY})
-set(BZIP2_BUILD_DIRECTORY ${BZIP2_DIRECTORY}/build)
-set(BZIP2_SOURCE_DIRECTORY ${BZIP2_DIRECTORY}/source)
 set(BZIP2_INSTALL_DIRECTORY ${BZIP2_DIRECTORY}/install)
+set(BZIP2_HEADERS_DIRECTORY ${BZIP2_INSTALL_DIRECTORY}/include)
+set(BZIP2_LIBRARY_DIRECTORY ${BZIP2_INSTALL_DIRECTORY}/lib)
 
-# 设置依赖库路径。
-find_library(
-        BZIP2_LIBRARY
-        NAMES ${BZIP2_LIBRARY_NAME}
-        PATHS ${BZIP2_INSTALL_DIRECTORY}/lib
-        NO_DEFAULT_PATH
-)
-
-# 设置依赖头文件路径。
+# 查找头文件所在文件夹。
 find_path(
         BZIP2_INCLUDE_DIRECTORY
         NAMES ${BZIP2_HEADER_NAME}
-        PATHS ${BZIP2_INSTALL_DIRECTORY}/include
+        PATHS ${BZIP2_HEADERS_DIRECTORY}
         NO_DEFAULT_PATH
 )
+if (BZIP2_INCLUDE_DIRECTORY)
+    message(STATUS "found bzip2 include directory ${BZIP2_INCLUDE_DIRECTORY}")
+endif ()
 
-# 如果找到依赖库和头文件，则设置依赖库和头文件的路径。
-if (BZIP2_LIBRARY AND BZIP2_INCLUDE_DIRECTORY)
-    message(STATUS "found bzip2 library: ${BZIP2_LIBRARY}")
-    message(STATUS "found bzip2 include directory: ${BZIP2_INCLUDE_DIRECTORY}")
-else ()
+# 查找库文件。
+find_library(
+        BZIP2_LIBRARY
+        NAMES ${BZIP2_LIBRARY_NAME}
+        PATHS ${BZIP2_LIBRARY_DIRECTORY}
+        NO_DEFAULT_PATH
+)
+if (BZIP2_LIBRARY)
+    message(STATUS "found bzip2 library ${BZIP2_LIBRARY}")
+endif ()
+
+# 添加外部构建项目。
+if (NOT (BZIP2_LIBRARY AND BZIP2_INCLUDE_DIRECTORY))
     include(ExternalProject)
+    set(BZIP2_NAME bzip2-static)
+    if (COMPILE_DYNAMIC_MODE)
+        set(BZIP2_NAME bzip2-dynamic)
+    endif ()
+    set(BZIP2_BUILD_DIRECTORY ${BZIP2_DIRECTORY}/build)
+    set(BZIP2_SOURCE_DIRECTORY ${BZIP2_DIRECTORY}/source)
     ExternalProject_Add(
-            bzip2
+            ${BZIP2_NAME}
             PREFIX ${BZIP2_DIRECTORY}
             URL https://github.com/libarchive/bzip2/archive/${BZIP2_VERSION}.zip
             SOURCE_DIR ${BZIP2_SOURCE_DIRECTORY}
@@ -45,16 +51,20 @@ else ()
                 -DCMAKE_C_FLAGS=${LIBRARY_COMPILE_C_FLAGS}
                 -DCMAKE_C_FLAGS_DEBUG=${LIBRARY_COMPILE_C_FLAGS_DEBUG}
                 -DCMAKE_C_FLAGS_RELEASE=${LIBRARY_COMPILE_C_FLAGS_RELEASE}
+                -DCMAKE_WINDOWS_EXPORT_ALL_SYMBOLS:BOOL=${COMPILE_DYNAMIC_MODE}
+                -DBUILD_SHARED_LIBS:BOOL=${COMPILE_DYNAMIC_MODE}
                 -DENABLE_EXAMPLES=OFF
-                -DENABLE_SHARED_LIB=OFF
+                -DENABLE_SHARED_LIB:BOOL=${COMPILE_DYNAMIC_MODE}
                 -DENABLE_DOCS=OFF
-                -DENABLE_STATIC_LIB=ON
+                -DENABLE_STATIC_LIB:BOOL=${COMPILE_STATIC_MODE}
             BUILD_COMMAND ${CMAKE_COMMAND} --build ${BZIP2_BUILD_DIRECTORY} --config ${CMAKE_BUILD_TYPE} --parallel --clean-first
             INSTALL_COMMAND ${CMAKE_COMMAND} --build ${BZIP2_BUILD_DIRECTORY} --config ${CMAKE_BUILD_TYPE} --target install
     )
     set(BZIP2_LIBRARY ${BZIP2_INSTALL_DIRECTORY}/lib/${BZIP2_LIBRARY_NAME})
     set(BZIP2_INCLUDE_DIRECTORY ${BZIP2_INSTALL_DIRECTORY}/include)
+    list(APPEND DEPENDENCIES ${BZIP2_NAME})
 endif ()
 
+# 导入头文件文件夹、链接代码库、复制动态代码库。
 include_directories(${BZIP2_INCLUDE_DIRECTORY})
 list(APPEND LIBRARIES ${BZIP2_LIBRARY})
