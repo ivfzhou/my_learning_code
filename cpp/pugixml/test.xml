@@ -6,5 +6,11 @@
         <b>a</b>
     </hello2>
 
+    <hello3>
+        <![CDATA[
+        world
+        ]]>
+    </hello3>
+
     <!-- comment -->
 </root>
