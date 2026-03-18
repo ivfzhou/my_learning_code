@@ -1,3 +1,5 @@
+// YAML 语法标准定义地址：https://yaml.org/spec/1.2.2。
+
 #ifndef CPP_PARSER_HPP
 #define CPP_PARSER_HPP
 
