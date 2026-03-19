@@ -1,42 +1,60 @@
-# 设置版本号、头文件名、依赖库名称。
+# 设置版本号、头文件名、代码库名称等。
 set(YAML_CPP_VERSION yaml-cpp-0.9.0)
 set(YAML_CPP_HEADER_NAME yaml-cpp/yaml.h)
 set(YAML_CPP_LIBRARY_NAME yaml-cpp.lib)
+set(YAML_CPP_DYNAMIC_LIBRARY_NAME yaml-cpp.dll)
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     set(YAML_CPP_LIBRARY_NAME yaml-cppd.lib)
+    set(YAML_CPP_DYNAMIC_LIBRARY_NAME yaml-cppd.dll)
 endif ()
-
-# 设置依赖安装目录。
 set(YAML_CPP_DIRECTORY ${DEPENDENCIES_DIRECTORY}/yaml-cpp)
-file(MAKE_DIRECTORY ${YAML_CPP_DIRECTORY})
-set(YAML_CPP_BUILD_DIRECTORY ${YAML_CPP_DIRECTORY}/build)
-set(YAML_CPP_SOURCE_DIRECTORY ${YAML_CPP_DIRECTORY}/source)
 set(YAML_CPP_INSTALL_DIRECTORY ${YAML_CPP_DIRECTORY}/install)
+set(YAML_CPP_LIBRARY_DIRECTORY ${YAML_CPP_INSTALL_DIRECTORY}/lib)
+set(YAML_CPP_HEADERS_DIRECTORY ${YAML_CPP_INSTALL_DIRECTORY}/include)
+set(YAML_CPP_BINARY_DIRECTORY ${YAML_CPP_INSTALL_DIRECTORY}/bin)
 
-# 设置依赖库路径。
-find_library(
-        YAML_CPP_LIBRARY
-        NAMES ${YAML_CPP_LIBRARY_NAME}
-        PATHS ${YAML_CPP_INSTALL_DIRECTORY}/lib
-        NO_DEFAULT_PATH
-)
-
-# 设置依赖头文件路径。
+# 查找头文件所在文件夹。
 find_path(
         YAML_CPP_INCLUDE_DIRECTORY
         NAMES ${YAML_CPP_HEADER_NAME}
-        PATHS ${YAML_CPP_INSTALL_DIRECTORY}/include
+        PATHS ${YAML_CPP_HEADERS_DIRECTORY}
         NO_DEFAULT_PATH
 )
+if (YAML_CPP_INCLUDE_DIRECTORY)
+    message(STATUS "found yaml-cpp include directory ${YAML_CPP_INCLUDE_DIRECTORY}")
+endif ()
 
-# 如果找到依赖库和头文件，则设置依赖库和头文件的路径。
-if (YAML_CPP_LIBRARY AND YAML_CPP_INCLUDE_DIRECTORY)
-    message(STATUS "found yaml-cpp library: ${YAML_CPP_LIBRARY}")
-    message(STATUS "found yaml-cpp include directory: ${YAML_CPP_INCLUDE_DIRECTORY}")
-else ()
+# 查找库文件。
+find_file(
+        YAML_CPP_DYNAMIC_LIBRARY
+        NAMES ${YAML_CPP_DYNAMIC_LIBRARY_NAME}
+        PATHS ${YAML_CPP_BINARY_DIRECTORY}
+        NO_DEFAULT_PATH
+)
+if (YAML_CPP_DYNAMIC_LIBRARY)
+    message(STATUS "found yaml-cpp dynamic library ${YAML_CPP_DYNAMIC_LIBRARY}")
+endif ()
+find_library(
+        YAML_CPP_LIBRARY
+        NAMES ${YAML_CPP_LIBRARY_NAME}
+        PATHS ${YAML_CPP_LIBRARY_DIRECTORY}
+        NO_DEFAULT_PATH
+)
+if (YAML_CPP_LIBRARY)
+    message(STATUS "found yaml-cpp library ${YAML_CPP_LIBRARY}")
+endif ()
+
+# 添加外部构建项目。
+if (NOT ((COMPILE_DYNAMIC_MODE AND YAML_CPP_DYNAMIC_LIBRARY AND YAML_CPP_LIBRARY AND YAML_CPP_INCLUDE_DIRECTORY) OR (COMPILE_STATIC_MODE AND YAML_CPP_LIBRARY AND YAML_CPP_INCLUDE_DIRECTORY)))
     include(ExternalProject)
+    set(YAML_CPP_BUILD_DIRECTORY ${YAML_CPP_DIRECTORY}/build)
+    set(YAML_CPP_SOURCE_DIRECTORY ${YAML_CPP_DIRECTORY}/source)
+    set(YAML_CPP_NAME yaml-cpp-static)
+    if (COMPILE_DYNAMIC_MODE)
+        set(YAML_CPP_NAME yaml-cpp-dynamic)
+    endif ()
     ExternalProject_Add(
-            yaml-cpp
+            ${YAML_CPP_NAME}
             PREFIX ${YAML_CPP_DIRECTORY}
             URL https://github.com/jbeder/yaml-cpp/archive/refs/tags/${YAML_CPP_VERSION}.zip
             SOURCE_DIR ${YAML_CPP_SOURCE_DIRECTORY}
@@ -48,16 +66,24 @@ else ()
                 -DCMAKE_CXX_FLAGS=${LIBRARY_COMPILE_CXX_FLAGS}
                 -DCMAKE_CXX_FLAGS_DEBUG=${LIBRARY_COMPILE_CXX_FLAGS_DEBUG}
                 -DCMAKE_CXX_FLAGS_RELEASE=${LIBRARY_COMPILE_CXX_FLAGS_RELEASE}
-                -DYAML_BUILD_SHARED_LIBS=OFF
-                -DYAML_MSVC_SHARED_RT=OFF
+                # -DCMAKE_WINDOWS_EXPORT_ALL_SYMBOLS:BOOL=${COMPILE_DYNAMIC_MODE}
+                -DBUILD_SHARED_LIBS:BOOL=${COMPILE_DYNAMIC_MODE}
+                -DYAML_BUILD_SHARED_LIBS:BOOL=${COMPILE_DYNAMIC_MODE}
+                -DYAML_MSVC_SHARED_RT:BOOL=${COMPILE_DYNAMIC_MODE}
                 -DYAML_CPP_BUILD_TESTS=OFF
             BUILD_COMMAND ${CMAKE_COMMAND} --build ${YAML_CPP_BUILD_DIRECTORY} --config ${CMAKE_BUILD_TYPE} --parallel --clean-first
             INSTALL_COMMAND ${CMAKE_COMMAND} --build ${YAML_CPP_BUILD_DIRECTORY} --config ${CMAKE_BUILD_TYPE} --target install
     )
-    set(YAML_CPP_LIBRARY ${YAML_CPP_INSTALL_DIRECTORY}/lib/${YAML_CPP_LIBRARY_NAME})
-    set(YAML_CPP_INCLUDE_DIRECTORY ${YAML_CPP_INSTALL_DIRECTORY}/include)
+    set(YAML_CPP_LIBRARY ${YAML_CPP_LIBRARY_DIRECTORY}/${YAML_CPP_LIBRARY_NAME})
+    set(YAML_CPP_DYNAMIC_LIBRARY ${YAML_CPP_BINARY_DIRECTORY}/${YAML_CPP_DYNAMIC_LIBRARY_NAME})
+    set(YAML_CPP_INCLUDE_DIRECTORY ${YAML_CPP_HEADERS_DIRECTORY})
+    list(APPEND DEPENDENCIES ${YAML_CPP_NAME})
 endif ()
 
-add_definitions(-DYAML_CPP_STATIC_DEFINE=1)
+# 导入头文件文件夹、链接代码库、复制动态代码库。
+if (COMPILE_STATIC_MODE)
+    add_definitions(-DYAML_CPP_STATIC_DEFINE=1)
+endif ()
 include_directories(${YAML_CPP_INCLUDE_DIRECTORY})
 list(APPEND LIBRARIES ${YAML_CPP_LIBRARY})
+list(APPEND DYNAMIC_LIBRARIES ${YAML_CPP_DYNAMIC_LIBRARY})

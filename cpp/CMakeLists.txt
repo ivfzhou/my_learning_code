@@ -8,7 +8,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 # 打印变量信息。
-message(STATUS "\n\n打印变量信息：")
+message("\n\n打印变量信息：")
 message(STATUS "PROJECT_NAME is ${PROJECT_NAME}")
 message(STATUS "CMAKE_SYSTEM_NAME is ${CMAKE_SYSTEM_NAME}")
 message(STATUS "CMAKE_SOURCE_DIR is ${CMAKE_SOURCE_DIR}")
@@ -32,10 +32,10 @@ message(STATUS "MSVC is ${MSVC}")
 message(STATUS "CMAKE_MSVC_RUNTIME_LIBRARY is ${CMAKE_MSVC_RUNTIME_LIBRARY}")
 message(STATUS "CMAKE_HOST_SYSTEM_PROCESSOR is ${CMAKE_HOST_SYSTEM_PROCESSOR}")
 message(STATUS "CMAKE_SYSTEM_PROCESSOR is ${CMAKE_SYSTEM_PROCESSOR}")
-message(STATUS "CMAKE_RUNTIME_OUTPUT_DIRECTORY is ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
+message(STATUS "CMAKE_RUNTIME_OUTPUT_DIRECTORY is ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}\n\n")
 
 # 定义一些宏。
-message(STATUS "\n\n定义一些宏：")
+message("定义一些宏：")
 string(TIMESTAMP DATETIME "%Y%m%d%H%M%S")
 if (NOT DEFINED PROJECT_VERSION)
     set(PROJECT_VERSION "unknown")
@@ -54,7 +54,7 @@ add_definitions(-DBUILD_VERSION="${PROJECT_VERSION}")
 add_definitions(-DGIT_COMMIT_ID="${GIT_COMMIT_ID}")
 message(STATUS "BUILD_VERSION is ${PROJECT_VERSION}")
 message(STATUS "BUILD_DATATIME is ${DATETIME}")
-message(STATUS "GIT_COMMIT_ID is ${GIT_COMMIT_ID}")
+message(STATUS "GIT_COMMIT_ID is ${GIT_COMMIT_ID}\n\n")
 
 # 搜集源码和头文件。
 file(GLOB SOURCES
@@ -79,18 +79,21 @@ message(STATUS "Actual CMAKE_BUILD_TYPE is ${CMAKE_BUILD_TYPE}")
 # 编译成动态库还是静态库。
 option(COMPILE_DYNAMIC_MODE "compile dynamic mode" OFF)
 if (COMPILE_DYNAMIC_MODE)
+    set(COMPILE_STATIC_MODE OFF)
     add_definitions(-DCOMPILE_DYNAMIC_MODE)
     message(STATUS "compile dynamic mode is on")
 else ()
     set(COMPILE_STATIC_MODE ON)
+    add_definitions(-DCOMPILE_STATIC_MODE)
+    message(STATUS "compile static mode is on")
 endif ()
 
 # 创建依赖安装编译文件夹。
 # math(EXPR BIT_SIZE "${CMAKE_SIZEOF_VOID_P} * 8")
 if (COMPILE_DYNAMIC_MODE)
-    set(DEPENDENCIES_DIRECTORY ${CMAKE_SOURCE_DIR}/dependencies/${CMAKE_SYSTEM_NAME}_${CMAKE_SYSTEM_PROCESSOR}_${CMAKE_BUILD_TYPE}_dynamic)
+    set(DEPENDENCIES_DIRECTORY ${CMAKE_SOURCE_DIR}/dependencies/${CMAKE_SYSTEM_NAME}_${CMAKE_SYSTEM_PROCESSOR}_${CMAKE_BUILD_TYPE}_Dynamic)
 else ()
-    set(DEPENDENCIES_DIRECTORY ${CMAKE_SOURCE_DIR}/dependencies/${CMAKE_SYSTEM_NAME}_${CMAKE_SYSTEM_PROCESSOR}_${CMAKE_BUILD_TYPE}_static)
+    set(DEPENDENCIES_DIRECTORY ${CMAKE_SOURCE_DIR}/dependencies/${CMAKE_SYSTEM_NAME}_${CMAKE_SYSTEM_PROCESSOR}_${CMAKE_BUILD_TYPE}_Static)
 endif ()
 file(MAKE_DIRECTORY ${DEPENDENCIES_DIRECTORY})
 
@@ -107,11 +110,11 @@ endif ()
 
 # 编译对象文件。
 message(STATUS "SOURCES is ${SOURCES}")
-add_executable(cpp ${SOURCES})
+add_executable(${PROJECT_NAME} ${SOURCES})
 #foreach(v ${SOURCES})
 #    get_filename_component(FILE_NAME ${v} NAME_WE)
 #    add_library(${FILE_NAME} OBJECT ${v})
-#    target_sources(cpp PRIVATE $<TARGET_OBJECTS:${FILE_NAME}>)
+#    target_sources(${PROJECT_NAME} PRIVATE $<TARGET_OBJECTS:${FILE_NAME}>)
 #endforeach()
 
 # 添加依赖。
@@ -120,15 +123,18 @@ foreach (v ${DEPENDENCIES})
 endforeach ()
 
 # 复制动态链接库文件。
-foreach (v ${DYNAMIC_LIBRARIES})
-    add_custom_command(
-            TARGET ${PROJECT_NAME}
-            POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -E copy_if_different ${v} $<TARGET_FILE_DIR:${PROJECT_NAME}>/
-    )
-endforeach ()
+if (COMPILE_DYNAMIC_MODE)
+    message(STATUS "DYNAMIC LIBRARIES is ${DYNAMIC_LIBRARIES}")
+    foreach (v ${DYNAMIC_LIBRARIES})
+        add_custom_command(
+                TARGET ${PROJECT_NAME}
+                POST_BUILD
+                COMMAND ${CMAKE_COMMAND} -E copy_if_different ${v} $<TARGET_FILE_DIR:${PROJECT_NAME}>/
+        )
+    endforeach ()
+endif ()
 
 # 链接库。
 message(STATUS "LIBRARIES is ${LIBRARIES}")
 list(REVERSE LIBRARIES)
-target_link_libraries(cpp ${LIBRARIES})
+target_link_libraries(${PROJECT_NAME} ${LIBRARIES})

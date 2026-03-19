@@ -1,42 +1,68 @@
-# 设置版本号、头文件名、依赖库名称。
+# 设置版本号、头文件名、代码库名称等。
 set(ZLIB_VERSION v1.3.2)
 set(ZLIB_HEADER_NAME zlib.h)
 set(ZLIB_LIBRARY_NAME zs.lib)
+set(ZLIB_DYNAMIC_LIBRARY_NAME zs.dll)
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     set(ZLIB_LIBRARY_NAME zsd.lib)
+    if (COMPILE_DYNAMIC_MODE)
+        set(ZLIB_DYNAMIC_LIBRARY_NAME zd.dll)
+        set(ZLIB_LIBRARY_NAME zd.lib)
+    endif ()
+else ()
+    if (COMPILE_DYNAMIC_MODE)
+        set(ZLIB_LIBRARY_NAME z.lib)
+        set(ZLIB_DYNAMIC_LIBRARY_NAME z.dll)
+    endif ()
 endif ()
-
-# 设置依赖安装目录。
 set(ZLIB_DIRECTORY ${DEPENDENCIES_DIRECTORY}/zlib)
-file(MAKE_DIRECTORY ${ZLIB_DIRECTORY})
-set(ZLIB_BUILD_DIRECTORY ${ZLIB_DIRECTORY}/build)
-set(ZLIB_SOURCE_DIRECTORY ${ZLIB_DIRECTORY}/source)
 set(ZLIB_INSTALL_DIRECTORY ${ZLIB_DIRECTORY}/install)
+set(ZLIB_HEADERS_DIRECTORY ${ZLIB_INSTALL_DIRECTORY}/include)
+set(ZLIB_LIBRARY_DIRECTORY ${ZLIB_INSTALL_DIRECTORY}/lib)
+set(ZLIB_BINARY_DIRECTORY ${ZLIB_INSTALL_DIRECTORY}/bin)
 
-# 设置依赖头文件路径。
+# 查找头文件所在文件夹。
 find_path(
         ZLIB_INCLUDE_DIRECTORY
         NAMES ${ZLIB_HEADER_NAME}
-        PATHS ${ZLIB_INSTALL_DIRECTORY}/include
+        PATHS ${ZLIB_HEADERS_DIRECTORY}
         NO_DEFAULT_PATH
 )
+if (ZLIB_INCLUDE_DIRECTORY)
+    message(STATUS "found zlib include directory ${ZLIB_INCLUDE_DIRECTORY}")
+endif ()
 
-# 设置依赖库路径。
+# 查找库文件。
+find_file(
+        ZLIB_DYNAMIC_LIBRARY
+        NAMES ${ZLIB_DYNAMIC_LIBRARY_NAME}
+        PATHS ${ZLIB_BINARY_DIRECTORY}
+        NO_DEFAULT_PATH
+)
+if (ZLIB_DYNAMIC_LIBRARY)
+    message(STATUS "found zlib dynamic library ${ZLIB_DYNAMIC_LIBRARY}")
+endif ()
 find_library(
         ZLIB_LIBRARY
         NAMES ${ZLIB_LIBRARY_NAME}
-        PATHS ${ZLIB_INSTALL_DIRECTORY}/lib
+        PATHS ${ZLIB_LIBRARY_DIRECTORY}
         NO_DEFAULT_PATH
 )
+if (ZLIB_LIBRARY)
+    message(STATUS "found zlib library ${ZLIB_LIBRARY}")
+endif ()
 
-# 如果找到依赖库和头文件，则设置依赖库和头文件的路径。
-if (ZLIB_INCLUDE_DIRECTORY AND ZLIB_LIBRARY)
-    message(STATUS "found zlib include directory: ${ZLIB_INCLUDE_DIRECTORY}")
-    message(STATUS "found zlib library: ${ZLIB_LIBRARY}")
-else ()
+# 添加外部构建项目。
+if (NOT ((COMPILE_DYNAMIC_MODE AND ZLIB_DYNAMIC_LIBRARY AND ZLIB_INCLUDE_DIRECTORY AND ZLIB_LIBRARY) OR (COMPILE_STATIC_MODE AND ZLIB_INCLUDE_DIRECTORY AND ZLIB_LIBRARY)))
     include(ExternalProject)
+    set(ZLIB_BUILD_DIRECTORY ${ZLIB_DIRECTORY}/build)
+    set(ZLIB_SOURCE_DIRECTORY ${ZLIB_DIRECTORY}/source)
+    set(ZLIB_NAME zlib-static)
+    if (COMPILE_DYNAMIC_MODE)
+        set(ZLIB_NAME zlib-dynamic)
+    endif ()
     ExternalProject_Add(
-            zlib
+            ${ZLIB_NAME}
             PREFIX ${ZLIB_DIRECTORY}
             URL https://github.com/madler/zlib/archive/refs/tags/${ZLIB_VERSION}.zip
             SOURCE_DIR ${ZLIB_SOURCE_DIRECTORY}
@@ -48,15 +74,21 @@ else ()
                 -DCMAKE_C_FLAGS=${LIBRARY_COMPILE_C_FLAGS}
                 -DCMAKE_C_FLAGS_DEBUG=${LIBRARY_COMPILE_C_FLAGS_DEBUG}
                 -DCMAKE_C_FLAGS_RELEASE=${LIBRARY_COMPILE_C_FLAGS_RELEASE}
+                -DCMAKE_WINDOWS_EXPORT_ALL_SYMBOLS:BOOL=${COMPILE_DYNAMIC_MODE}
+                -DBUILD_SHARED_LIBS:BOOL=${COMPILE_DYNAMIC_MODE}
                 -DZLIB_BUILD_TESTING=OFF
-                -DZLIB_BUILD_SHARED=OFF
+                -DZLIB_BUILD_SHARED:BOOL=${COMPILE_DYNAMIC_MODE}
                 -DZLIB_BUILD_MINIZIP=OFF
             BUILD_COMMAND ${CMAKE_COMMAND} --build ${ZLIB_BUILD_DIRECTORY} --config ${CMAKE_BUILD_TYPE} --parallel --clean-first
             INSTALL_COMMAND ${CMAKE_COMMAND} --build ${ZLIB_BUILD_DIRECTORY} --config ${CMAKE_BUILD_TYPE} --target install
     )
-    set(ZLIB_INCLUDE_DIRECTORY ${ZLIB_INSTALL_DIRECTORY}/include)
-    set(ZLIB_LIBRARY ${ZLIB_INSTALL_DIRECTORY}/lib/${ZLIB_LIBRARY_NAME})
+    set(ZLIB_INCLUDE_DIRECTORY ${ZLIB_HEADERS_DIRECTORY})
+    set(ZLIB_LIBRARY ${ZLIB_LIBRARY_DIRECTORY}/${ZLIB_LIBRARY_NAME})
+    set(ZLIB_DYNAMIC_LIBRARY ${ZLIB_BINARY_DIRECTORY}/${ZLIB_DYNAMIC_LIBRARY_NAME})
+    list(APPEND DEPENDENCIES ${ZLIB_NAME})
 endif ()
 
+# 导入头文件文件夹、链接代码库、复制动态代码库。
 include_directories(${ZLIB_INCLUDE_DIRECTORY})
 list(APPEND LIBRARIES ${ZLIB_LIBRARY})
+list(APPEND DYNAMIC_LIBRARIES ${ZLIB_DYNAMIC_LIBRARY})
