@@ -1,24 +1,32 @@
+# 设置版本号、头文件名、代码库名称等。
 set(CPP_HTTPLIB_VERSION v0.20.0)
-
+set(CPP_HTTPLIB_HEADER_NAME httplib.h)
 set(CPP_HTTPLIB_DIRECTORY ${DEPENDENCIES_DIRECTORY}/cpp-httplib)
-file(MAKE_DIRECTORY ${CPP_HTTPLIB_DIRECTORY})
-set(CPP_HTTPLIB_BUILD_DIRECTORY ${CPP_HTTPLIB_DIRECTORY}/build)
-set(CPP_HTTPLIB_SOURCE_DIRECTORY ${CPP_HTTPLIB_DIRECTORY}/source)
 set(CPP_HTTPLIB_INSTALL_DIRECTORY ${CPP_HTTPLIB_DIRECTORY}/install)
+set(CPP_HTTPLIB_HEADERS_DIRECTORY ${CPP_HTTPLIB_INSTALL_DIRECTORY}/include)
 
+# 查找头文件所在文件夹。
 find_path(
         CPP_HTTPLIB_INCLUDE_DIRECTORY
-        NAMES httplib.h
-        PATHS ${CPP_HTTPLIB_INSTALL_DIRECTORY}/include
+        NAMES ${CPP_HTTPLIB_HEADER_NAME}
+        PATHS ${CPP_HTTPLIB_HEADERS_DIRECTORY}
         NO_DEFAULT_PATH
 )
-
 if (CPP_HTTPLIB_INCLUDE_DIRECTORY)
-    message(STATUS "found cpp-httplib include directory: ${CPP_HTTPLIB_INCLUDE_DIRECTORY}")
-else ()
+    message(STATUS "found cpp-httplib include directory ${CPP_HTTPLIB_INCLUDE_DIRECTORY}")
+endif ()
+
+# 添加外部构建项目。
+if (NOT CPP_HTTPLIB_INCLUDE_DIRECTORY)
     include(ExternalProject)
+    set(CPP_HTTPLIB_BUILD_DIRECTORY ${CPP_HTTPLIB_DIRECTORY}/build)
+    set(CPP_HTTPLIB_SOURCE_DIRECTORY ${CPP_HTTPLIB_DIRECTORY}/source)
+    set(CPP_HTTPLIB_NAME cpp-httplib-static)
+    if (COMPILE_DYNAMIC_MODE)
+        set(CPP_HTTPLIB_NAME cpp-httplib-dynamic)
+    endif ()
     ExternalProject_Add(
-            cpp-httplib
+            ${CPP_HTTPLIB_NAME}
             PREFIX ${CPP_HTTPLIB_DIRECTORY}
             URL https://github.com/yhirose/cpp-httplib/archive/refs/tags/${CPP_HTTPLIB_VERSION}.zip
             SOURCE_DIR ${CPP_HTTPLIB_SOURCE_DIRECTORY}
@@ -29,11 +37,13 @@ else ()
                 -DCMAKE_CXX_FLAGS=${LIBRARY_COMPILE_CXX_FLAGS}
                 -DCMAKE_CXX_FLAGS_DEBUG=${LIBRARY_COMPILE_CXX_FLAGS_DEBUG}
                 -DCMAKE_CXX_FLAGS_RELEASE=${LIBRARY_COMPILE_CXX_FLAGS_RELEASE}
-                -DBUILD_SHARED_LIBS=OFF
+                -DBUILD_SHARED_LIBS:BOOL=${COMPILE_DYNAMIC_MODE}
             BUILD_COMMAND ${CMAKE_COMMAND} --build ${CPP_HTTPLIB_BUILD_DIRECTORY} --parallel --config ${CMAKE_BUILD_TYPE} --clean-first
             INSTALL_COMMAND ${CMAKE_COMMAND} --build ${CPP_HTTPLIB_BUILD_DIRECTORY} --config ${CMAKE_BUILD_TYPE} --target install
     )
-    set(CPP_HTTPLIB_INCLUDE_DIRECTORY ${CPP_HTTPLIB_INSTALL_DIRECTORY}/include)
+    set(CPP_HTTPLIB_INCLUDE_DIRECTORY ${CPP_HTTPLIB_HEADERS_DIRECTORY})
+    list(APPEND DEPENDENCIES ${CPP_HTTPLIB_NAME})
 endif ()
 
+# 导入头文件文件夹、链接代码库、复制动态代码库。
 include_directories(${CPP_HTTPLIB_INCLUDE_DIRECTORY})

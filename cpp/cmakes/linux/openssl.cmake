@@ -1,58 +1,85 @@
-# 设置版本号、头文件名、依赖库名称。
+# 设置版本号、头文件名、代码库名称等。
 set(OPENSSL_VERSION openssl-3.6.1)
 set(OPENSSL_HEADER_NAME openssl)
 set(OPENSSL_LIBRARY_NAME libssl.a)
 set(CRYPTO_LIBRARY_NAME libcrypto.a)
-set(OPENSSL_BUILD_TYPE --release)
-if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-    set(OPENSSL_BUILD_TYPE --debug)
+set(OPENSSL_DYNAMIC_LIBRARY_NAME libssl-3-x64.so)
+set(CRYPTO_DYNAMIC_LIBRARY_NAME libcrypto-3-x64.so)
+set(OPENSSL_DIRECTORY ${DEPENDENCIES_DIRECTORY}/openssl)
+set(OPENSSL_INSTALL_DIRECTORY ${OPENSSL_DIRECTORY}/install)
+set(OPENSSL_HEADERS_DIRECTORY ${OPENSSL_INSTALL_DIRECTORY}/include)
+set(OPENSSL_LIBRARY_DIRECTORY ${OPENSSL_INSTALL_DIRECTORY}/lib)
+if (CMAKE_SIZEOF_VOID_P EQUAL 8)
+    set(OPENSSL_LIBRARY_DIRECTORY ${OPENSSL_INSTALL_DIRECTORY}/lib64)
+endif ()
+set(OPENSSL_BINARY_DIRECTORY ${OPENSSL_INSTALL_DIRECTORY}/bin)
+
+# 查找头文件所在文件夹。
+find_path(
+        OPENSSL_INCLUDE_DIRECTORY
+        NAMES ${OPENSSL_HEADER_NAME}
+        PATHS ${OPENSSL_HEADERS_DIRECTORY}
+        NO_DEFAULT_PATH
+)
+if (OPENSSL_INCLUDE_DIRECTORY)
+    message(STATUS "found openssl include directory ${OPENSSL_INCLUDE_DIRECTORY}")
 endif ()
 
-# 设置依赖安装目录。
-set(OPENSSL_DIRECTORY ${DEPENDENCIES_DIRECTORY}/openssl)
-file(MAKE_DIRECTORY ${OPENSSL_DIRECTORY})
-set(OPENSSL_BUILD_DIRECTORY ${OPENSSL_DIRECTORY}/build)
-set(OPENSSL_SOURCE_DIRECTORY ${OPENSSL_DIRECTORY}/source)
-set(OPENSSL_INSTALL_DIRECTORY ${OPENSSL_DIRECTORY}/install)
-
-# 设置依赖库路径。
-if (CMAKE_SIZEOF_VOID_P EQUAL 4)
-    set(OPENSSL_LIBRARY_DIRECTORY lib)
-elseif (CMAKE_SIZEOF_VOID_P EQUAL 8)
-    set(OPENSSL_LIBRARY_DIRECTORY lib64)
+# 查找库文件。
+find_file(
+        OPENSSL_DYNAMIC_LIBRARY
+        NAMES ${OPENSSL_DYNAMIC_LIBRARY_NAME}
+        PATHS ${OPENSSL_BINARY_DIRECTORY}
+        NO_DEFAULT_PATH
+)
+if (OPENSSL_DYNAMIC_LIBRARY)
+    message(STATUS "found openssl dynamic library ${OPENSSL_DYNAMIC_LIBRARY}")
 endif ()
 find_library(
         OPENSSL_LIBRARY
         NAMES ${OPENSSL_LIBRARY_NAME}
-        PATHS ${OPENSSL_INSTALL_DIRECTORY}/${OPENSSL_LIBRARY_DIRECTORY}
+        PATHS ${OPENSSL_LIBRARY_DIRECTORY}
         NO_DEFAULT_PATH
 )
+if (OPENSSL_LIBRARY)
+    message(STATUS "found openssl library ${OPENSSL_LIBRARY}")
+endif ()
+find_file(
+        CRYPTO_DYNAMIC_LIBRARY
+        NAMES ${CRYPTO_DYNAMIC_LIBRARY_NAME}
+        PATHS ${OPENSSL_BINARY_DIRECTORY}
+        NO_DEFAULT_PATH
+)
+if (CRYPTO_DYNAMIC_LIBRARY)
+    message(STATUS "found crypto dynamic library ${CRYPTO_DYNAMIC_LIBRARY}")
+endif ()
 find_library(
         CRYPTO_LIBRARY
         NAMES ${CRYPTO_LIBRARY_NAME}
-        PATHS ${OPENSSL_INSTALL_DIRECTORY}/${OPENSSL_LIBRARY_DIRECTORY}
+        PATHS ${OPENSSL_LIBRARY_DIRECTORY}
         NO_DEFAULT_PATH
 )
+if (CRYPTO_LIBRARY)
+    message(STATUS "found crypto library ${CRYPTO_LIBRARY}")
+endif ()
 
-# 设置依赖头文件路径。
-find_path(
-        OPENSSL_INCLUDE_DIRECTORY
-        NAMES ${OPENSSL_HEADER_NAME}
-        PATHS ${OPENSSL_INSTALL_DIRECTORY}/include
-        NO_DEFAULT_PATH
-)
-
-# 如果找到依赖库和头文件，则设置依赖库和头文件的路径。
-if (OPENSSL_LIBRARY AND OPENSSL_INCLUDE_DIRECTORY AND CRYPTO_LIBRARY)
-    message(STATUS "found openssl library: ${OPENSSL_LIBRARY}")
-    message(STATUS "found crypto library: ${CRYPTO_LIBRARY}")
-    message(STATUS "found openssl include directory: ${OPENSSL_INCLUDE_DIRECTORY}")
-else ()
+# 添加外部构建项目。
+if (NOT ((COMPILE_STATIC_MODE AND OPENSSL_LIBRARY AND OPENSSL_INCLUDE_DIRECTORY AND CRYPTO_LIBRARY) OR (COMPILE_DYNAMIC_MODE AND CRYPTO_DYNAMIC_LIBRARY AND OPENSSL_DYNAMIC_LIBRARY AND OPENSSL_LIBRARY AND OPENSSL_INCLUDE_DIRECTORY AND CRYPTO_LIBRARY)))
     include(ExternalProject)
-    get_filename_component(ZLIB_LIBRARY_DIRECTORY ${ZLIB_LIBRARY} DIRECTORY)
-    get_filename_component(ZSTD_LIBRARY_DIRECTORY ${ZSTD_LIBRARY} DIRECTORY)
+    set(OPENSSL_BUILD_DIRECTORY ${OPENSSL_DIRECTORY}/build)
+    set(OPENSSL_SOURCE_DIRECTORY ${OPENSSL_DIRECTORY}/source)
+    set(OPENSSL_BUILD_TYPE --release)
+    if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+        set(OPENSSL_BUILD_TYPE --debug)
+    endif ()
+    set(OPENSSL_NAME openssl-static)
+    set(OPENSSL_BUILD_SHARED "no-shared")
+    if (COMPILE_DYNAMIC_MODE)
+        set(OPENSSL_NAME openssl-dynamic)
+        set(OPENSSL_BUILD_SHARED "")
+    endif ()
     ExternalProject_Add(
-            openssl
+            ${OPENSSL_NAME}
             PREFIX ${OPENSSL_DIRECTORY}
             URL https://github.com/openssl/openssl/archive/refs/tags/${OPENSSL_VERSION}.zip
             SOURCE_DIR ${OPENSSL_SOURCE_DIRECTORY}
@@ -61,23 +88,28 @@ else ()
                 --prefix=${OPENSSL_INSTALL_DIRECTORY}
                 --openssldir=${OPENSSL_INSTALL_DIRECTORY}
                 --with-zlib-include=${ZLIB_INCLUDE_DIRECTORY}
-                --with-zlib-lib=${ZLIB_LIBRARY_DIRECTORY}
+                --with-zlib-lib=${ZLIB_LIBRARY}
                 --with-zstd-include=${ZSTD_INCLUDE_DIRECTORY}
-                --with-zstd-lib=${ZSTD_LIBRARY_DIRECTORY}
+                --with-zstd-lib=${ZSTD_LIBRARY}
                 ${OPENSSL_BUILD_TYPE}
                 no-docs
-                no-shared
                 no-deprecated
                 no-tests
                 zlib
                 enable-zstd
+                ${OPENSSL_BUILD_SHARED}
             BUILD_COMMAND make
             INSTALL_COMMAND make install
     )
-    set(OPENSSL_LIBRARY ${OPENSSL_INSTALL_DIRECTORY}/${OPENSSL_LIBRARY_DIRECTORY}/${OPENSSL_LIBRARY_NAME})
-    set(CRYPTO_LIBRARY ${OPENSSL_INSTALL_DIRECTORY}/${OPENSSL_LIBRARY_DIRECTORY}/${CRYPTO_LIBRARY_NAME})
-    set(OPENSSL_INCLUDE_DIRECTORY ${OPENSSL_INSTALL_DIRECTORY}/include)
+    set(OPENSSL_LIBRARY ${OPENSSL_LIBRARY_DIRECTORY}/${OPENSSL_LIBRARY_NAME})
+    set(CRYPTO_LIBRARY ${OPENSSL_LIBRARY_DIRECTORY}/${CRYPTO_LIBRARY_NAME})
+    set(CRYPTO_DYNAMIC_LIBRARY ${OPENSSL_BINARY_DIRECTORY}/${CRYPTO_DYNAMIC_LIBRARY_NAME})
+    set(OPENSSL_DYNAMIC_LIBRARY ${OPENSSL_BINARY_DIRECTORY}/${OPENSSL_DYNAMIC_LIBRARY_NAME})
+    set(OPENSSL_INCLUDE_DIRECTORY ${OPENSSL_HEADERS_DIRECTORY})
+    list(APPEND DEPENDENCIES ${OPENSSL_NAME})
 endif ()
 
+# 导入头文件文件夹、链接代码库、复制动态代码库。
 include_directories(${OPENSSL_INCLUDE_DIRECTORY})
 list(APPEND LIBRARIES ${CRYPTO_LIBRARY} ${OPENSSL_LIBRARY})
+list(APPEND DYNAMIC_LIBRARIES ${OPENSSL_DYNAMIC_LIBRARY} ${CRYPTO_DYNAMIC_LIBRARY})

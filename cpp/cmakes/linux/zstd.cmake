@@ -1,39 +1,58 @@
-# 设置版本号、头文件名、依赖库名称。
+# 设置版本号、头文件名、代码库名称等。
 set(ZSTD_VERSION v1.5.7)
 set(ZSTD_HEADER_NAME zstd.h)
 set(ZSTD_LIBRARY_NAME libzstd.a)
-
-# 设置依赖安装目录。
+set(ZSTD_DYNAMIC_LIBRARY_NAME zstd.dll)
+if (COMPILE_DYNAMIC_MODE)
+    set(ZSTD_LIBRARY_NAME zstd.lib)
+endif ()
 set(ZSTD_DIRECTORY ${DEPENDENCIES_DIRECTORY}/zstd)
-file(MAKE_DIRECTORY ${ZSTD_DIRECTORY})
-set(ZSTD_BUILD_DIRECTORY ${ZSTD_DIRECTORY}/build)
-set(ZSTD_SOURCE_DIRECTORY ${ZSTD_DIRECTORY}/source)
 set(ZSTD_INSTALL_DIRECTORY ${ZSTD_DIRECTORY}/install)
+set(ZSTD_HEADERS_DIRECTORY ${ZSTD_INSTALL_DIRECTORY}/include)
+set(ZSTD_LIBRARY_DIRECTORY ${ZSTD_INSTALL_DIRECTORY}/lib)
 
-# 设置依赖库路径。
-find_library(
-        ZSTD_LIBRARY
-        NAMES ${ZSTD_LIBRARY_NAME}
-        PATHS ${ZSTD_INSTALL_DIRECTORY}/lib
-        NO_DEFAULT_PATH
-)
-
-# 设置依赖头文件路径。
+# 查找头文件所在文件夹。
 find_path(
         ZSTD_INCLUDE_DIRECTORY
         NAMES ${ZSTD_HEADER_NAME}
-        PATHS ${ZSTD_INSTALL_DIRECTORY}/include
+        PATHS ${ZSTD_HEADERS_DIRECTORY}
         NO_DEFAULT_PATH
 )
+if (ZSTD_INCLUDE_DIRECTORY)
+    message(STATUS "found zstd include directory ${ZSTD_INCLUDE_DIRECTORY}")
+endif ()
 
-# 如果找到依赖库和头文件，则设置依赖库和头文件的路径。
-if (ZSTD_LIBRARY AND ZSTD_INCLUDE_DIRECTORY)
-    message(STATUS "found zstd library: ${ZSTD_LIBRARY}")
-    message(STATUS "found zstd include directory: ${ZSTD_INCLUDE_DIRECTORY}")
-else ()
+# 查找库文件。
+find_file(
+        ZSTD_DYNAMIC_LIBRARY
+        NAMES ${ZSTD_DYNAMIC_LIBRARY_NAME}
+        PATHS ${ZSTD_BINARY_DIRECTORY}
+        NO_DEFAULT_PATH
+)
+if (ZSTD_DYNAMIC_LIBRARY)
+    message(STATUS "found zstd dynamic library ${ZSTD_DYNAMIC_LIBRARY}")
+endif ()
+find_library(
+        ZSTD_LIBRARY
+        NAMES ${ZSTD_LIBRARY_NAME}
+        PATHS ${ZSTD_LIBRARY_DIRECTORY}
+        NO_DEFAULT_PATH
+)
+if (ZSTD_LIBRARY)
+    message(STATUS "found zstd library ${ZSTD_LIBRARY}")
+endif ()
+
+# 添加外部构建项目。
+if (NOT (ZSTD_LIBRARY AND ZSTD_INCLUDE_DIRECTORY))
     include(ExternalProject)
+    set(ZSTD_BUILD_DIRECTORY ${ZSTD_DIRECTORY}/build)
+    set(ZSTD_SOURCE_DIRECTORY ${ZSTD_DIRECTORY}/source)
+    set(ZSTD_NAME zstd-static)
+    if (COMPILE_DYNAMIC_MODE)
+        set(ZSTD_NAME zstd-dynamic)
+    endif ()
     ExternalProject_Add(
-            zstd
+            ${ZSTD_NAME}
             PREFIX ${ZSTD_DIRECTORY}
             URL https://github.com/facebook/zstd/archive/refs/tags/${ZSTD_VERSION}.zip
             SOURCE_DIR ${ZSTD_SOURCE_DIRECTORY}
@@ -47,13 +66,18 @@ else ()
                 -DCMAKE_C_FLAGS=${LIBRARY_COMPILE_C_FLAGS}
                 -DCMAKE_C_FLAGS_DEBUG=${LIBRARY_COMPILE_C_FLAGS_DEBUG}
                 -DCMAKE_C_FLAGS_RELEASE=${LIBRARY_COMPILE_C_FLAGS_RELEASE}
+                -DBUILD_SHARED_LIBS:BOOL=${COMPILE_DYNAMIC_MODE}
                 -DZSTD_BUILD_TESTS=OFF
             BUILD_COMMAND ${CMAKE_COMMAND} --build ${ZSTD_BUILD_DIRECTORY} --config ${CMAKE_BUILD_TYPE} --parallel --clean-first
             INSTALL_COMMAND ${CMAKE_COMMAND} --build ${ZSTD_BUILD_DIRECTORY} --config ${CMAKE_BUILD_TYPE} --target install
     )
-    set(ZSTD_LIBRARY ${ZSTD_INSTALL_DIRECTORY}/lib/${ZSTD_LIBRARY_NAME})
-    set(ZSTD_INCLUDE_DIRECTORY ${ZSTD_INSTALL_DIRECTORY}/include)
+    set(ZSTD_LIBRARY ${ZSTD_LIBRARY_DIRECTORY}/${ZSTD_LIBRARY_NAME})
+    set(ZSTD_DYNAMIC_LIBRARY ${ZSTD_BINARY_DIRECTORY}/${ZSTD_DYNAMIC_LIBRARY_NAME})
+    set(ZSTD_INCLUDE_DIRECTORY ${ZSTD_HEADERS_DIRECTORY})
+    list(APPEND DEPENDENCIES ${ZSTD_NAME})
 endif ()
 
+# 导入头文件文件夹、链接代码库、复制动态代码库。
 include_directories(${ZSTD_INCLUDE_DIRECTORY})
 list(APPEND LIBRARIES ${ZSTD_LIBRARY})
+list(APPEND DYNAMIC_LIBRARIES ${ZSTD_DYNAMIC_LIBRARY})

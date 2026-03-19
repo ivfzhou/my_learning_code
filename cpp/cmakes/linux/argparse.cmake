@@ -1,29 +1,32 @@
-# 设置版本号、头文件路径。
+# 设置版本号、头文件名、代码库名称等。
 set(ARGPARSE_VERSION v3.2)
 set(ARGPARSE_HEADER_NAME argparse/argparse.hpp)
-
-# 设置依赖安装目录。
 set(ARGPARSE_DIRECTORY ${DEPENDENCIES_DIRECTORY}/argparse)
-file(MAKE_DIRECTORY ${ARGPARSE_DIRECTORY})
-set(ARGPARSE_BUILD_DIRECTORY ${ARGPARSE_DIRECTORY}/build)
-set(ARGPARSE_SOURCE_DIRECTORY ${ARGPARSE_DIRECTORY}/source)
 set(ARGPARSE_INSTALL_DIRECTORY ${ARGPARSE_DIRECTORY}/install)
+set(ARGPARSE_HEADERS_DIRECTORY ${ARGPARSE_INSTALL_DIRECTORY}/include)
 
-# 设置依赖头文件路径。
+# 查找头文件所在文件夹。
 find_path(
         ARGPARSE_INCLUDE_DIRECTORY
         NAMES ${ARGPARSE_HEADER_NAME}
-        PATHS ${ARGPARSE_INSTALL_DIRECTORY}/include
+        PATHS ${ARGPARSE_HEADERS_DIRECTORY}
         NO_DEFAULT_PATH
 )
-
-# 如果找到依赖库和头文件，则设置依赖库和头文件的路径。
 if (ARGPARSE_INCLUDE_DIRECTORY)
-    message(STATUS "found argparse include directory: ${ARGPARSE_INCLUDE_DIRECTORY}")
-else ()
+    message(STATUS "found argparse include directory ${ARGPARSE_INCLUDE_DIRECTORY}")
+endif ()
+
+# 添加外部构建项目。
+if (NOT ARGPARSE_INCLUDE_DIRECTORY)
     include(ExternalProject)
+    set(ARGPARSE_NAME argparse-static)
+    if (COMPILE_DYNAMIC_MODE)
+        set(ARGPARSE_NAME argparse-dynamic)
+    endif ()
+    set(ARGPARSE_BUILD_DIRECTORY ${ARGPARSE_DIRECTORY}/build)
+    set(ARGPARSE_SOURCE_DIRECTORY ${ARGPARSE_DIRECTORY}/source)
     ExternalProject_Add(
-            argparse
+            ${ARGPARSE_NAME}
             PREFIX ${ARGPARSE_DIRECTORY}
             URL https://github.com/p-ranav/argparse/archive/refs/tags/${ARGPARSE_VERSION}.zip
             SOURCE_DIR ${ARGPARSE_SOURCE_DIRECTORY}
@@ -34,11 +37,14 @@ else ()
                 -DCMAKE_CXX_FLAGS=${LIBRARY_COMPILE_CXX_FLAGS}
                 -DCMAKE_CXX_FLAGS_DEBUG=${LIBRARY_COMPILE_CXX_FLAGS_DEBUG}
                 -DCMAKE_CXX_FLAGS_RELEASE=${LIBRARY_COMPILE_CXX_FLAGS_RELEASE}
+                -DBUILD_SHARED_LIBS:BOOL=${COMPILE_DYNAMIC_MODE}
                 -DARGPARSE_BUILD_TESTS=OFF
             BUILD_COMMAND ${CMAKE_COMMAND} --build ${ARGPARSE_BUILD_DIRECTORY} --parallel --config ${CMAKE_BUILD_TYPE} --clean-first
             INSTALL_COMMAND ${CMAKE_COMMAND} --build ${ARGPARSE_BUILD_DIRECTORY} --config ${CMAKE_BUILD_TYPE} --target install
     )
-    set(ARGPARSE_INCLUDE_DIRECTORY ${ARGPARSE_INSTALL_DIRECTORY}/include)
+    set(ARGPARSE_INCLUDE_DIRECTORY ${ARGPARSE_HEADERS_DIRECTORY})
+    list(APPEND DEPENDENCIES ${ARGPARSE_NAME})
 endif ()
 
+# 导入头文件文件夹、链接代码库、复制动态代码库。
 include_directories(${ARGPARSE_INCLUDE_DIRECTORY})
