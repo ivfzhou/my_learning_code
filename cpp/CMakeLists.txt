@@ -138,3 +138,11 @@ endif ()
 message(STATUS "LIBRARIES is ${LIBRARIES}")
 list(REVERSE LIBRARIES)
 target_link_libraries(${PROJECT_NAME} ${LIBRARIES})
+
+# 设置安装目录。
+install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION bin)
+
+# 复制动态链接库文件。
+if (COMPILE_DYNAMIC_MODE)
+    install(FILES ${DYNAMIC_LIBRARIES} DESTINATION bin)
+endif ()

@@ -91,9 +91,9 @@ if (NOT ((COMPILE_STATIC_MODE AND OPENSSL_LIBRARY AND OPENSSL_INCLUDE_DIRECTORY 
                 --prefix=${OPENSSL_INSTALL_DIRECTORY}
                 --openssldir=${OPENSSL_INSTALL_DIRECTORY}
                 --with-zlib-include=${ZLIB_INCLUDE_DIRECTORY}
-                --with-zlib-lib=${ZLIB_LIBRARY}
+                --with-zlib-lib=${ZLIB_LIBRARY_DIRECTORY}
                 --with-zstd-include=${ZSTD_INCLUDE_DIRECTORY}
-                --with-zstd-lib=${ZSTD_LIBRARY}
+                --with-zstd-lib=${ZSTD_LIBRARY_DIRECTORY}
                 ${OPENSSL_BUILD_TYPE}
                 no-docs
                 no-deprecated
