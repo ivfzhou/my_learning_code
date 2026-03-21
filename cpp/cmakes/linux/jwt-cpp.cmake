@@ -46,6 +46,9 @@ if (NOT JWT_CPP_INCLUDE_DIRECTORY)
     )
     set(JWT_CPP_INCLUDE_DIRECTORY ${JWT_CPP_HEADERS_DIRECTORY})
     list(APPEND DEPENDENCIES ${JWT_CPP_NAME})
+    if (TARGET ${OPENSSL_NAME})
+        add_dependencies(${JWT_CPP_NAME} ${OPENSSL_NAME})
+    endif ()
 endif ()
 
 # 导入头文件文件夹、链接代码库、复制动态代码库。
