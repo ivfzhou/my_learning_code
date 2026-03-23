@@ -92,6 +92,18 @@ if (NOT ((COMPILE_STATIC_MODE AND LIBZIP_LIBRARY AND LIBZIP_INCLUDE_DIRECTORY) O
     set(LIBZIP_DYNAMIC_LIBRARY ${LIBZIP_BINARY_DIRECTORY}/${LIBZIP_DYNAMIC_LIBRARY_NAME})
     set(LIBZIP_INCLUDE_DIRECTORY ${LIBZIP_HEADERS_DIRECTORY})
     list(APPEND DEPENDENCIES ${LIBZIP_NAME})
+    if (TARGET ${ZLIB_NAME})
+        add_dependencies(${LIBZIP_NAME} ${ZLIB_NAME})
+    endif ()
+    if (TARGET ${BZIP2_NAME})
+        add_dependencies(${LIBZIP_NAME} ${BZIP2_NAME})
+    endif ()
+    if (TARGET ${OPENSSL_NAME})
+        add_dependencies(${LIBZIP_NAME} ${OPENSSL_NAME})
+    endif ()
+    if (TARGET ${ZSTD_NAME})
+        add_dependencies(${LIBZIP_NAME} ${ZSTD_NAME})
+    endif ()
 endif ()
 
 # 导入头文件文件夹、链接代码库、复制动态代码库。
