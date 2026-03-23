@@ -50,7 +50,7 @@ namespace gitee::com::ivfzhou::cpp {
     }
 
     // 测试转发引用与模板递归效果。
-    void forward_reference_and_recursive_template();
+    void forward_reference();
 
 #define LOG(...)                                                                                                       \
     {                                                                                                                  \

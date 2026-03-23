@@ -7,6 +7,7 @@
 #include <iostream>
 #include <vector>
 
+#include "assignment_rule.hpp"
 #include "forward_reference.hpp"
 #include "inheritance_usage/FatherClass.hpp"
 #include "inheritance_usage/FriendClass.hpp"
@@ -52,7 +53,8 @@ static void run_tests() {
     test_std_forward();
     test_std_move();
     test_diy_move();
-    forward_reference_and_recursive_template();
+    forward_reference();
+    assignment_rule();
 }
 
 extern void TestAssignmentCopyOperation();
@@ -748,8 +750,8 @@ int main(const int argc, const char* argv[]) {
     std::setlocale(LC_ALL, "en_US.UTF-8");
 
     run_yaml_cpp_examples();
-    run_tests();
     run_pugixml_example();
+    run_tests();
 
     log("OK 完成");
     LOG("OK 完成");
