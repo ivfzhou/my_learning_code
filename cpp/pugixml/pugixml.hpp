@@ -11,7 +11,7 @@ namespace gitee::com::ivfzhou::cpp::pugixml {
     // 使用 xpath 语法获取节点。
     void example_3();
 
-    // 修改 xml 节点和属性得值。
+    // 修改 xml 节点和属性的值。
     void example_4();
 
     // 添加 xml 节点和属性。

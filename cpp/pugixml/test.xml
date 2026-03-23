@@ -1,16 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE root>
+
+<?include somedata?>
+
 <root>
-    <hello stringAttr="a" integerAttr="1" booleanAttr="false" findAttr="any">world</hello>
+    <!-- comment text -->
 
-    <hello2>
-        <a>a</a>
-        <b>a</b>
-    </hello2>
+    pcdata value
 
-    <hello3>
-        <![CDATA[
-        world
-        ]]>
-    </hello3>
+    <![CDATA[
+        cdata value
+    ]]>
 
-    <!-- comment -->
+    <hello stringAttr="a" integerAttr="1" booleanAttr="false">world</hello>
+
+    <novalue/>
+
+    pcdata value2
 </root>

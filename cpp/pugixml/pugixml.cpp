@@ -26,7 +26,7 @@ namespace gitee::com::ivfzhou::cpp::pugixml {
         std::cout << "[pugixml] 开始 - 加载 xml 数据" << std::endl;
         try {
             pugi::xml_document object;
-            auto result = object.load_file(get_file_path().c_str());
+            auto&& result = object.load_file(get_file_path().c_str());
             LOG("description: ",
                 result.description(),
                 "status: ",
@@ -79,28 +79,49 @@ namespace gitee::com::ivfzhou::cpp::pugixml {
         std::cout << "[pugixml] 开始 - 获取 xml 节点数据" << std::endl;
         try {
             pugi::xml_document object;
-            auto result = object.load_file(get_file_path().c_str());
+            auto&& result = object.load_file(get_file_path().c_str(),
+                                             pugi::parse_comments | pugi::parse_declaration | pugi::parse_doctype
+                                                 | pugi::parse_pi | pugi::parse_cdata);
             if (!result) LOG("加载 xml 文件失败: ", result.description());
 
+            // 把文档所有数据打印一遍。
+            auto&& node = object.first_child();
+            LOG(node.name()); // xml。node_declaration。
+            node = node.next_sibling();
+            LOG(node.value(), node.child_value()); // root。node_doctype。
+            node = node.next_sibling();
+            LOG(node.name(), "=", node.value()); // include = somedata。node_pi。
+            node = node.next_sibling();
+            LOG(node.name(), "=", node.child_value()); // root = \n\n    pcdata value\n\n。node_element。
+            node = node.first_child();
+            LOG(node.value()); //  comment text  。node_comment。
+            node = node.next_sibling();
+            LOG(node.value()); // \n\n    pcdata value\n\n     。node_pcdata。
+            node = node.next_sibling();
+            LOG(node.value()); // \n        cdata value\n     。node_cdata。
+            node = node.next_sibling();
+            LOG(node.name(), "=", node.child_value()); // hello = world。node_element。
+            node = node.next_sibling();
+            LOG(node.name(), "=", node.child_value()); // novalue = 。node_element。
+            node = node.next_sibling();
+            LOG(node.value()); // \n\n    pcdata value2\n。node_pcdata。
+            node = node.next_sibling();
+            LOG(node.type()); // node_null。
+
+            // 属性。
             LOG(object.child("root").child("hello").child_value());
             LOG(object.child("root").child("hello").attribute("stringAttr").value());
             LOG(object.child("root").child("hello").attribute("integerAttr").as_int());
             LOG(object.child("root").child("hello").attribute("booleanAttr").as_bool());
-            LOG(object.child("root").child_value("hello2"));
+            node = object.child("root").find_child_by_attribute("hello", "stringAttr", "a");
+            LOG(node.attribute("stringAttr").value());
 
-            auto node = object.child("root").find_child_by_attribute("hello", "findAttr", "any");
-            LOG(node.attribute("findAttr").value());
-
-            for (auto v = object.child("root").first_child(); v; v = v.next_sibling()) LOG(v.name());
-
-            for (auto& v : object.children("root")) LOG(v.name(), "=", v.child_value());
-
-            for (auto it = object.child("root").begin(); it != object.child("root").end(); ++it) {
-                std::cout << it->name() << ": ";
-                for (auto it2 = it->attributes_begin(); it2 != it->attributes_end(); ++it2)
-                    std::cout << it2->name() << "=" << it2->value() << " ";
-
-                std::cout << std::endl;
+            // 遍历。
+            for (auto&& v = object.child("root").first_child(); v; v = v.next_sibling()) {
+            }
+            for (auto&& v : object.children("root")) {
+            }
+            for (auto&& it = object.child("root").begin(); it != object.child("root").end(); ++it) {
             }
 
             // 深度优先遍历。
@@ -124,10 +145,10 @@ namespace gitee::com::ivfzhou::cpp::pugixml {
         std::cout << "[pugixml] 开始 - 使用 xpath 语法获取节点" << std::endl;
         try {
             pugi::xml_document object;
-            auto result = object.load_file(get_file_path().c_str());
-            if (!result) LOG("加载 xml 文件失败: ", result.description());
+            if (auto&& result = object.load_file(get_file_path().c_str()); !result)
+                LOG("加载 xml 文件失败: ", result.description());
 
-            auto node = object.select_node("/root/hello[@integerAttr = 1 and @stringAttr = 'a']");
+            auto&& node = object.select_node("/root/hello[@integerAttr = 1 and @stringAttr = 'a']");
             LOG(node.node().name());
         } catch (std::exception& e) {
             LOG("发生错误：", e.what());
@@ -135,15 +156,16 @@ namespace gitee::com::ivfzhou::cpp::pugixml {
         std::cout << "[pugixml] 结束 - 使用 xpath 语法获取节点" << std::endl << std::endl;
     }
 
-    // 修改 xml 节点和属性得值。
+    // 修改 xml 节点和属性的值。
     void example_4() {
-        std::cout << "[pugixml] 开始 - 修改 xml 节点和属性得值" << std::endl;
+        std::cout << "[pugixml] 开始 - 修改 xml 节点和属性的值" << std::endl;
         try {
             pugi::xml_document object;
-            auto result = object.load_file(get_file_path().c_str(), pugi::parse_default | pugi::parse_comments);
-            if (!result) LOG("加载 xml 文件失败: ", result.description());
+            if (auto result = object.load_file(get_file_path().c_str(), pugi::parse_default | pugi::parse_comments);
+                !result)
+                LOG("加载 xml 文件失败: ", result.description());
 
-            auto root = object.child("root");
+            auto&& root = object.child("root");
 
             // 修改节点名称。
             LOG("node name before changed is", root.child("hello").name());
@@ -155,7 +177,7 @@ namespace gitee::com::ivfzhou::cpp::pugixml {
             LOG("comment changed is", root.last_child().value());
 
             // 修改属性的名称。
-            auto attr = root.child("changed_name").attribute("stringAttr");
+            auto&& attr = root.child("changed_name").attribute("stringAttr");
             LOG("node attribute name is", attr.name());
             attr.set_name("attr_changed");
             LOG("node attribute name changed is", attr.name());
@@ -170,7 +192,7 @@ namespace gitee::com::ivfzhou::cpp::pugixml {
         } catch (std::exception& e) {
             LOG("发生错误：", e.what());
         }
-        std::cout << "[pugixml] 结束 - 修改 xml 节点和属性得值" << std::endl << std::endl;
+        std::cout << "[pugixml] 结束 - 修改 xml 节点和属性的值" << std::endl << std::endl;
     }
 
     // 添加 xml 节点和属性。
@@ -178,18 +200,19 @@ namespace gitee::com::ivfzhou::cpp::pugixml {
         std::cout << "[pugixml] 开始 - 添加 xml 节点和属性" << std::endl;
         try {
             pugi::xml_document object;
-            auto result = object.load_file(get_file_path().c_str(), pugi::parse_default | pugi::parse_comments);
-            if (!result) LOG("加载 xml 文件失败: ", result.description());
+            if (auto&& result = object.load_file(get_file_path().c_str(), pugi::parse_default | pugi::parse_comments);
+                !result)
+                LOG("加载 xml 文件失败: ", result.description());
 
-            auto root = object.child("root");
+            auto&& root = object.child("root");
 
             // 添加节点。
-            auto hello3Node = root.append_child("hello3");
+            auto&& hello3Node = root.append_child("hello3");
             hello3Node.append_child(pugi::node_pcdata).set_value("xml value");
             root.insert_child_after("hello4", hello3Node);
 
             // 添加节点属性。
-            auto attr = hello3Node.append_attribute("attr");
+            auto&& attr = hello3Node.append_attribute("attr");
             attr = 1.1;
             hello3Node.insert_attribute_after("attr2", attr) = "a";
 
@@ -205,13 +228,14 @@ namespace gitee::com::ivfzhou::cpp::pugixml {
         std::cout << "[pugixml] 开始 - 添加 xml 节点和属性" << std::endl;
         try {
             pugi::xml_document object;
-            auto result = object.load_file(get_file_path().c_str(), pugi::parse_default | pugi::parse_comments);
-            if (!result) LOG("加载 xml 文件失败: ", result.description());
+            if (auto&& result = object.load_file(get_file_path().c_str(), pugi::parse_default | pugi::parse_comments);
+                !result)
+                LOG("加载 xml 文件失败: ", result.description());
 
-            auto root = object.child("root");
+            auto&& root = object.child("root");
 
             // 删除节点。
-            if (!root.remove_child("hello2")) LOG("删除节点失败");
+            if (!root.remove_child("novalue")) LOG("删除节点失败");
 
             // 删除属性。
             if (!root.child("hello").remove_attribute("stringAttr")) LOG("删除属性失败");
@@ -228,8 +252,9 @@ namespace gitee::com::ivfzhou::cpp::pugixml {
         std::cout << "[pugixml] 开始 - 将 xml 数据保存到某地" << std::endl;
         try {
             pugi::xml_document object;
-            auto result = object.load_file(get_file_path().c_str(), pugi::parse_default | pugi::parse_comments);
-            if (!result) LOG("加载 xml 文件失败: ", result.description());
+            if (auto&& result = object.load_file(get_file_path().c_str(), pugi::parse_default | pugi::parse_comments);
+                !result)
+                LOG("加载 xml 文件失败: ", result.description());
 
             // 将 xml 数据写入文件。
             const auto& filePath = std::filesystem::temp_directory_path() / "test.xml";
