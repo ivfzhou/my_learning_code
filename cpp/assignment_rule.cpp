@@ -12,9 +12,9 @@ namespace gitee::com::ivfzhou::cpp {
         return out;
     }
 
-    type::type(const int& x) noexcept : x(x) { std::cout << "普通构造：x = " << this->x << std::endl; }
+    type::type(const int& x) : x(x) {}
 
-    type::type(const type& t) noexcept {
+    type::type(const type& t) {
         this->x = t.x;
         std::cout << "复制构造：x = " << this->x << std::endl;
     }
@@ -25,99 +25,116 @@ namespace gitee::com::ivfzhou::cpp {
         std::cout << "移动构造：x = " << this->x << std::endl;
     }
 
-    type& type::operator=(const type& t) noexcept {
+    type& type::operator=(const type& t) {
         this->x = t.x;
-        std::cout << "赋值运算符：x = " << this->x << std::endl;
+        std::cout << "复制赋值：x = " << this->x << std::endl;
         return *this;
     }
 
-    static type return_left_value() {
-        type t0(1);
-        return t0;
-    }
-
-    static type return_right_value() { return type(1); }
-
-    // 内存泄露。
-    static type&& return_right_reference() { return type(1); }
-    static type& return_left_reference() {
-        type t0(1);
-        return t0;
+    type& type::operator=(type&& t) noexcept {
+        this->x = t.x;
+        t.x = 0;
+        std::cout << "移动赋值：x = " << this->x << std::endl;
+        return *this;
     }
 
     // 测试各种赋值效果表现。
+    // 核心规则
+    // 初始化（声明时用 =） 和 赋值（已有对象用 =） 是完全不同的：
+    // 初始化：调用的是构造函数（复制构造 / 移动构造）
+    // 赋值：调用的是 operator=（复制赋值 / 移动赋值）
     void assignment_rule() {
         std::cout << "开始 - 测试各种赋值效果表现" << std::endl;
         try {
             {
-                std::cout << "只触发普通构造" << std::endl;
+                std::cout << "初始化场景" << std::endl;
+
+                // 左值
                 type t0(1);
-                type t1 = type(1);
+                type t1 = t0; // 复制构造
+
+                // const 左值
+                const type t2(1);
+                type t3 = t2; // 复制构造
+
+                // 左值引用
+                type& t4 = t0;
+                type t5 = t4; // 复制构造
+
+                // const 左值引用
+                const type& t6 = t0;
+                type t7 = t6; // 复制构造
+
+                // 右值（临时对象）
+                type t8 = type(1); // 移动构造（但通常被 NRVO/拷贝消除 优化掉，直接普通构造）
+
+                // 右值引用变量
+                type&& t9 = type(1);
+                type t10 = t9; // 复制构造（⚠️ 具名右值引用是左值！）
+
+                // const 右值引用变量
+                const type&& t11 = type(1);
+                type t12 = t11; // 复制构造
+
+                type t13 = std::move(t0); // 移动构造
+
+                type t14 = std::move(t2); // 复制构造（const 右值只能匹配 const type&）
             }
 
             {
-                std::cout << "以左引用接收" << std::endl;
+                std::cout << "赋值场景" << std::endl;
+                // 左值
                 type t0(1);
-                type& t1 = t0;
-                const type& t2 = t0;
-                const type& t3 = type(2);
+                type t1(1);
+                t1 = t0; // 复制赋值 operator=(const type&)
 
-                const type& t4 = t3;
-                const type& t5 = t2;
-                type& t6 = t1;
+                // const 左值
+                const type t2(1);
+                t1 = t2; // 复制赋值
+
+                // 左值引用
+                type& t3 = t1;
+                t1 = t3; // 复制赋值
+
+                // const 左值引用
+                const type& t4 = t0;
+                t1 = t4; // 复制赋值
+
+                // 右值（临时对象）
+                t1 = type(3); // 复制赋值（如果你没定义移动赋值运算符） 如果有 operator=(type&&) → 移动赋值
+
+                // 右值引用变量
+                type&& t5 = type(1);
+                t1 = t5; // 复制赋值（具名右值引用是左值）
+
+                // const 右值引用变量
+                type&& t6 = type(1);
+                t1 = t6; // 复制赋值
+
+                // std::move(x)
+                t1 = std::move(t0); // 复制赋值（如果没有移动赋值运算符）如果有 operator=(type&&) → 移动赋值
+
+                // std::move(cx)
+                t0 = std::move(t2); // 复制赋值
             }
 
             {
-                std::cout << "以右引用接收" << std::endl;
-                type&& t1 = type(1);
-                const type&& t2 = type(1);
-            }
+                std::cout << "引用绑定场景" << std::endl;
 
-            {
-                std::cout << "以变量接收" << std::endl;
+                // 引用绑定 不触发任何构造或赋值运算符，只是建立别名：
+
+                // 非const左值
                 type t0(1);
-                type t1(2);
-                t0 = type(3);
-                t0 = t1;
+                type& t1 = t0; // 无触发
 
-                type& t2 = t1;
-                t0 = t2;
+                // 左值/右值/const都可
+                const type& t2 = t0; // 无触发，但会延长临时对象生命周期
 
-                t0 = std::move(t1);
-            }
+                // 右值
+                type&& t4 = type(1); // 无触发，但会延长临时对象生命周期
 
-            {
-                std::cout << "触发复制构造" << std::endl;
-                type t0(1);
-                type t1(t0);
-                type t2 = t0;
-            }
-
-            {
-                std::cout << "接收函数返回值" << std::endl;
-                type t0 = return_left_value();
-                type t1 = return_right_value();
-
-                type t2(0);
-                t2 = return_left_value();
-                t2 = return_right_value();
-
-                const type& t3 = return_left_value();
-                const type& t4 = return_right_value();
-
-                type&& t5 = return_left_value();
-                type&& t6 = return_right_value();
-            }
-
-            {
-                std::cout << "接收函数返回的引用值" << std::endl;
-                type&& t0 = return_right_reference();
-                type t1 = return_right_reference();
-                const type& t2 = return_right_reference();
-
-                type& t3 = return_left_reference();
-                type t4 = return_left_reference();
-                const type& t5 = return_left_reference();
+                // 右值
+                const type&& t5 = type(1); // 无触发
             }
         } catch (const std::exception& e) {
             LOG("发生错误：", e.what());
