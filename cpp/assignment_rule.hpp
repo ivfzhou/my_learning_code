@@ -4,8 +4,15 @@
 #include <ostream>
 
 namespace gitee::com::ivfzhou::cpp {
+    class inner_type {
+      public:
+        int y = 0;
+    };
+
     class type {
         int x = 0;
+
+        inner_type inner;
 
         friend std::ostream& operator<<(std::ostream& out, const type& t);
 
@@ -45,6 +52,12 @@ namespace gitee::com::ivfzhou::cpp {
         // 移动赋值。
         // 默认行为：对每个成员执行 std::move 后移动赋值。
         type& operator=(type&&) noexcept;
+
+        type get_temporary_value() { return type(1); }
+
+        int& get_rx() { return x; }
+
+        inner_type get_inner() { return inner; }
     };
 
     // 测试各种赋值效果表现。
