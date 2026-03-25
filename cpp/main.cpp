@@ -8,6 +8,7 @@
 #include <vector>
 
 #include "assignment_rule.hpp"
+#include "dangling_reference.hpp"
 #include "forward_reference.hpp"
 #include "inheritance_usage/FatherClass.hpp"
 #include "inheritance_usage/FriendClass.hpp"
@@ -55,6 +56,7 @@ static void run_tests() {
     test_diy_move();
     forward_reference();
     assignment_rule();
+    dangling_reference();
 }
 
 extern void TestAssignmentCopyOperation();

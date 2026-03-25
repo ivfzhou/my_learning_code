@@ -115,11 +115,7 @@ namespace gitee::com::ivfzhou::cpp {
                 t1 = std::move(t0); // 复制赋值（如果没有移动赋值运算符）如果有 operator=(type&&) → 移动赋值
 
                 // std::move(cx)
-                t1 = std::move(t2); // 复制赋值
-
-                const auto& x = t0.get_temporary_value().get_rx(); // 悬挂引用
-
-                const auto& it = t0.get_temporary_value().get_inner(); // 没悬挂
+                t0 = std::move(t2); // 复制赋值
             }
 
             {
