@@ -281,8 +281,9 @@
 - **border-bottom-right-radius**
 
 - **border-image**：border-image-* 属性的简写属性。不继承。属性设置顺序：source、slice、width、outset、repeat，如果省略值，会设置其默认值。
-    - none 100% 1 0 stretch：默认值。
-
+    
+- none 100% 1 0 stretch：默认值。
+    
 - **border-image-source**：规定用作边框的图像的路径。不继承。代替 border-style 属性中设置的边框样式。如果图像无法显示，则使用边框样式。
     - none：默认值。不使用图像。
     - url(*url*)：用作边框的图像的路径。
@@ -420,7 +421,7 @@
     - initial：将此属性设置为其默认值。
 - **text-decoration**：规定文本装饰。不继承。设置属性：text-decoration-line text-decoration-color text-decoration-style text-decoration-thickness。
     - none：默认值。
-- **text-decoration-line**：规定文本装饰（text-decoration）中的的行类型。不继承。可多个值设置，将显示多条线。
+- **text-decoration-line**：规定文本装饰（text-decoration）中的行类型。不继承。可多个值设置，将显示多条线。
     - none：默认值。规定 text-decoration 没有线条。
     - underline：规定在文本下方显示线条。
     - overline：规定在文本上方显示线条。
@@ -1031,6 +1032,7 @@
         }
         ```
 - **grid-template**：grid-template-rows、grid-template-columns 以及 grid-areas 属性的简写属性。不继承。
+    
     - none none none：默认值。
 - **grid-template-rows**：指定网格布局中的行的尺寸。不继承。值是用空格分隔的列表，其中每个值指定相应行的高度。
     - none：未设置尺寸。在需要时创建行。
@@ -1100,6 +1102,7 @@
     - row dense：通过填充每一行来放置项目，并填充网格中的任何孔。
     - column dense：通过填充每一列来放置项目，并填充网格中的任何孔。
 - **grid-gap**：grid-row-gap 和 grid-column-gap 的简写属性。不继承。只设一个值，则第二个值等于第一个值。
+    
     - 0 0：默认值。
 - **grid-row-gap**：规定列间隙的尺寸。不继承。
     - 0：默认值。
@@ -1136,6 +1139,7 @@
     - span *n*：规定项目将横跨的列数。
     - *column-line*：规定在哪列上停止显示项目。
 - **grid-row**：grid-row-start 和 grid-row-end 属性的简写属性。不继承。
+    
     - auto / auto：默认值。
 - **grid-row-start**：规定网格项目从何处开始。不继承。
     - auto：默认值。项目将随着流定位。
@@ -1174,8 +1178,10 @@
     - 1：默认值。
     - *number*：规定不透明度。从 0.0 （完全透明）到 1.0（完全不透明）。
 - **box-shadow**：将一个或多个阴影附加到元素。不继承。属性值设置顺序：h-shadow（必需。水平阴影的位置。允许负值。）、v-shadow（必需。垂直阴影的位置。允许负值。）、blur（可选。模糊距离。）、spread（可选。阴影的尺寸。）、color（可选。阴影的颜色。）、inset（可选。将外部阴影 (outset) 改为内部阴影。）。
+    
     - none：默认值。
 - **filter**：定义元素显示之前的效果（例如，模糊或颜色偏移）。不继承。请用空格分隔每个滤镜。
+    
     - none：默认值。规定无效果。
 - **object-fit**：规定替换元素的内容应如何适合其所用高度和宽度建立的框。不继承。
     - fill：默认值。调整替换后的内容大小，以填充元素的内容框。如有必要，将拉伸或挤压物体以适应该对象。
@@ -1398,6 +1404,7 @@
         }
         ```
 - **cubic-bezier(*x1*, *y1*, *x2*, *y2*)**：定义三次贝塞尔曲线。
+    
     - *x1,y1,x2,y2*：必需。数值。*x1* 和 *x2* 必须是 0 到 1 之间的数字。
 - **conic-gradient([from *angle* | at *position* ],  *colorDegree*, ...)**：创建圆锥渐变。
     - *angle*：可选。整个锥形渐变旋转此角度。默认值为 0 度。
