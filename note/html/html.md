@@ -68,7 +68,7 @@
         }
         ```
 - **`<h1> ~ <h6>`**：定义 HTML 标题。
-    
+  
     - 默认 CSS 值：
         ```css
         h1 {
@@ -221,7 +221,7 @@
         }
         ```
 - **`<dfn>`**：规定要在内容中定义的术语。
-    
+  
     - title="*value*"
     - 默认 CSS 值：
         ```css
@@ -253,7 +253,7 @@
         }
         ```
 - **`<kbd>`**：定义键盘输入。
-    
+  
     - 默认 CSS 值：
         ```css
         kbd {
@@ -269,7 +269,7 @@
         }
         ```
 - **`<meter>`**：定义已知范围内的仪表。
-    
+  
     - form="*formId*"：规定 meter 元素属于哪个表单。
     - high="*num*"：规定范围的高值。
     - low="*num*"：规定范围的低值。
@@ -357,7 +357,7 @@
         ```
 - **`<template>`**：定义用作容纳页面加载时隐藏内容的容器。
 - **`<time>`**：定义日期/时间。
-    
+  
     - datetime="*datetime*"：表示 time 元素的机器可读的格式。
 - **`<u>`**：定义未明确表达且样式与普通文本不同的文本。
     - 默认 CSS 值：
@@ -384,10 +384,10 @@
     - autocomplete="on | off"：规定表单是否应启用自动完成功能。
     - enctype="application/x-www-form-urlencoded | multipart/form-data | text/plain"：规定在向服务器提交表单数据时，应该如何对表单数据进行编码。
     - method="get | post"：规定发送表单数据时使用的 HTTP 方法。
-    - name="*txt*"：规定表单的名称。
+    - name="*text*"：规定表单的名称。
     - novalidate="novalidate"：规定提交表单时不应验证表单。
-    - rel="external | help | license | next | nofollow | noopener | noreferrer | opener | prev | search"：规定链接资源和当前文档之间的关系。
-    - target="_blank | _self | _parent | _top"：规定在何处显示提交表单后收到的响应。
+    - rel="external | help | license | nofollow | noopener | noreferrer | opener | prev | next | search"：规定链接资源和当前文档之间的关系。多个值用空格分隔。
+    - target="_self | _blank | _parent | _top | *name*"：规定在何处显示提交表单后收到的响应。
     - 默认 CSS 值：
         ```css
         form {
@@ -397,7 +397,7 @@
         ```
 - **`<input>`**：单标签。定义输入控件。
     - accept="*文件扩展名：audio/\* | video/\* | image/\**"：媒体类型，规定通过文件上传来提交的文件的类型。规定用户可以从文件输入对话框中选择哪些文件类型的过滤器（仅适用于 type="file"）。
-    - alt="*txt*"：规定图像的替代文本（仅适用于 type="image"）。
+    - alt="*text*"：规定图像的替代文本（仅适用于 type="image"）。
     - autocomplete="on | off"：规定 input 元素是否应该启用自动完成。
     - autofocus="autofocus"：规定 input 元素应在页面加载时应自动获得焦点。
     - checked="checked"：规定在页面加载时应预先选中 input 元素（适用于 type="checkbox" 或 type="radio"）。
@@ -1059,7 +1059,7 @@
         }
         ```
 - **`<dialog>`**：定义对话框或窗口。
-    
+  
     - open="open"：规定 dialog 元素处于活动状态，并且用户可以与之交互。
 - **`<summary>`**：定义 details 元素的可见标题。
     - 默认 CSS 值：
