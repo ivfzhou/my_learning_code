@@ -10,8 +10,8 @@
     - [golang/](./golang/)：Golang 代码。
     - [cpp/](./cpp/)：C++ 代码。 
     - [java/](./java/)：Java 代码。
-    - other/
-        - [dart/](./other/dart)：Dart 代码。
-        - [powershell/](./other/powershell)：PowerShell 代码。
-        - [python/](./other/python)：Python 代码。
-        - [vue_example/](./other/vue_example)：Vue 代码。
+    - [dart/](./dart)：Dart 代码。
+    - [powershell/](./powershell)：PowerShell 代码。
+    - [python/](./python)：Python 代码。
+    - [vue_example/](./vue_example)：Vue 代码。
+    - [html/](./html)：HTML 代码。
