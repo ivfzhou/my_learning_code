@@ -46,7 +46,7 @@
 1. [Nacos](./nacos/nacos.md)
 1. [Nexus](./nexus/nexus.md)
 1. [Nginx](./nginx/nginx.md)
-1. [Nodejs](./nidejs/nodejs.md)
+1. [Nodejs](./nodejs/nodejs.md)
 1. [Oracle](./oracle/oracle.md)
 1. [Zipkin](./zipkin/zipkin.md)
 1. [ZooKeeper](./zookeeper/zookeeper.md)
