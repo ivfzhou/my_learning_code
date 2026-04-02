@@ -13,5 +13,5 @@
     - [dart/](./dart)：Dart 代码。
     - [powershell/](./powershell)：PowerShell 代码。
     - [python/](./python)：Python 代码。
-    - [vue_example/](./vue_example)：Vue 代码。
+    - [vue/](./vue)：Vue 代码。
     - [html/](./html)：HTML 代码。
