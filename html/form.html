@@ -10,19 +10,45 @@
       enctype="application/x-www-form-urlencoded" method="post" name="formName" novalidate="novalidate" rel="external"
       target="_self">
 
-    <input type="file" accept="text/css"/>
+    <input name="name1" type="file" accept="text/css"/>
 
-    <input type="image" alt="text"/>
+    <input name="name2" type="image" alt="text"/>
 
-    <input autofocus="autofocus"/>
+    <input name="name3" autofocus="autofocus"/>
 
-    <input type="checkbox" checked="checked"/>
+    <input name="name4" type="checkbox" checked="checked"/>
 
-    <input name="key" dirname="key.dir"/>
+    <input name="name5" dirname="name5.dir"/>
 
-    <button>submit</button>
+    <input name="name6" disabled="disabled"/>
+
+    <input name="name7" type="file" multiple="multiple"/>
+
+    <input name="name8" type="text" pattern="123" title="error"/>
+
+    <input name="name9" readonly="readonly"/>
+
+    <input name="name10" type="button" popovertarget="popoverTargetId"/>
+    <div id="popoverTargetId" popover>hello</div>
+
+    <input name="name11" required="required"/>
+
+    <input name="name12" type="image" src="www.qq.com"/>
+
+    <textarea name="name13" wrap="soft">123</textarea>
+
+    <label>label</label>
+
+    <button type="submit">submit</button>
 </form>
 
+<form oninput="x.value=parseInt(a.value)+parseInt(b.value)">
+    <input type="range" id="a" value="50" />
+    +
+    <input type="number" id="b" value="25" />
+    =
+    <output name="x" for="a b"></output>
+</form>
 
 </body>
 </html>

@@ -7,7 +7,7 @@
 
 # 二、标签
 
-## 1. 基础
+## 2.1 基础
 
 - **`<!DOCTYPE>`**：文档声明，不区分大小写，也没有结束标签。每一个 HTML 文档都必须以 DOCTYPE 元素开头。
 
@@ -157,7 +157,7 @@
          <!--[if IE 8]> .... some HTML here .... <![endif]-->
          ```
 
-## 2. 格式化
+## 2.2 格式化
 
 - **`<abbr>`**：定义缩写词或首字母缩略词。
 
@@ -375,7 +375,7 @@
         ```
 - **`<wbr>`**：定义可能的换行符。
 
-## 3. 表单和输入
+## 2.3 表单和输入
 
 - **`<form>`**：定义供用户输入的 HTML 表单。
 
@@ -401,7 +401,7 @@
     - autocomplete="on | off"：规定 input 元素是否应该启用自动完成。
     - autofocus="autofocus"：规定 input 元素应在页面加载时应自动获得焦点。
     - checked="checked"：规定在页面加载时应预先选中 input 元素（适用于 type="checkbox" 或 type="radio"）。
-    - dirname="*dir*"：规定将被提交的文本方向。
+    - dirname="*name*.dir"：规定将被提交的文本方向。
     - disabled="disabled"：规定应禁用 input 元素。
     - form="*formId*"：规定 input 元素所属的表单。
     - formaction="*URL*"：规定提交表单时将处理输入控件的文件的 URL（适用于 type="submit" 和 type="image"）。
@@ -410,15 +410,16 @@
     - formnovalidate="formnovalidate"：定义在提交表单元素时不应对其进行验证。
     - formtarget="_blank | _self | _parent | _top | *frameName*"：规定在何处显示提交表单后收到的响应（适用于 type="submit" 和 type="image"）。
     - height="*px*"：规定 input 元素的高度（仅适用于 type="image"）。
+    - width="*px*"：规定 input 元素的宽度（仅适用于 type="image"）。
     - list="*datalistId*"：引用包含 input 元素的预定义选项的 datalist 元素。
     - max="*num* | *date*"：规定 input 元素的最大值。
     - maxlength="*num*"：规定 input 元素允许的最大字符数。
     - min="*num* | *date*"：规定 input 元素的最小值。
     - minlength="*num*"：规定 input 元素中所需的最少字符数。
-    - multiple="multiple"：规定用户可以在 input 元素中输入多个值。
-    - name="*txt*"：规定 input 元素的名称。
+    - multiple="multiple"：规定用户可以在 input 元素中输入多个值。允许选择多个文件。
+    - name="*text*"：规定 input 元素的名称。
     - pattern="*reg*"：规定检查 input 元素值的正则表达式。
-    - placeholder="*txt*"：规定描述 input 元素预期值的简短提示。
+    - placeholder="*text*"：规定描述 input 元素预期值的简短提示。
     - popovertarget="*elementId*"：规定要调用的弹出框元素（仅适用于 type="button"）。
     - popovertargetaction="hide | show | toggle"：规定当您单击按钮时弹出框元素会发生什么（仅适用于 type="button"）。
     - readonly="readonly"：规定输入字段是只读的。
@@ -427,21 +428,20 @@
     - src="*URL*"：规定用作提交按钮的图像的 URL（仅适用于 type="image"）。
     - step="*num* | any"：规定输入字段中合法数字之间的间隔。
     - type="button | checkbox | color | date | datetime-local | email | file | hidden | image | month | number | password | radio | range | reset | search | submit | tel | text | time | url | week"：规定要显示的 input 元素的类型。
-    - value="*txt*"：规定 input 元素的值。
-    - width="*px*"：规定 input 元素的宽度（仅适用于 type="image"）。
+    - value="*text*"：规定 input 元素的值。
 - **`<textarea>`**：定义多行的文本输入控件。
     - autofocus="autofocus"：规定文本区域应在页面加载时自动获得焦点。
     - cols="*num*"：规定文本区域的可见宽度。
-    - dirname="*dir*"：规定被提交的文本区域的的文字方向。
+    - rows="*num*"：规定文本区域中可见的行数。
+    - dirname="*name*.dir"：规定被提交的文本区域的的文字方向。
     - disabled="disabled"：规定应禁用文本区域。
     - form="*formId*"：规定文本区域所属的表单。
     - maxlength="*num*"：规定文本区域允许的最大字符数。
-    - name="*txt*"：规定文本区域的名称。
-    - placeholder="*txt*"：规定描述文本区域预期值的简短提示。
+    - name="*text*"：规定文本区域的名称。
+    - placeholder="*text*"：规定描述文本区域预期值的简短提示。
     - readonly="readonly"：规定文本区域应该是只读的。
     - required="required"：规定文本区域是必填的。
-    - rows="*num*"：规定文本区域中可见的行数。
-    - wrap="hard | soft"：规定在表单中提交时文本区域中的文本如何换行。
+    - wrap="soft | hard"：规定在表单中提交时文本区域中的文本如何换行。
 - **`<button>`**：定义可点击的按钮。
     - autofocus="autofocus"：规定按钮应在页面加载时自动获得焦点。
     - disabled="disabled"：规定应禁用按钮。
@@ -451,27 +451,27 @@
     - formmethod="get | post"：规定如何发送表单数据（使用哪种 HTTP 方法）。仅适用于 type="submit"。
     - formnovalidate="formnovalidate"：规定不应在提交时验证表单数据。仅适用于 type="submit"。
     - formtarget="_blank | _self | _parent | _top | *frameName*"：规定在提交表单后响应应该显示在哪里。仅适用于 type="submit"。
-    - name="*txt*"：规定按钮的名称。
+    - name="*text*"：规定按钮的名称。
     - popovertarget="*elementId*"：规定要调用的弹出窗口元素。
     - popovertargetaction="hide | show | toggle"：规定按钮被点击时对弹出窗口元素的操作。
     - type="button | reset | submit"：规定按钮的类型。
-    - value="*txt*"：规定按钮的初始值。
+    - value="*text*"：规定按钮的初始值。
 - **`<select>`**：定义下拉列表。
     - autofocus="autofocus"：规定下拉列表应在页面加载时自动获得焦点。
     - disabled="disabled"：规定应禁用下拉列表。
     - form="*formId*"：定义下拉列表所属的表单。
     - multiple="multiple"：规定可以一次选择多个选项。
-    - name="*txt*"：定义下拉列表的名称。
+    - name="*text*"：定义下拉列表的名称。
     - required="required"：规定在提交表单之前用户必须选择一个值。
     - size="*num*"：定义下拉列表中可见选项的数量。
 - **`<optgroup>`**：定义下拉列表中相关选项的分组。
     - disabled="disabled"：规定应禁用选项组。
-    - label="*txt*"：规定选项组的标签。
+    - label="*text*"：规定选项组的标签。
 - **`<option>`**：定义下拉列表中的选项。
     - disabled="disabled"：规定选项应该被禁用。
-    - label="*txt*"：为选项规定较短的标签。
+    - label="*text*"：为选项规定较短的标签。
     - selected="selected"：规定在页面加载时应预先选择一个选项。
-    - value="*txt*"：规定要发送到服务器的值。
+    - value="*text*"：规定要发送到服务器的值。
 - **`<label>`**：定义 input 元素的标注。
     - for="*elementId*"：规定 label 绑定到哪个表单元素。
     - form="*formId*"：规定 label 字段所属的表单。
@@ -484,7 +484,7 @@
 - **`<fieldset>`**：对表单中的相关元素进行分组。
     - disabled="disabled"：规定应禁用一组相关的表单元素。
     - form="*formId*"：规定字段集属于哪个表单。
-    - name="*txt*"：规定字段集的名称。
+    - name="*text*"：规定字段集的名称。
     - 默认 CSS 值：
         ```css
         fieldset {
@@ -530,7 +530,7 @@
 - **`<output>`**：定义计算的结果。
     - for="*elementId*"：规定计算结果与计算中使用的元素之间的关系。
     - form="*formId*"：规定 output 元素所属的表单。
-    - name="*txt*"：规定 output 元素的名称。
+    - name="*text*"：规定 output 元素的名称。
     - 默认 CSS 值：
         ```css
         output {
@@ -548,7 +548,7 @@
         </form>
         ```
 
-## 4. 框架
+## 2.4 框架
 
 - **`<iframe>`**：定义内联框架。
 
@@ -557,7 +557,7 @@
     - allowpaymentrequest="true | false"：如果允许跨源 iframe 调用 Payment Request API，则设置为 true。
     - height="*px*"：规定 iframe 的高度。默认高度为 150 像素。
     - loading="eager | lazy"：规定浏览器是应立即加载 iframe 还是推迟加载 iframe，直到满足某些条件为止。
-    - name="*txt*"：规定 iframe 的名称。
+    - name="*text*"：规定 iframe 的名称。
     - referrerpolicy="no-referrer | no-referrer-when-downgrade | origin | origin-when-cross-origin | same-origin | strict-origin-when-cross-origin | unsafe-url"：规定在获取 iframe 时要发送的引用信息。
     - sandbox="allow-forms | allow-pointer-lock | allow-popups | allow-same-origin | allow-scripts | allow-top-navigation"：启用一系列对 iframe 中内容的额外限制。
     - src="*URL*"：规定要嵌入到 iframe 中的文档的地址。
@@ -573,11 +573,11 @@
         }
         ```
 
-## 5. 图像
+## 2.5 图像
 
 - **`<img>`**：定义图像。
 
-    - alt="*txt*"：规定图像的替代文本。
+    - alt="*text*"：规定图像的替代文本。
     - crossorigin="anonymous | use-credentials"：允许使用来自允许跨域访问的第三方网站的图像与画布（canvas）一起使用。
     - height="*px*"：规定图像的高度。
     - ismap="ismap"：将图像定义为服务器端图像映射。
@@ -596,7 +596,7 @@
         }
         ```
 - **`<map>`**：定义图像映射。
-    - name="*txt*"：必需。规定图像地图的名称。
+    - name="*text*"：必需。规定图像地图的名称。
     - 默认 CSS 值：
         ```css
         map {
@@ -613,7 +613,7 @@
         </map>
         ```
 - **`<area>`**：定义图像地图内部的区域。
-    - alt="*txt*"：规定区域的替代文本。如果存在 href 属性则为必需。
+    - alt="*text*"：规定区域的替代文本。如果存在 href 属性则为必需。
     - coords="*坐标值*"：规定区域的坐标。
     - download="*文件名*"：规定当用户单击超链接时将下载目标。
     - href="*URL*"：规定区域的超链接目标。
@@ -669,7 +669,7 @@
         ```
 - **`<svg>`**：定义 SVG 图形的容器。
 
-## 6. 音频/视频
+## 2.6 音频/视频
 
 - **`<audio>`**：定义嵌入的声音内容。
 
@@ -719,7 +719,7 @@
     - src="*URL*"：规定视频文件的 URL。
     - width="*px*"：设置视频播放器的宽度。
 
-## 7. 链接
+## 2.7 链接
 
 - **`<a>`**：定义超链接。
 
@@ -767,7 +767,7 @@
         }
         ```
 
-## 8. 列表
+## 2.8 列表
 
 - **`<menu>`**：定义无序列表。
 
@@ -847,7 +847,7 @@
         }
         ```
 
-## 9. 表格
+## 2.9 表格
 
 - **`<table>`**：定义表格。
 
@@ -980,7 +980,7 @@
         }
         ```
 
-## 10. 样式和语义
+## 2.10 样式和语义
 
 - **`<style>`**：定义文档的样式信息。
 
@@ -1079,7 +1079,7 @@
         </ul>
         ```
 
-## 11. 元信息
+## 2.11 元信息
 
 - **`<head>`**：包含文档的元数据/信息。
 
@@ -1108,7 +1108,7 @@
     - href="*URL*"：规定页面中所有相对 URL 的基本 URL。
     - target="_blank | _parent | _self | _top"：规定页面中所有超链接和表单的默认目标。
 
-## 12. 编程
+## 2.12 编程
 
 - **`<script>`**：定义客户端脚本。script 元素要么包含脚本语句，要么通过 src 属性指向外部脚本文件。script 元素所属类型，位于 head 元素中的 script 元素属于元数据元素，位于其他元素（如 body 或 section）中的则属于短语元素。
 
@@ -1238,7 +1238,7 @@
 
 # 四、事件
 
-## 1. Windows 事件
+## 4.1 Windows 事件
 
 - **onafterprint**：文档打印之后运行的脚本。
 - **onbeforeprint**：文档打印之前运行的脚本。
@@ -1259,7 +1259,7 @@
 - **onunload**：一旦页面已下载时触发（或者浏览器窗口已被关闭）。
 - **onhashchange**：URL 中 # 后部分改变时触发。
 
-## 2. Form 事件
+## 4.2 Form 事件
 
 - **onblur**：元素失去焦点时运行的脚本。
 - **onchange**：在元素值被改变时运行的脚本。
@@ -1276,13 +1276,13 @@
 - **onselect**：在元素中文本被选中后触发。
 - **onsubmit**：在提交表单时触发。
 
-## 3. Keyboard 事件
+## 4.3 Keyboard 事件
 
 - **onkeydown**：在用户按下按键时触发。事件次序：onkeydown，onkeypress，onkeyup。
 - **onkeypress**：在用户敲击按钮时触发。不会被所有按键触发（例如 ALT、CTRL、SHIFT、ESC）。
 - **onkeyup**：当用户释放按键时触发。
 
-## 4. Mouse 事件
+## 4.4 Mouse 事件
 
 - **onclick**：元素上发生鼠标点击时触发。
 - **ondblclick**：元素上发生鼠标双击时触发。
@@ -1303,7 +1303,7 @@
 - **onmousewheel**：当鼠标滚轮正在被滚动时运行的脚本。
 - **onscroll**：当元素滚动条被滚动时运行的脚本。
 
-## 5. Media 事件
+## 4.5 Media 事件
 
 - **onabort**：在退出时运行的脚本。
 - **oncanplay**：当文件就绪可以开始播放时运行的脚本（缓冲已足够开始时）。
