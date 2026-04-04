@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>flex</title>
+</head>
+<style>
+    /* 水平垂直居中 */
+    .parent {
+        display: flex;
+        justify-content: center; /* 水平居中 */
+        align-items: center; /* 垂直居中 */
+        height: 300px;
+    }
+
+    /* 三栏布局 */
+    .main {
+        display: flex;
+    }
+
+    .left, .right {
+        width: 200px;
+    }
+
+    .content {
+        flex: 1; /* 占满剩余空间 */
+    }
+
+    /* 等分布局 */
+    .container {
+        display: flex;
+        gap: 16px;
+    }
+
+    .item {
+        flex: 1; /* 每个等宽 */
+    }
+
+    /* 底部固定 + 内容滚动 */
+    .page {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+    }
+
+    .header {
+        flex-shrink: 0;
+    }
+
+    /* 头部不压缩 */
+    .content {
+        flex: 1;
+        overflow-y: auto;
+    }
+
+    /* 内容区自适应+滚动 */
+    .footer {
+        flex-shrink: 0; /* 底部不压缩 */
+    }
+
+    /* 卡片列表响应式 */
+    .card-list {
+        display: flex;
+        flex-wrap: wrap; /* 允许换行 */
+        gap: 20px;
+    }
+
+    .card {
+        flex: 1 1 250px; /* 最小250px，可放大可缩小 */
+        max-width: 350px; /* 最大不超过350px */
+    }
+
+</style>
+<body>
+
+<div class="parent">
+    <div>a</div>
+    <div>b</div>
+    <div>c</div>
+</div>
+
+<hr/>
+
+<div>
+    <div class="header">头部</div>
+    <div class="main">
+        <aside class="left">左侧栏</aside>
+        <article class="content">内容区</article>
+        <aside class="right">右侧栏</aside>
+    </div>
+    <div class="footer">底部</div>
+</div>
+
+<hr/>
+
+<div class="container">
+    <div class="item">a</div>
+    <div class="item">b</div>
+    <div class="item">c</div>
+</div>
+
+<hr/>
+
+<div class="page">
+    <div class="header">a</div>
+    <div class="content">b</div>
+    <div class="footer">c</div>
+</div>
+
+<hr/>
+
+<div class="card-list">
+    <div class="card">a</div>
+    <div class="card">b</div>
+    <div class="card">c</div>
+    <div class="card">d</div>
+    <div class="card">e</div>
+    <div class="card">f</div>
+    <div class="card">g</div>
+</div>
+
+</body>
+</html>

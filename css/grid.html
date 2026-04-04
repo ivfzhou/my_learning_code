@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>grid</title>
+</head>
+<style>
+    .grid-container {
+        display: grid;
+
+        /* 显式定义 3 列 */
+        grid-template-columns: 200px 1fr 150px;
+
+        /* 显式定义 3 行 */
+        grid-template-rows: 80px 1fr 60px;
+
+        /* 区域命名 */
+        grid-template-areas:
+             "header  header  header"
+             "sidebar main    aside"
+             "footer  footer  footer";
+
+        /* 隐式行/列的备用尺寸 */
+        grid-auto-rows: minmax(50px, auto);
+        grid-auto-columns: 100px;
+
+        /* 控制自动放置 */
+        grid-auto-flow: row dense;
+
+        gap: 10px;
+        height: 500px;
+    }
+
+    .item {
+        background: #4a90d9;
+        color: white;
+        padding: 16px;
+        border-radius: 8px;
+    }
+</style>
+<body>
+
+<div class="grid-container">
+    <div class="item" style="grid-area: header">Header</div>
+    <div class="item" style="grid-area: sidebar">Sidebar</div>
+    <div class="item" style="grid-area: main">Main Content</div>
+    <div class="item" style="grid-area: aside">Aside</div>
+    <div class="item" style="grid-area: footer">Footer</div>
+</div>
+
+</body>
+</html>
