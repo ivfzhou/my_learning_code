@@ -4,7 +4,7 @@
 
 1. https://developer.mozilla.org/en-US/docs/Web/JavaScript
 
-1. 一行多变量声明：var test1 = "hi", test2 = "hello", age = 25;。
+1. 一行多变量声明：`var test1 = "hi", test2 = "hello", age = 25;`。
 
 1. 原始数据类型：undefined、boolean、number、string、bigint。引用类型：object、function。
 
@@ -27,7 +27,7 @@
 
 1. NaN 参与的判等永远返回 false。判等中有字符串和数字时，先将另一个值转成字符串和数字。对象判等比较地址值。布尔值转成数字再判等。
 
-1. 函数中可通过 arguments 变量获取入参。函数可以接收任意个入参，遗漏的参数值会等于 undefined。
+1. 函数中可通过 `arguments` 变量获取入参。函数可以接收任意个入参，遗漏的参数值会等于 undefined。
 
 1. function 类型：
     ```javascript
@@ -229,7 +229,7 @@
 
 1. 数字存储为 64 位浮点数，但所有按位运算都以 32 位二进制数执行。
 
-1. 通过在脚本或函数的开头添加 "use strict"; 来声明严格模式。
+1. 通过在脚本或函数的开头添加 `"use strict";` 来声明严格模式。
     - 不允许在不声明变量的情况下使用变量、对象。
     - 不允许删除变量（或对象）、函数。
     - 不允许重复参数名。
@@ -246,14 +246,16 @@
     
 1. 箭头函数。如果函数只有一个语句，并且该语句返回一个值，则可以去掉大括号和 return 关键字。如果只有一个参数，也可以略过括号。在常规函数中，关键字 this 表示调用该函数的对象。对于箭头函数，this 关键字始终表示定义箭头函数的对象。
 
-1. 模块。script 标签中的 type="module"。模块仅适用于 HTTP(s) 协议。
+1. 模块。script 标签中的 `type="module"`。模块仅适用于 HTTP(s) 协议。
     ```javascript
     export const name = "Bill"
     export const age = 19
     
+    
     const name = "Bill"
     const age = 19
     export { name, age }
+    
     
     import { name, age } from "./person.js"
     ```
@@ -319,9 +321,9 @@
     
 1. ~ 位运算 NOT。实质上是对数字求负，然后减 1。
     ```javascript
-    var num1 = 25 //25 等于 00000000000000000000000000011001
-    var num2 = ~num1 //转换为 11111111111111111111111111100110
-    alert(num2) //输出 -26
+    var num1 = 25 // 25 等于 00000000000000000000000000011001
+    var num2 = ~num1 // 转换为 11111111111111111111111111100110
+    alert(num2) // 输出 -26
     ```
     
 1. 逻辑赋值运算符：
@@ -356,7 +358,7 @@
 
 # 二、字符串字面量
 
-| | |
+| 字符 | 含义 |
 | :-: | :-: |
 | \\n | 换行 |
 | \\t | 制表符 |
@@ -370,29 +372,28 @@
 | \\0*nnn* | 八进制代码 nnn 表示的字符（n 是 0 到 7 中的一个八进制数字） |
 | \\x*nn* | 十六进制代码 nn 表示的字符（n 是 0 到 F 中的一个十六进制数字） |
 | \\u*nnnn* | 十六进制代码 nnnn 表示的 Unicode 字符（n 是 0 到 F 中的一个十六进制数字） |
-| | |
 
 # 三、运算符优先级
 
-1. ()*括号*
-1. . [] ()*函数调用* new*带参构造* ?.*可选链*
-1. new*不带参构造*
-1. ++ --*后缀*
-1. ++ --*前缀* ! typeof delete void + -*一元* ~ delete
-1. **
-1. \* / %
-1. \+ -*二元*
-1. << >> >>>
-1. < <= > >= in instanceof
-1. == === != !==
-1. &
-1. ^
-1. |
-1. &&
-1. || ??*空值合并*
-1. ?:
-1. = += -= *= /= %= <<= >>= >>>= &= ^= |= **= &&= ||= => yield ...*展开运算符* yield\**委托运算符*
-1. ,
+1. `()` *括号*
+1. `.` `[]` `()` *函数调用*  `new ` *带参构造*  `?.` *可选链*
+1. `new`  *不带参构造*
+1. `++` `--` *后缀*
+1. `++` `--` *前缀* `!` `typeof` `delete` `void` `+` `-` *一元* `~`
+1. `**`
+1. `*` `/` `%`
+1. `+` `-` *二元*
+1. `<<` `>>` `>>>`
+1. `<` `<=` `>` `>=` `in` `instanceof`
+1. `==` `===` `!=` `!==`
+1. `&`
+1. `^`
+1. `|`
+1. `&&`
+1. `||` `??` *空值合并*
+1. `?:`
+1. `=` `+=` `-=` `*=` `/=` `%=` `<<=` `>>=` `>>>=` `&=` `^=` `|=` `**=` `&&=` `||=` `=>` `yield` `...` *展开运算符*  `yield*` *委托运算符*
+1. `,`
 
 # 四、语句
 
@@ -417,7 +418,7 @@
 
 # 五、API
 
-## 1. Boolean
+## 5.1 Boolean
 
 - **window.Boolean(*var*)**：返回 boolean 值。
 - **new Boolean(*var*)**：返回 Boolean 对象。
@@ -426,7 +427,7 @@
 - ***instance*.toString()**：返回布尔值的转换为字符串结果。
 - ***instance*.valueOf()**：返回布尔值的原始值。
 
-## 2. Number
+## 5.2 Number
 
 - **window.Infinity**：表示正无穷大的数值。
 - **window.NaN**：非数字（Not-a-Number）值。
@@ -470,7 +471,7 @@
 - ***instance*.toPrecision([ *precisionUint* ])**：返回指定长度的数字。*precisionUint* 是 1 ~ 21 之间（且包括 1 和 21）的值。若省略，则返回不带任何格式的数字。
 - ***instance*.valueOf()**：返回数字值。
 
-## 3. Math
+## 5.3 Math
 
 - **Math.PI**：返回 PI（约 3.14）。
 - **Math.E**：返回欧拉数（约 2.718）。
@@ -514,7 +515,7 @@
 - **Math.clz32(*x*)**：返回 *x* 的 32 位二进制表示中前导零的数量。
 - **Math.sign(*x*)**：返回数的符号（检查它是正数、负数还是零）。如果数字为正数，则返回 1，如果数字为负数，则返回 -1，如果数字为正零，则返回 0，如果数字为负零，则返回 -0，如果不是数字，则返回 NaN。
 
-## 4. String
+## 5.4 String
 
 - **window.String(*val*)**：将参数转换为字符串。
 - **String.fromCharCode(*num*, ...)**：将 Unicode 值作为字符串返回。
@@ -560,7 +561,7 @@
 - ***instance*.padStart(*countUint*, *str*)**：从 *str* 取 *countUint* 个字符（不够则重复 *str*），填充到字符串首部后返回。
 - ***instance*.padEnd(*countUint*, *str*)**：从 *str* 取 *countUint* 个字符（不够则重复 *str*），填充到字符串尾部后返回。
 
-## 5. Object
+## 5.5 Object
 
 - **Object.defineProperty(*obj*, *fieldStr*, *optionObj*)**：定义对象属性或更改属性的值。
     - *optionObj*
@@ -592,7 +593,7 @@
 - ***instance*.toString()**：将对象转换为字符串并返回结果。
 - ***instance*.valueOf()**：返回对象的原始值。
 
-## 6. RegExp
+## 5.6 RegExp
 
 - **new RegExp(*pattern*, *attributes*)**
 - ***instance*.lastIndex**：规定开始下一个匹配的索引。仅在设置了 g 修饰符时才有效。没有得到匹配，则将 lastIndex 重置为 0。
@@ -605,7 +606,7 @@
 - ***instance*.exec(*txt*)**：测试字符串中的匹配项。返回第一个匹配项。如果未找到匹配项返回 null。返回的值有两个属性 index、input。
 - ***instance*.toString()**：返回正则表达式的字符串值。
 
-## 7. Array
+## 5.7 Array
 
 - **Array.isArray(*obj*)**：检查对象是否为数组。
 - **Array.prototype**：允许您向数组添加属性和方法。
@@ -644,7 +645,7 @@
 - ***instance*.flat()**：展平嵌套数组来创建新数组。
 - ***instance*.flatMap(*func(val)any*)**：首先映射数组的所有元素，然后通过展平数组来创建新数组。
 
-## 8. Date
+## 5.8 Date
 
 - **Date.now()**：返回自 1970 年 1 月 1 日 00:00:00 UTC 以来的毫秒数。
 - **Date.parse(*dateStr*)**：返回日期字符串与 1970 年 1 月 1 日午夜之间的毫秒数。
@@ -758,13 +759,13 @@
 - ***instance*.setUTCSeconds(*second*, [ *millisec* ])**：根据世界时，设置日期对象的秒数。返回与 1970 年 1 月 1 日午夜之间的毫秒数。
 - ***instance*.setUTCMilliseconds(*millisec*)**：根据世界时，设置日期对象的毫秒数。返回与 1970 年 1 月 1 日午夜之间的毫秒数。
 
-## 9. Error
+## 5.9 Error
 
 - ***instance*.code**
 - ***instance*.name**：设置或返回错误名。
 - ***instance*.message**：设置或返回错误消息（一条字符串）。
 
-## 10. Map
+## 5.10 Map
 
 - **new Map(*keyValueArr*)**
 - ***instance*.size**：返回 Map 元素的数量。
@@ -778,7 +779,7 @@
 - ***instance*.keys()**：返回迭代器对象，其中包含 Map 中的键。
 - ***instance*.values()**：返回迭代器对象，其中包含 Map 中的值。
 
-## 11. Set
+## 5.11 Set
 
 - **new Set(*arr*)**
 - ***instance*.size**：返回 Set 中元素的数量。
@@ -791,7 +792,7 @@
 - ***instance*.keys()**：与 values() 相同。
 - ***instance*.entries()**：返回迭代器，其中包含 Set 中的 [ value,value ] 值值对。
 
-## 12. Promise
+## 5.12 Promise
 
 - **Promise.resolve(*val*)**
 - **new Promise(*func(resolveFunc, rejectFunc)*)**
@@ -799,7 +800,7 @@
 - ***instance*.catch(*func(val)*)**
 - ***instance*.finally(*func()*)**
 
-## 13. XMLHttpRequest
+## 5.13 XMLHttpRequest
 
 - **new XMLHttpRequest()**
 - ***instance*.readyState**：保存 XMLHttpRequest 的状态。
@@ -821,7 +822,7 @@
 - ***instance*.getResponseHeader(*header*)**：返回特定的头部信息。
 - ***instance*.setRequestHeader(*header*, *value*)**：将标签/值对添加到要发送的标头。
 
-## 14. Worker
+## 5.14 Worker
 
 - **new Worker(*jsPath*)**
 - ***instance*.onmessage**：设置为 func(event)。
@@ -829,7 +830,7 @@
         - data
 - ***instance*.terminate()**
 
-## 15. Window
+## 5.15 Window
 
 - **name**：设置或返回窗口的名称。
 - **closed**：返回窗口是否已被关闭。只读。
@@ -900,7 +901,7 @@
 - **matchMedia(*mediaQueryStr*)**：返回 MediaQueryList 对象，表示指定的 CSS 媒体查询字符串。
 - **requestAnimationFrame()**：请求浏览器在下一次重绘之前调用函数来更新动画。
 
-## 16. Document
+## 5.16 Document
 
 - **all**：返回对文档中所有 HTML 元素的引用。可如下使用：all[index]、all[name]、all.tags[tagName]。
 - **documentElement**：返回 html 元素对象（Element）。只读。
@@ -972,7 +973,7 @@
 - **addEventListener(*eventStr*, *func*, [ *captureBool* ])**：将事件处理程序附加到文档。
 - **removeEventListener(*eventStr*, *func*, [ *captureBool* ])**：从文档中删除事件处理程序（已使用 addEventListener() 方法附加的）。
 
-## 17. Screen
+## 5.17 Screen
 
 - **width**：返回以像素计的访问者屏幕宽度。只读。
 - **height**：返回以像素计的访问者屏幕的高度。只读。
@@ -988,7 +989,7 @@
 - **logicalYDPI**：返回显示屏幕每英寸的垂直方向的常规点数。
 - **updateInterval**：设置或返回屏幕的刷新率。
 
-## 18. Location
+## 5.18 Location
 
 - **href**：设置或返回整个 URL。可用于 a 标签对象，作用于 a 标签的 heaf 属性。
 - **origin**：返回 URL 的协议、主机名和端口号。只读。可用于 a 标签对象，作用于 a 标签的 heaf 属性。
@@ -1003,14 +1004,14 @@
 - **reload()**：重新加载当前文档。刷新页面。
 - **replace(*urlStr*)**：用新文档替换当前文档。
 
-## 19. History
+## 5.19 History
 
 - **length**：返回历史列表中的 URL 数量。
 - **back()**：加载历史记录列表中的上一个 URL。
 - **forward()**：加载历史列表中下一个 URL。
 - **go(*int*)**：从历史列表中加载一个特定的 URL。
 
-## 20. Navigator
+## 5.20 Navigator
 
 - **appName**：返回浏览器的名称。只读。Netscape。
 - **appCodeName**：返回浏览器的代码名称。只读。Mozilla。
@@ -1029,7 +1030,7 @@
 - **geolocation**：返回用户位置的 Geolocation 对象。只读。
 - **javaEnabled()**：如果浏览器启用了 Java，则返回 true。
 
-## 21. LocalStorage
+## 5.21 LocalStorage
 
 - **length**：返回存储在 Storage 对象中的数据项数。
 - **setItem(*nameStr*, *val*)**：将数据项存储在 storage 中。
@@ -1038,7 +1039,7 @@
 - **removeItem(*nameStr*)**：从存储中删除该键。
 - **clear()**：清空所有键。
 
-## 22. SessionStorage
+## 5.22 SessionStorage
 
 - **length**：返回存储在 Storage 对象中的数据项数。
 - **setItem(*nameStr*, *val*)**：将数据项存储在 storage 中。
@@ -1047,7 +1048,7 @@
 - **removeItem(*nameStr*)**：从存储中删除该键。
 - **clear()**：清空所有键。
 
-## 23. Console
+## 5.23 Console
 
 - **clear()**：清空控制台。
 - **assert(*expBool*, *msgStr*)**：如果 *expBool* 为 false，则将 *msgStr* 写入控制台。
@@ -1064,7 +1065,7 @@
 - **warn(*val*)**：将警告消息输出到控制台。
 - **error(*val*)**：将错误消息输出到控制台。
 
-## 24. Geolocation
+## 5.24 Geolocation
 
 - **getCurrentPosition(*func(obj)*, [ *func(err)* ])**
     - *obj*.coords.latitude：以十进制数表示的纬度（始终返回）。
@@ -1078,7 +1079,7 @@
 - **watchPosition(*func(obj)*, [ *func(err)* ])**
 - **clearWatch()**：注销先前使用 Geolocation.watchPosition() 安装的位置/错误监视处理程序。
 
-## 25. Element
+## 5.25 Element
 
 - **ownerDocument**：返回元素的根元素（文档对象）。
 - **accessKey**：设置或返回元素的快捷键（String）。
@@ -1193,7 +1194,7 @@
         - false：元素的底部将与可滚动祖先可见区域的底部对齐
         - 如果省略，它将滚动到元素的顶部。
 
-### 25.1. Input Element
+### 5.25.1 Input Element
 
 - **validity**：包含与输入元素有效性相关的布尔属性。
     - **customError**：如果设置了自定义有效性消息，则设置为 true。
@@ -1210,7 +1211,7 @@
 - **checkValidity()**：如果 input 元素包含有效数据，则返回 true。
 - **setCustomValidity(*txt*)**：设置 input 元素的 validationMessage 属性。
 
-## 26. Event
+## 5.26 Event
 
 - **altKey**：返回触发鼠标事件时是否按下了 ALT 键。
 - **animationName**：返回动画的名称。只读。
@@ -1223,13 +1224,13 @@
 - **clientX**：返回触发鼠标事件时，鼠标指针相对于当前窗口的水平坐标。
 - **clientY**：返回触发鼠标事件时，鼠标指针相对于当前窗口的垂直坐标。
 
-## 27. Attribute
+## 5.27 Attribute
 
 - **name**：返回属性的名称。只读。
 - **value**：设置或返回属性的值。
 - **specified**：如果已指定属性，则返回 true，否则返回 false。
 
-## 28. 全局函数
+## 5.28 全局函数
 
 - **call(*val*, [ *arg*, ... ])**
 
@@ -1258,7 +1259,7 @@
 1. **decodeURIComponent(*str*)**：解码 URI 组件。
 1. **import(*pathJs*)**：动态导入 js 文件，返回 Promise 对象。
 
-## 29. canvas
+## 5.29 canvas
 
 - **canvas.getContext("2d")**
 - **fillStyle**
@@ -1272,7 +1273,7 @@
 - **lineTo(*n*, *n*)**
 - **getImageData()**
 
-## 30. Plotly
+## 5.30 Plotly
 
 - **Plotly.newPlot(*divId*, *data*, *layout*)**
     - *data*：object_array。
@@ -1295,13 +1296,13 @@
             - title：string。坐标轴描述。
         - title：string。图形描述。
 
-## 31. HTMLCollection
+## 5.31 HTMLCollection
 
 - **length**：返回元素数。只读。
 - **item(*indexUint*)**：返回指定索引处的元素（Element）。如果索引号超出范围，则返回 null。
 - **namedItem(*idOrNameStr*)**：返回有指定 ID 或名称的元素（Element）。如果元素不存在，则返回 null。
 
-## 32. NodeList
+## 5.32 NodeList
 
 - **length**：返回节点数。只读。
 - **entries()**：从列表中返回带有键值对的迭代器。
@@ -1310,11 +1311,11 @@
 - **keys()**：使用列表中的键返回迭代器（Iterator）。
 - **values()**：使用列表中的值返回迭代器（Iterator）。
 
-## 33. DocumentImplementation
+## 5.33 DocumentImplementation
 
 - **hasFeature(*str*, *str*)**：用于检查浏览器是否支持 DOM 模块。
 
-## 34. DOMTokenList
+## 5.34 DOMTokenList
 
 - **length**：返回列表中的令牌数。只读。
 - **value**：以字符串形式返回令牌列表。
@@ -1330,7 +1331,7 @@
 - **values()**：返回带有列表中值的迭代器。
 - **entries()**：从列表中返回带有键/值对的迭代器。
 
-## 35. DOMRect
+## 5.35 DOMRect
 
 - **left**
 - **top**
@@ -1341,7 +1342,7 @@
 - **width**
 - **height**
 
-## 36. NamedNodeMap
+## 5.36 NamedNodeMap
 
 - **length**：返回 NamedNodeMap 中的属性数。只读。
 - **getNamedItem(*nameStr*)**：从 NamedNodeMap 返回属性节点（按名称）。
@@ -1349,7 +1350,7 @@
 - **removeNamedItem(*nameStr*)**：删除属性（节点）。返回被删除的属性节点。
 - **setNamedItem(*nodeObj*)**：按名称设置属性（节点）。返回替换后的属性节点，否则返回值为 null。
 
-## 37. 类型化数组
+## 5.37 类型化数组
 
 - Int8Array
 - Uint8Array
@@ -1373,7 +1374,7 @@
 
 1. https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js。
 
-## 1. API
+## 6.1 API
 
 - **new Chart(*canvasId*, *obj*)**
     - *obj*：object。
