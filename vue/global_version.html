@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>global version</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+<body>
+<div id="app">
+    <span>{{message}}</span>
+</div>
+<script>
+    const {createApp, ref} = Vue
+    createApp({
+        setup() {
+            let message = ref('this is a global vue usage.')
+            return {
+                message,
+            }
+        }
+    }).mount('#app')
+</script>
+</body>
+</html>
