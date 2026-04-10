@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>attributes bind usage</title>
+    <script type="importmap">
+        {
+          "imports": {
+            "vue": "https://unpkg.com/vue@3.5.32/dist/vue.esm-browser.js"
+          }
+        }
+    </script>
+</head>
+<body>
+<div id="app">
+    <div>标准写法：<span v-bind:id="boundSpanId">{{ boundSpanId }}</span></div>
+
+    <div>简略写法：<span :id="boundSpanId">{{ boundSpanId }}</span></div>
+
+    <div>同名变量绑定：<span :title="title">{{ title }}</span></div>
+
+    <div>同名变量绑定：<span v-bind:title="title">{{ title }}</span></div>
+
+    <div>绑定布尔属性：
+        <button :disabled="isButtonDisabled">按钮</button>
+    </div>
+
+    <div>绑定多个属性：<span v-bind="boundAttributes">{{ boundAttributes }}</span></div>
+
+    <div>表达式：<span :id=" boundSpanId + '_modified' ">{{ boundSpanId }}</span></div>
+
+    <div>动态参数：<span :[dynamicattributename]="dynamicattributename">{{ dynamicattributename }}</span></div>
+
+    <div>动态参数移除：<span :[removedattributename]="dynamicattributename">{{ dynamicattributename }}</span></div>
+</div>
+<script type="module">
+    import {createApp, ref} from 'vue'
+
+    createApp({
+        setup() {
+            const boundSpanId = ref('id')
+            const title = ref('演示标题')
+            const dynamicAttributeName = ref('id')
+            const dynamicattributename = ref('id')
+            const isButtonDisabled = ref(true)
+            const removedattributename = ref(null)
+            const boundAttributes = ref({
+                id: 'id',
+                class: 'class',
+            })
+            return {
+                boundSpanId,
+                title,
+                isButtonDisabled,
+                boundAttributes,
+                dynamicAttributeName,
+                dynamicattributename,
+                removedattributename
+            }
+        }
+    }).mount('#app')
+</script>
+</body>
+</html>

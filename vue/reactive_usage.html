@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>reactive usage</title>
+    <script type="importmap">
+        {
+          "imports": {
+            "vue": "https://unpkg.com/vue@3.5.32/dist/vue.esm-browser.js"
+          }
+        }
+    </script>
+</head>
+<body>
+<div id="app">
+    <div>
+        userProfile.name：{{ userProfile.name }}
+        <button @click="updateUserProfileName">更新</button>
+    </div>
+    <div>
+        userProfile：{{ userProfile }}
+        <button @click="replaceUserProfile">更新</button>
+    </div>
+
+    <div>
+        浅层引用：{{ shallowUserProfile.name }}
+        <button @click="updateShallowUserProfileName">更新</button>
+    </div>
+    <div>
+        浅层引用：{{ shallowUserProfile.nestedProfile.name }}
+        <button @click="updateNestedProfileName">更新</button>
+    </div>
+
+    <div>
+        数字：{{ reactiveNumber }}
+        <button @click="incrementReactiveNumber">更新</button>
+    </div>
+
+    <div>
+        内部属性解包：{{ reactiveMap.get(1) + 1 }}
+    </div>
+</div>
+<script type="module">
+    import {createApp, reactive, shallowReactive, ref} from 'vue'
+
+    createApp({
+        setup() {
+            const userProfile = reactive({name: 'zs'})
+
+            const originalUserObject = {}
+            const reactiveUserObject = reactive(originalUserObject)
+            console.log(reactiveUserObject === reactive(originalUserObject))
+            console.log(reactiveUserObject === reactive(reactive(originalUserObject)))
+
+            const userName = 'zs'
+            reactiveUserObject.name = userName
+            console.log(reactiveUserObject.name === userName)
+
+            const nestedProfile = {}
+            reactiveUserObject.nestedObj = nestedProfile
+            console.log(reactiveUserObject.nestedObj === nestedProfile)
+
+            const shallowUserProfile = shallowReactive({name: 'zs', nestedProfile: {name: 'zs'}})
+
+            const numericState = reactive({num: 1})
+            let {num: detachedNumber} = numericState
+            detachedNumber++
+            console.log(numericState.num)
+
+            const reactiveNumber = reactive(1)
+
+            const reactiveMap = reactive(new Map([[1, reactive(2)]]))
+            console.log(reactiveMap.get(1))
+
+            return {
+                userProfile,
+                shallowUserProfile,
+                reactiveNumber,
+                reactiveMap
+            }
+        },
+        methods: {
+            updateUserProfileName() {
+                this.userProfile.name = 'li'
+            },
+            replaceUserProfile() {
+                this.userProfile = {name: 'li'}
+            },
+            updateShallowUserProfileName() {
+                this.shallowUserProfile.name = 'li'
+            },
+            updateNestedProfileName() {
+                this.shallowUserProfile.nestedProfile.name = 'li'
+            },
+            incrementReactiveNumber() {
+                this.reactiveNumber++
+            }
+        }
+    }).mount('#app')
+</script>
+</body>
+</html>
