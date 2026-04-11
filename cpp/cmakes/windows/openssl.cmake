@@ -1,5 +1,15 @@
 # 设置版本号、头文件名、代码库名称等。
 set(OPENSSL_VERSION openssl-3.6.1)
+set(OPENSSL_NAME openssl-release-static)
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+    set(OPENSSL_NAME openssl-debug-static)
+endif ()
+if (COMPILE_DYNAMIC_MODE)
+    set(OPENSSL_NAME openssl-release-dynamic)
+    if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+        set(OPENSSL_NAME openssl-debug-dynamic)
+    endif ()
+endif ()
 set(OPENSSL_HEADER_NAME openssl)
 set(OPENSSL_LIBRARY_NAME libssl.lib)
 set(CRYPTO_LIBRARY_NAME libcrypto.lib)
@@ -69,10 +79,8 @@ if (NOT ((COMPILE_STATIC_MODE AND OPENSSL_LIBRARY AND OPENSSL_INCLUDE_DIRECTORY 
     if (CMAKE_BUILD_TYPE STREQUAL "Debug")
         set(OPENSSL_BUILD_TYPE --debug)
     endif ()
-    set(OPENSSL_NAME openssl-static)
     set(OPENSSL_BUILD_SHARED "no-shared")
     if (COMPILE_DYNAMIC_MODE)
-        set(OPENSSL_NAME openssl-dynamic)
         set(OPENSSL_BUILD_SHARED "")
     endif ()
     ExternalProject_Add(
@@ -90,7 +98,6 @@ if (NOT ((COMPILE_STATIC_MODE AND OPENSSL_LIBRARY AND OPENSSL_INCLUDE_DIRECTORY 
                 --with-zstd-include=${ZSTD_INCLUDE_DIRECTORY}
                 --with-zstd-lib=${ZSTD_LIBRARY}
                 no-docs
-                no-shared
                 enable-legacy
                 no-module
                 no-tests
@@ -116,6 +123,6 @@ if (NOT ((COMPILE_STATIC_MODE AND OPENSSL_LIBRARY AND OPENSSL_INCLUDE_DIRECTORY 
 endif ()
 
 # 导入头文件文件夹、链接代码库、复制动态代码库。
-include_directories(${OPENSSL_INCLUDE_DIRECTORY})
+list(APPEND INCLUDES ${OPENSSL_INCLUDE_DIRECTORY})
 list(APPEND LIBRARIES ${CRYPTO_LIBRARY} ${OPENSSL_LIBRARY} ws2_32 crypt32 bcrypt)
 list(APPEND DYNAMIC_LIBRARIES ${OPENSSL_DYNAMIC_LIBRARY} ${CRYPTO_DYNAMIC_LIBRARY})

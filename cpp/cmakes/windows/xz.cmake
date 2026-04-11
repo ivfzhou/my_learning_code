@@ -1,5 +1,15 @@
 # 设置版本号、头文件名、代码库名称等。
 set(XZ_VERSION v5.8.2)
+set(XZ_NAME xz-release-static)
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+    set(XZ_NAME xz-debug-static)
+endif ()
+if (COMPILE_DYNAMIC_MODE)
+    set(XZ_NAME xz-release-dynamic)
+    if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+        set(XZ_NAME xz-debug-dynamic)
+    endif ()
+endif ()
 set(XZ_HEADER_NAME lzma.h)
 set(XZ_LIBRARY_NAME lzma.lib)
 set(XZ_DYNAMIC_LIBRARY_NAME liblzma.dll)
@@ -45,10 +55,6 @@ if (NOT (XZ_LIBRARY AND XZ_INCLUDE_DIRECTORY))
     include(ExternalProject)
     set(XZ_BUILD_DIRECTORY ${XZ_DIRECTORY}/build)
     set(XZ_SOURCE_DIRECTORY ${XZ_DIRECTORY}/source)
-    set(XZ_NAME xz-static)
-    if (COMPILE_DYNAMIC_MODE)
-        set(XZ_NAME xz-dynamic)
-    endif ()
     ExternalProject_Add(
             ${XZ_NAME}
             PREFIX ${XZ_DIRECTORY}
@@ -76,6 +82,6 @@ if (NOT (XZ_LIBRARY AND XZ_INCLUDE_DIRECTORY))
 endif ()
 
 # 导入头文件文件夹、链接代码库、复制动态代码库。
-include_directories(${XZ_INCLUDE_DIRECTORY})
+list(APPEND INCLUDES ${XZ_INCLUDE_DIRECTORY})
 list(APPEND LIBRARIES ${XZ_LIBRARY})
 list(APPEND DYNAMIC_LIBRARIES ${XZ_DYNAMIC_LIBRARY})

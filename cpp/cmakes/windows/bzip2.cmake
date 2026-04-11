@@ -1,5 +1,15 @@
 # 设置版本号、头文件名、代码库名称等。
 set(BZIP2_VERSION 1ea1ac188ad4b9cb662e3f8314673c63df95a589)
+set(BZIP2_NAME bzip2-release-static)
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+    set(BZIP2_NAME bzip2-debug-static)
+endif ()
+if (COMPILE_DYNAMIC_MODE)
+    set(BZIP2_NAME bzip2-release-dynamic)
+    if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+        set(BZIP2_NAME bzip2-debug-dynamic)
+    endif ()
+endif ()
 set(BZIP2_HEADER_NAME bzlib.h)
 set(BZIP2_LIBRARY_NAME bz2_static.lib)
 if (COMPILE_DYNAMIC_MODE)
@@ -45,12 +55,12 @@ endif ()
 # 添加外部构建项目。
 if (NOT ((COMPILE_DYNAMIC_MODE AND BZIP2_DYNAMIC_LIBRARY AND BZIP2_LIBRARY AND BZIP2_INCLUDE_DIRECTORY) OR (COMPILE_STATIC_MODE AND BZIP2_LIBRARY AND BZIP2_INCLUDE_DIRECTORY)))
     include(ExternalProject)
-    set(BZIP2_NAME bzip2-static)
-    if (COMPILE_DYNAMIC_MODE)
-        set(BZIP2_NAME bzip2-dynamic)
-    endif ()
     set(BZIP2_BUILD_DIRECTORY ${BZIP2_DIRECTORY}/build)
     set(BZIP2_SOURCE_DIRECTORY ${BZIP2_DIRECTORY}/source)
+    set(BZIP2_ENABLE_STATIC_LIB ON)
+    if (COMPILE_DYNAMIC_MODE)
+        set(BZIP2_ENABLE_STATIC_LIB OFF)
+    endif ()
     ExternalProject_Add(
             ${BZIP2_NAME}
             PREFIX ${BZIP2_DIRECTORY}
@@ -70,7 +80,7 @@ if (NOT ((COMPILE_DYNAMIC_MODE AND BZIP2_DYNAMIC_LIBRARY AND BZIP2_LIBRARY AND B
                 -DENABLE_EXAMPLES=OFF
                 -DENABLE_SHARED_LIB:BOOL=${COMPILE_DYNAMIC_MODE}
                 -DENABLE_DOCS=OFF
-                -DENABLE_STATIC_LIB:BOOL=${COMPILE_STATIC_MODE}
+                -DENABLE_STATIC_LIB:BOOL=${BZIP2_ENABLE_STATIC_LIB}
             BUILD_COMMAND ${CMAKE_COMMAND} --build ${BZIP2_BUILD_DIRECTORY} --config ${CMAKE_BUILD_TYPE} --parallel --clean-first
             INSTALL_COMMAND ${CMAKE_COMMAND} --build ${BZIP2_BUILD_DIRECTORY} --config ${CMAKE_BUILD_TYPE} --target install
     )
@@ -81,6 +91,6 @@ if (NOT ((COMPILE_DYNAMIC_MODE AND BZIP2_DYNAMIC_LIBRARY AND BZIP2_LIBRARY AND B
 endif ()
 
 # 导入头文件文件夹、链接代码库、复制动态代码库。
-include_directories(${BZIP2_INCLUDE_DIRECTORY})
+list(APPEND INCLUDES ${BZIP2_INCLUDE_DIRECTORY})
 list(APPEND LIBRARIES ${BZIP2_LIBRARY})
 list(APPEND DYNAMIC_LIBRARIES ${BZIP2_DYNAMIC_LIBRARY})
