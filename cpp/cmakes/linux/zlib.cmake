@@ -1,5 +1,15 @@
 # 设置版本号、头文件名、代码库名称等。
 set(ZLIB_VERSION v1.3.2)
+set(ZLIB_NAME zlib-release-static)
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+    set(ZLIB_NAME zlib-debug-static)
+endif ()
+if (COMPILE_DYNAMIC_MODE)
+    set(ZLIB_NAME zlib-release-dynamic)
+    if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+        set(ZLIB_NAME zlib-debug-dynamic)
+    endif ()
+endif ()
 set(ZLIB_HEADER_NAME zlib.h)
 set(ZLIB_LIBRARY_NAME libz.a)
 set(ZLIB_DYNAMIC_LIBRARY_NAME libz.so.1.3.2)
@@ -43,18 +53,19 @@ if (ZLIB_LIBRARY)
 endif ()
 
 # 添加外部构建项目。
-if (NOT ((COMPILE_DYNAMIC_MODE AND ZLIB_DYNAMIC_LIBRARY AND ZLIB_INCLUDE_DIRECTORY AND ZLIB_LIBRARY) OR (COMPILE_STATIC_MODE AND ZLIB_INCLUDE_DIRECTORY AND ZLIB_LIBRARY)))
+if (NOT (
+    (COMPILE_DYNAMIC_MODE AND ZLIB_DYNAMIC_LIBRARY AND ZLIB_INCLUDE_DIRECTORY AND ZLIB_LIBRARY)
+    OR
+    ((NOT COMPILE_DYNAMIC_MODE) AND ZLIB_INCLUDE_DIRECTORY AND ZLIB_LIBRARY)
+))
     include(ExternalProject)
     set(ZLIB_BUILD_DIRECTORY ${ZLIB_DIRECTORY}/build)
     set(ZLIB_SOURCE_DIRECTORY ${ZLIB_DIRECTORY}/source)
-    set(ZLIB_NAME zlib-static)
-    if (COMPILE_DYNAMIC_MODE)
-        set(ZLIB_NAME zlib-dynamic)
-    endif ()
     ExternalProject_Add(
             ${ZLIB_NAME}
             PREFIX ${ZLIB_DIRECTORY}
             URL https://github.com/madler/zlib/archive/refs/tags/${ZLIB_VERSION}.zip
+            URL_HASH SHA256=31fd9fee98812abcf147d0e103bc4d2f983c35a8d7a807a328a299f3a74e0050
             SOURCE_DIR ${ZLIB_SOURCE_DIRECTORY}
             BINARY_DIR ${ZLIB_BUILD_DIRECTORY}
             CONFIGURE_COMMAND ${CMAKE_COMMAND} --fresh -S ${ZLIB_SOURCE_DIRECTORY} -B ${ZLIB_BUILD_DIRECTORY}
@@ -77,6 +88,6 @@ if (NOT ((COMPILE_DYNAMIC_MODE AND ZLIB_DYNAMIC_LIBRARY AND ZLIB_INCLUDE_DIRECTO
 endif ()
 
 # 导入头文件文件夹、链接代码库、复制动态代码库。
-include_directories(${ZLIB_INCLUDE_DIRECTORY})
+list(APPEND INCLUDES ${ZLIB_INCLUDE_DIRECTORY})
 list(APPEND LIBRARIES ${ZLIB_LIBRARY})
 list(APPEND DYNAMIC_LIBRARIES ${ZLIB_DYNAMIC_LIBRARY})

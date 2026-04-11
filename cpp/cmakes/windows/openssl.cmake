@@ -66,17 +66,8 @@ if (NOT ((COMPILE_STATIC_MODE AND OPENSSL_LIBRARY AND OPENSSL_INCLUDE_DIRECTORY 
     set(OPENSSL_BUILD_DIRECTORY ${OPENSSL_DIRECTORY}/build)
     set(OPENSSL_SOURCE_DIRECTORY ${OPENSSL_DIRECTORY}/source)
     set(OPENSSL_BUILD_TYPE --release)
-    set(OPENSSL_COMPILE_FLAGS "-MT")
     if (CMAKE_BUILD_TYPE STREQUAL "Debug")
         set(OPENSSL_BUILD_TYPE --debug)
-        set(OPENSSL_COMPILE_FLAGS "-MTd")
-        if (COMPILE_DYNAMIC_MODE)
-            set(OPENSSL_COMPILE_FLAGS "-MDd")
-        endif ()
-    else ()
-        if (COMPILE_DYNAMIC_MODE)
-            set(OPENSSL_COMPILE_FLAGS "-MD")
-        endif ()
     endif ()
     set(OPENSSL_NAME openssl-static)
     set(OPENSSL_BUILD_SHARED "no-shared")
@@ -88,6 +79,7 @@ if (NOT ((COMPILE_STATIC_MODE AND OPENSSL_LIBRARY AND OPENSSL_INCLUDE_DIRECTORY 
             ${OPENSSL_NAME}
             PREFIX ${OPENSSL_DIRECTORY}
             URL https://github.com/openssl/openssl/archive/refs/tags/${OPENSSL_VERSION}.zip
+            URL_HASH SHA256=b5fb172237ed3b1b47a9f7f15d3a40f9e9563f59f544b7078780ee27279a3c0f
             SOURCE_DIR ${OPENSSL_SOURCE_DIRECTORY}
             BINARY_DIR ${OPENSSL_BUILD_DIRECTORY}
             CONFIGURE_COMMAND call "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Auxiliary\\Build\\vcvars64.bat" && perl ${OPENSSL_SOURCE_DIRECTORY}/Configure
@@ -97,14 +89,15 @@ if (NOT ((COMPILE_STATIC_MODE AND OPENSSL_LIBRARY AND OPENSSL_INCLUDE_DIRECTORY 
                 --with-zlib-lib=${ZLIB_LIBRARY}
                 --with-zstd-include=${ZSTD_INCLUDE_DIRECTORY}
                 --with-zstd-lib=${ZSTD_LIBRARY}
-                ${OPENSSL_BUILD_TYPE}
                 no-docs
-                ${OPENSSL_BUILD_SHARED}
-                no-deprecated
+                no-shared
+                enable-legacy
+                no-module
                 no-tests
                 zlib
                 enable-zstd
-                ${OPENSSL_COMPILE_FLAGS}
+                ${OPENSSL_BUILD_TYPE}
+                ${OPENSSL_BUILD_SHARED}
             BUILD_COMMAND call "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Auxiliary\\Build\\vcvars64.bat" && nmake
             INSTALL_COMMAND call "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Auxiliary\\Build\\vcvars64.bat" && nmake install
     )

@@ -1,9 +1,4 @@
-# MT：静态链接运行时库（Release 模式）。
-# MTd：静态链接运行时库（Debug 模式）。
-# MD：动态链接运行时库（Release 模式）。
-# MDd：动态链接运行时库（Debug 模式）。
-
-# 设置编译参数。
+# 设置运行库。
 set(CMAKE_MSVC_RUNTIME_LIBRARY MultiThreaded)
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     set(CMAKE_MSVC_RUNTIME_LIBRARY MultiThreadedDebug)
@@ -15,6 +10,7 @@ if (COMPILE_DYNAMIC_MODE)
     endif ()
 endif ()
 
+# 设置依赖库的编译参数。
 set(LIBRARY_COMPILE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 set(LIBRARY_COMPILE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
 set(LIBRARY_COMPILE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
@@ -29,6 +25,11 @@ if (COMPILE_DYNAMIC_MODE)
     set(LIBRARY_COMPILE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} /MD")
 endif ()
 
+# 设置编译参数。
+# MT：静态链接运行时库（Release 模式）。
+# MTd：静态链接运行时库（Debug 模式）。
+# MD：动态链接运行时库（Release 模式）。
+# MDd：动态链接运行时库（Debug 模式）。
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /utf-8")
 set(TMP_CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
 set(TMP_CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
@@ -38,6 +39,8 @@ if (COMPILE_DYNAMIC_MODE)
 endif ()
 set(CMAKE_CXX_FLAGS_DEBUG "${TMP_CMAKE_CXX_FLAGS_DEBUG}")
 set(CMAKE_CXX_FLAGS_RELEASE "${TMP_CMAKE_CXX_FLAGS_RELEASE}")
+unset(TMP_CMAKE_CXX_FLAGS_DEBUG)
+unset(TMP_CMAKE_CXX_FLAGS_RELEASE)
 
 # 添加依赖。
 include(cmakes/windows/argparse.cmake)
@@ -52,4 +55,4 @@ include(cmakes/windows/openssl.cmake)
 include(cmakes/windows/jwt-cpp.cmake)
 include(cmakes/windows/libzip.cmake)
 
-add_definitions(-DWINDOWS)
+list(APPEND DEFINITIONS "-DWINDOWS")

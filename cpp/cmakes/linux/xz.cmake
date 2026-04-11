@@ -1,5 +1,15 @@
 # 设置版本号、头文件名、代码库名称等。
 set(XZ_VERSION v5.8.2)
+set(XZ_NAME xz-release-static)
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+    set(XZ_NAME xz-debug-static)
+endif ()
+if (COMPILE_DYNAMIC_MODE)
+    set(XZ_NAME xz-release-dynamic)
+    if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+        set(XZ_NAME xz-debug-dynamic)
+    endif ()
+endif ()
 set(XZ_HEADER_NAME lzma.h)
 set(XZ_LIBRARY_NAME liblzma.a)
 set(XZ_DYNAMIC_LIBRARY_NAME liblzma.so.5.8.2)
@@ -48,14 +58,11 @@ if (NOT (XZ_LIBRARY AND XZ_INCLUDE_DIRECTORY))
     include(ExternalProject)
     set(XZ_BUILD_DIRECTORY ${XZ_DIRECTORY}/build)
     set(XZ_SOURCE_DIRECTORY ${XZ_DIRECTORY}/source)
-    set(XZ_NAME xz-static)
-    if (COMPILE_DYNAMIC_MODE)
-        set(XZ_NAME xz-dynamic)
-    endif ()
     ExternalProject_Add(
             ${XZ_NAME}
             PREFIX ${XZ_DIRECTORY}
             URL https://github.com/tukaani-project/xz/archive/refs/tags/${XZ_VERSION}.zip
+            URL_HASH SHA256=f31af924df81d645720eee558a00394d3f8a6c59b97c315a541a6598a9aea3d2
             SOURCE_DIR ${XZ_SOURCE_DIRECTORY}
             BINARY_DIR ${XZ_BUILD_DIRECTORY}
             CONFIGURE_COMMAND ${CMAKE_COMMAND} --fresh -S ${XZ_SOURCE_DIRECTORY} -B ${XZ_BUILD_DIRECTORY}
@@ -64,7 +71,6 @@ if (NOT (XZ_LIBRARY AND XZ_INCLUDE_DIRECTORY))
                 -DCMAKE_C_FLAGS=${LIBRARY_COMPILE_C_FLAGS}
                 -DCMAKE_C_FLAGS_DEBUG=${LIBRARY_COMPILE_C_FLAGS_DEBUG}
                 -DCMAKE_C_FLAGS_RELEASE=${LIBRARY_COMPILE_C_FLAGS_RELEASE}
-                -DCMAKE_WINDOWS_EXPORT_ALL_SYMBOLS:BOOL=${COMPILE_DYNAMIC_MODE}
                 -DBUILD_SHARED_LIBS:BOOL=${COMPILE_DYNAMIC_MODE}
                 -DXZ_DOC=OFF
             BUILD_COMMAND ${CMAKE_COMMAND} --build ${XZ_BUILD_DIRECTORY} --config ${CMAKE_BUILD_TYPE} --parallel --clean-first
@@ -77,6 +83,6 @@ if (NOT (XZ_LIBRARY AND XZ_INCLUDE_DIRECTORY))
 endif ()
 
 # 导入头文件文件夹、链接代码库、复制动态代码库。
-include_directories(${XZ_INCLUDE_DIRECTORY})
+list(APPEND INCLUDES ${XZ_INCLUDE_DIRECTORY})
 list(APPEND LIBRARIES ${XZ_LIBRARY})
 list(APPEND DYNAMIC_LIBRARIES ${XZ_DYNAMIC_LIBRARY})

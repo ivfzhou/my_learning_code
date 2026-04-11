@@ -1,5 +1,15 @@
 # 设置版本号、头文件名、代码库名称等。
 set(ZSTD_VERSION v1.5.7)
+set(ZSTD_NAME zstd-release-static)
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+    set(ZSTD_NAME zstd-debug-static)
+endif ()
+if (COMPILE_DYNAMIC_MODE)
+    set(ZSTD_NAME zstd-release-dynamic)
+    if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+        set(ZSTD_NAME zstd-debug-dynamic)
+    endif ()
+endif ()
 set(ZSTD_HEADER_NAME zstd.h)
 set(ZSTD_LIBRARY_NAME libzstd.a)
 set(ZSTD_DYNAMIC_LIBRARY_NAME libzstd.so.1.5.7)
@@ -47,14 +57,11 @@ if (NOT (ZSTD_LIBRARY AND ZSTD_INCLUDE_DIRECTORY))
     include(ExternalProject)
     set(ZSTD_BUILD_DIRECTORY ${ZSTD_DIRECTORY}/build)
     set(ZSTD_SOURCE_DIRECTORY ${ZSTD_DIRECTORY}/source)
-    set(ZSTD_NAME zstd-static)
-    if (COMPILE_DYNAMIC_MODE)
-        set(ZSTD_NAME zstd-dynamic)
-    endif ()
     ExternalProject_Add(
             ${ZSTD_NAME}
             PREFIX ${ZSTD_DIRECTORY}
             URL https://github.com/facebook/zstd/archive/refs/tags/${ZSTD_VERSION}.zip
+            URL_HASH SHA256=7897bc5d620580d9b7cd3539c44b59d78f3657d33663fe97a145e07b4ebd69a4
             SOURCE_DIR ${ZSTD_SOURCE_DIRECTORY}
             BINARY_DIR ${ZSTD_BUILD_DIRECTORY}
             CONFIGURE_COMMAND ${CMAKE_COMMAND} --fresh -S ${ZSTD_SOURCE_DIRECTORY}/build/cmake -B ${ZSTD_BUILD_DIRECTORY}
@@ -78,6 +85,6 @@ if (NOT (ZSTD_LIBRARY AND ZSTD_INCLUDE_DIRECTORY))
 endif ()
 
 # 导入头文件文件夹、链接代码库、复制动态代码库。
-include_directories(${ZSTD_INCLUDE_DIRECTORY})
+list(APPEND INCLUDES ${ZSTD_INCLUDE_DIRECTORY})
 list(APPEND LIBRARIES ${ZSTD_LIBRARY})
 list(APPEND DYNAMIC_LIBRARIES ${ZSTD_DYNAMIC_LIBRARY})

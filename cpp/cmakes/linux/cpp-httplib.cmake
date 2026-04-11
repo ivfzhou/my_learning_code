@@ -1,5 +1,15 @@
 # 设置版本号、头文件名、代码库名称等。
 set(CPP_HTTPLIB_VERSION v0.20.0)
+set(CPP_HTTPLIB_NAME cpp-httplib-release-static)
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+    set(CPP_HTTPLIB_NAME cpp-httplib-debug-static)
+endif ()
+if (COMPILE_DYNAMIC_MODE)
+    set(CPP_HTTPLIB_NAME cpp-httplib-release-dynamic)
+    if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+        set(CPP_HTTPLIB_NAME cpp-httplib-debug-dynamic)
+    endif ()
+endif ()
 set(CPP_HTTPLIB_HEADER_NAME httplib.h)
 set(CPP_HTTPLIB_DIRECTORY ${DEPENDENCIES_DIRECTORY}/cpp-httplib)
 set(CPP_HTTPLIB_INSTALL_DIRECTORY ${CPP_HTTPLIB_DIRECTORY}/install)
@@ -21,14 +31,11 @@ if (NOT CPP_HTTPLIB_INCLUDE_DIRECTORY)
     include(ExternalProject)
     set(CPP_HTTPLIB_BUILD_DIRECTORY ${CPP_HTTPLIB_DIRECTORY}/build)
     set(CPP_HTTPLIB_SOURCE_DIRECTORY ${CPP_HTTPLIB_DIRECTORY}/source)
-    set(CPP_HTTPLIB_NAME cpp-httplib-static)
-    if (COMPILE_DYNAMIC_MODE)
-        set(CPP_HTTPLIB_NAME cpp-httplib-dynamic)
-    endif ()
     ExternalProject_Add(
             ${CPP_HTTPLIB_NAME}
             PREFIX ${CPP_HTTPLIB_DIRECTORY}
             URL https://github.com/yhirose/cpp-httplib/archive/refs/tags/${CPP_HTTPLIB_VERSION}.zip
+            URL_HASH SHA256=0bf6bae6d95c5b0ea34ebd9be81005412009b56785dbca1978872090fd769d36
             SOURCE_DIR ${CPP_HTTPLIB_SOURCE_DIRECTORY}
             BINARY_DIR ${CPP_HTTPLIB_BUILD_DIRECTORY}
             CONFIGURE_COMMAND ${CMAKE_COMMAND} --fresh -S ${CPP_HTTPLIB_SOURCE_DIRECTORY} -B ${CPP_HTTPLIB_BUILD_DIRECTORY}
@@ -46,4 +53,4 @@ if (NOT CPP_HTTPLIB_INCLUDE_DIRECTORY)
 endif ()
 
 # 导入头文件文件夹、链接代码库、复制动态代码库。
-include_directories(${CPP_HTTPLIB_INCLUDE_DIRECTORY})
+list(APPEND INCLUDES ${CPP_HTTPLIB_INCLUDE_DIRECTORY})

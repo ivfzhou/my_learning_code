@@ -56,6 +56,7 @@ if (NOT (ZSTD_LIBRARY AND ZSTD_INCLUDE_DIRECTORY))
             ${ZSTD_NAME}
             PREFIX ${ZSTD_DIRECTORY}
             URL https://github.com/facebook/zstd/archive/refs/tags/${ZSTD_VERSION}.zip
+            URL_HASH SHA256=7897bc5d620580d9b7cd3539c44b59d78f3657d33663fe97a145e07b4ebd69a4
             SOURCE_DIR ${ZSTD_SOURCE_DIRECTORY}
             BINARY_DIR ${ZSTD_BUILD_DIRECTORY}
             CONFIGURE_COMMAND ${CMAKE_COMMAND} --fresh -S ${ZSTD_SOURCE_DIRECTORY}/build/cmake -B ${ZSTD_BUILD_DIRECTORY}

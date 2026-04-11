@@ -53,6 +53,7 @@ if (NOT (XZ_LIBRARY AND XZ_INCLUDE_DIRECTORY))
             ${XZ_NAME}
             PREFIX ${XZ_DIRECTORY}
             URL https://github.com/tukaani-project/xz/archive/refs/tags/${XZ_VERSION}.zip
+            URL_HASH SHA256=f31af924df81d645720eee558a00394d3f8a6c59b97c315a541a6598a9aea3d2
             SOURCE_DIR ${XZ_SOURCE_DIRECTORY}
             BINARY_DIR ${XZ_BUILD_DIRECTORY}
             CONFIGURE_COMMAND ${CMAKE_COMMAND} --fresh -S ${XZ_SOURCE_DIRECTORY} -B ${XZ_BUILD_DIRECTORY}

@@ -1,5 +1,15 @@
 # 设置版本号、头文件名、代码库名称等。
 set(YAML_CPP_VERSION yaml-cpp-0.9.0)
+set(YAML_CPP_NAME yaml-cpp-release-static)
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+    set(YAML_CPP_NAME yaml-cpp-debug-static)
+endif ()
+if (COMPILE_DYNAMIC_MODE)
+    set(YAML_CPP_NAME yaml-cpp-release-dynamic)
+    if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+        set(YAML_CPP_NAME yaml-cpp-debug-dynamic)
+    endif ()
+endif ()
 set(YAML_CPP_HEADER_NAME yaml-cpp/yaml.h)
 set(YAML_CPP_LIBRARY_NAME libyaml-cpp.a)
 set(YAML_CPP_DYNAMIC_LIBRARY_NAME libyaml-cpp.so.0.9.0)
@@ -47,18 +57,19 @@ if (YAML_CPP_LIBRARY)
 endif ()
 
 # 添加外部构建项目。
-if (NOT ((COMPILE_DYNAMIC_MODE AND YAML_CPP_DYNAMIC_LIBRARY AND YAML_CPP_LIBRARY AND YAML_CPP_INCLUDE_DIRECTORY) OR (COMPILE_STATIC_MODE AND YAML_CPP_LIBRARY AND YAML_CPP_INCLUDE_DIRECTORY)))
+if (NOT (
+    (COMPILE_DYNAMIC_MODE AND YAML_CPP_DYNAMIC_LIBRARY AND YAML_CPP_LIBRARY AND YAML_CPP_INCLUDE_DIRECTORY)
+    OR
+    ((NOT COMPILE_DYNAMIC_MODE) AND YAML_CPP_LIBRARY AND YAML_CPP_INCLUDE_DIRECTORY)
+))
     include(ExternalProject)
     set(YAML_CPP_BUILD_DIRECTORY ${YAML_CPP_DIRECTORY}/build)
     set(YAML_CPP_SOURCE_DIRECTORY ${YAML_CPP_DIRECTORY}/source)
-    set(YAML_CPP_NAME yaml-cpp-static)
-    if (COMPILE_DYNAMIC_MODE)
-        set(YAML_CPP_NAME yaml-cpp-dynamic)
-    endif ()
     ExternalProject_Add(
             ${YAML_CPP_NAME}
             PREFIX ${YAML_CPP_DIRECTORY}
             URL https://github.com/jbeder/yaml-cpp/archive/refs/tags/${YAML_CPP_VERSION}.zip
+            URL_HASH SHA256=1c22709eb1fcde200c87ef4e878ce2c9477cc05eae84ebf1f72ec5b356468fee
             SOURCE_DIR ${YAML_CPP_SOURCE_DIRECTORY}
             BINARY_DIR ${YAML_CPP_BUILD_DIRECTORY}
             CONFIGURE_COMMAND ${CMAKE_COMMAND} --fresh -S ${YAML_CPP_SOURCE_DIRECTORY} -B ${YAML_CPP_BUILD_DIRECTORY}
@@ -80,9 +91,9 @@ if (NOT ((COMPILE_DYNAMIC_MODE AND YAML_CPP_DYNAMIC_LIBRARY AND YAML_CPP_LIBRARY
 endif ()
 
 # 导入头文件文件夹、链接代码库、复制动态代码库。
-if (COMPILE_STATIC_MODE)
-    add_definitions(-DYAML_CPP_STATIC_DEFINE=1)
+if (NOT COMPILE_DYNAMIC_MODE)
+    list(APPEND DEFINITIONS "-DYAML_CPP_STATIC_DEFINE=1")
 endif ()
-include_directories(${YAML_CPP_INCLUDE_DIRECTORY})
+list(APPEND INCLUDES ${YAML_CPP_INCLUDE_DIRECTORY})
 list(APPEND LIBRARIES ${YAML_CPP_LIBRARY})
 list(APPEND DYNAMIC_LIBRARIES ${YAML_CPP_DYNAMIC_LIBRARY})

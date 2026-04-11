@@ -1,5 +1,15 @@
 # 设置版本号、头文件名、代码库名称等。
 set(JWT_CPP_VERSION v0.7.2)
+set(JWT_CPP_NAME jwt-cpp-release-static)
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+    set(JWT_CPP_NAME jwt-cpp-debug-static)
+endif ()
+if (COMPILE_DYNAMIC_MODE)
+    set(JWT_CPP_NAME jwt-cpp-release-dynamic)
+    if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+        set(JWT_CPP_NAME jwt-cpp-debug-dynamic)
+    endif ()
+endif ()
 set(JWT_CPP_HEADER_NAME jwt-cpp/jwt.h)
 set(JWT_CPP_DIRECTORY ${DEPENDENCIES_DIRECTORY}/jwt-cpp)
 set(JWT_CPP_INSTALL_DIRECTORY ${JWT_CPP_DIRECTORY}/install)
@@ -21,14 +31,11 @@ if (NOT JWT_CPP_INCLUDE_DIRECTORY)
     include(ExternalProject)
     set(JWT_CPP_BUILD_DIRECTORY ${JWT_CPP_DIRECTORY}/build)
     set(JWT_CPP_SOURCE_DIRECTORY ${JWT_CPP_DIRECTORY}/source)
-    set(JWT_CPP_NAME jwt-cpp-static)
-    if (COMPILE_DYNAMIC_MODE)
-        set(JWT_CPP_NAME jwt-cpp-dynamic)
-    endif ()
     ExternalProject_Add(
             ${JWT_CPP_NAME}
             PREFIX ${JWT_CPP_DIRECTORY}
             URL https://github.com/Thalhammer/jwt-cpp/archive/refs/tags/${JWT_CPP_VERSION}.zip
+            URL_HASH SHA256=1d288deca2252183aa927f135b83a312882d1a69732f6789c066a868c27681a4
             SOURCE_DIR ${JWT_CPP_SOURCE_DIRECTORY}
             BINARY_DIR ${JWT_CPP_BUILD_DIRECTORY}
             CONFIGURE_COMMAND ${CMAKE_COMMAND} --fresh -S ${JWT_CPP_SOURCE_DIRECTORY} -B ${JWT_CPP_BUILD_DIRECTORY}
@@ -52,4 +59,4 @@ if (NOT JWT_CPP_INCLUDE_DIRECTORY)
 endif ()
 
 # 导入头文件文件夹、链接代码库、复制动态代码库。
-include_directories(${JWT_CPP_INCLUDE_DIRECTORY})
+list(APPEND INCLUDES ${JWT_CPP_INCLUDE_DIRECTORY})

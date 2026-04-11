@@ -1,5 +1,15 @@
 # 设置版本号、头文件名、代码库名称等。
 set(OPENSSL_VERSION openssl-3.6.1)
+set(OPENSSL_NAME openssl-release-static)
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+    set(OPENSSL_NAME openssl-debug-static)
+endif ()
+if (COMPILE_DYNAMIC_MODE)
+    set(OPENSSL_NAME openssl-release-dynamic)
+    if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+        set(OPENSSL_NAME openssl-debug-dynamic)
+    endif ()
+endif ()
 set(OPENSSL_HEADER_NAME openssl)
 set(OPENSSL_LIBRARY_NAME libssl.a)
 set(CRYPTO_LIBRARY_NAME libcrypto.a)
@@ -67,7 +77,11 @@ if (CRYPTO_LIBRARY)
 endif ()
 
 # 添加外部构建项目。
-if (NOT ((COMPILE_STATIC_MODE AND OPENSSL_LIBRARY AND OPENSSL_INCLUDE_DIRECTORY AND CRYPTO_LIBRARY) OR (COMPILE_DYNAMIC_MODE AND CRYPTO_DYNAMIC_LIBRARY AND OPENSSL_DYNAMIC_LIBRARY AND OPENSSL_LIBRARY AND OPENSSL_INCLUDE_DIRECTORY AND CRYPTO_LIBRARY)))
+if (NOT (
+    ((NOT COMPILE_DYNAMIC_MODE) AND OPENSSL_LIBRARY AND OPENSSL_INCLUDE_DIRECTORY AND CRYPTO_LIBRARY)
+    OR
+    (COMPILE_DYNAMIC_MODE AND CRYPTO_DYNAMIC_LIBRARY AND OPENSSL_DYNAMIC_LIBRARY AND OPENSSL_LIBRARY AND OPENSSL_INCLUDE_DIRECTORY AND CRYPTO_LIBRARY)
+))
     include(ExternalProject)
     set(OPENSSL_BUILD_DIRECTORY ${OPENSSL_DIRECTORY}/build)
     set(OPENSSL_SOURCE_DIRECTORY ${OPENSSL_DIRECTORY}/source)
@@ -75,16 +89,15 @@ if (NOT ((COMPILE_STATIC_MODE AND OPENSSL_LIBRARY AND OPENSSL_INCLUDE_DIRECTORY 
     if (CMAKE_BUILD_TYPE STREQUAL "Debug")
         set(OPENSSL_BUILD_TYPE --debug)
     endif ()
-    set(OPENSSL_NAME openssl-static)
     set(OPENSSL_BUILD_SHARED "no-shared")
     if (COMPILE_DYNAMIC_MODE)
-        set(OPENSSL_NAME openssl-dynamic)
         set(OPENSSL_BUILD_SHARED "")
     endif ()
     ExternalProject_Add(
             ${OPENSSL_NAME}
             PREFIX ${OPENSSL_DIRECTORY}
             URL https://github.com/openssl/openssl/archive/refs/tags/${OPENSSL_VERSION}.zip
+            URL_HASH SHA256=b5fb172237ed3b1b47a9f7f15d3a40f9e9563f59f544b7078780ee27279a3c0f
             SOURCE_DIR ${OPENSSL_SOURCE_DIRECTORY}
             BINARY_DIR ${OPENSSL_BUILD_DIRECTORY}
             CONFIGURE_COMMAND perl ${OPENSSL_SOURCE_DIRECTORY}/Configure
@@ -94,12 +107,13 @@ if (NOT ((COMPILE_STATIC_MODE AND OPENSSL_LIBRARY AND OPENSSL_INCLUDE_DIRECTORY 
                 --with-zlib-lib=${ZLIB_LIBRARY_DIRECTORY}
                 --with-zstd-include=${ZSTD_INCLUDE_DIRECTORY}
                 --with-zstd-lib=${ZSTD_LIBRARY_DIRECTORY}
-                ${OPENSSL_BUILD_TYPE}
                 no-docs
-                no-deprecated
+                enable-legacy
+                no-module
                 no-tests
                 zlib
                 enable-zstd
+                ${OPENSSL_BUILD_TYPE}
                 ${OPENSSL_BUILD_SHARED}
             BUILD_COMMAND make
             INSTALL_COMMAND make install
@@ -119,6 +133,6 @@ if (NOT ((COMPILE_STATIC_MODE AND OPENSSL_LIBRARY AND OPENSSL_INCLUDE_DIRECTORY 
 endif ()
 
 # 导入头文件文件夹、链接代码库、复制动态代码库。
-include_directories(${OPENSSL_INCLUDE_DIRECTORY})
-list(APPEND LIBRARIES ${CRYPTO_LIBRARY} ${OPENSSL_LIBRARY})
+list(APPEND INCLUDES ${OPENSSL_INCLUDE_DIRECTORY})
+list(APPEND LIBRARIES ${OPENSSL_LIBRARY} ${CRYPTO_LIBRARY})
 list(APPEND DYNAMIC_LIBRARIES ${OPENSSL_DYNAMIC_LIBRARY} ${CRYPTO_DYNAMIC_LIBRARY})
