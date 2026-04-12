@@ -194,13 +194,13 @@ endif ()
 install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION bin)
 
 # 安装工程中的头文件到 include 目录，并保留相对目录结构。
-foreach (HEADER ${HEADERS})
-    file(RELATIVE_PATH HEADER_RELATIVE_PATH ${CMAKE_SOURCE_DIR} ${HEADER})
+foreach (v ${HEADERS})
+    file(RELATIVE_PATH HEADER_RELATIVE_PATH ${CMAKE_SOURCE_DIR} ${v})
     get_filename_component(HEADER_DIR ${HEADER_RELATIVE_PATH} DIRECTORY)
     if (HEADER_DIR STREQUAL "")
-        install(FILES ${HEADER} DESTINATION include)
+        install(FILES ${v} DESTINATION include)
     else ()
-        install(FILES ${HEADER} DESTINATION include/${HEADER_DIR})
+        install(FILES ${v} DESTINATION include/${HEADER_DIR})
     endif ()
 endforeach ()
 
