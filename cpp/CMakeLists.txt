@@ -110,7 +110,7 @@ endif ()
 file(TO_CMAKE_PATH "${DEPENDENCIES_DIRECTORY}" DEPENDENCIES_DIRECTORY)
 file(MAKE_DIRECTORY ${DEPENDENCIES_DIRECTORY})
 
-# 设置源代码文件（排除测试文件）。
+# 收集源代码文件。
 file(GLOB SOURCES
         ${CMAKE_SOURCE_DIR}/*.cpp
         ${CMAKE_SOURCE_DIR}/inheritance_usage/*.cpp
@@ -122,7 +122,7 @@ file(GLOB SOURCES
         ${CMAKE_SOURCE_DIR}/zip_usage/*.cpp
 )
 
-# 设置头文件。
+# 收集头文件。
 file(GLOB HEADERS
         ${CMAKE_SOURCE_DIR}/*.hpp
         ${CMAKE_SOURCE_DIR}/inheritance_usage/*.hpp
@@ -137,7 +137,7 @@ file(GLOB HEADERS
         ${CMAKE_SOURCE_DIR}/inheritance_usage/*.tpp
 )
 
-# 包含其它脚本。
+# 包含依赖脚本。
 include(${CMAKE_SOURCE_DIR}/cmakes/common.cmake)
 if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
     include(${CMAKE_SOURCE_DIR}/cmakes/windows.cmake)
@@ -167,7 +167,7 @@ add_executable(${PROJECT_NAME} ${SOURCES})
 #    target_sources(${PROJECT_NAME} PRIVATE $<TARGET_OBJECTS:${FILE_NAME}>)
 #endforeach()
 
-# 添加依赖。
+# 添加可执行程序目标依赖。
 foreach (v ${DEPENDENCIES})
     add_dependencies(${PROJECT_NAME} ${v})
 endforeach ()
@@ -183,7 +183,7 @@ set_target_properties(
         INSTALL_RPATH "\$ORIGIN"
 )
 
-# 复制动态链接库文件到可执行程序目标。
+# 复制动态链接库文件到可执行程序目标所在文件夹。
 if (COMPILE_DYNAMIC_MODE)
     foreach (v ${DYNAMIC_LIBRARIES})
         copy_dynamic_library_to_target(${PROJECT_NAME} ${v})

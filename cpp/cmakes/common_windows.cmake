@@ -1,12 +1,8 @@
-# Windows: 使用 dumpbin 读取 DLL 内部名称。
-
+# 使用 dumpbin 读取 DLL 内部名称。
 # MSVC 自带 dumpbin，通常位于 VC 工具链目录下
 find_program(DUMPBIN_EXECUTABLE dumpbin PATHS "$ENV{VCINSTALLDIR}/Tools/MSVC" "$ENV{PATH}")
 
-# 获取 DLL 的内部名称
-# 参数：
-#   LIB_PATH - DLL 文件路径
-#   OUT_VAR  - 输出变量名，用于返回 DLL 内部名称
+# 获取 DLL 的内部名称。
 function(get_dynamic_library_soname LIB_PATH OUT_VAR)
     if (NOT DUMPBIN_EXECUTABLE)
         set(${OUT_VAR} "" PARENT_SCOPE)

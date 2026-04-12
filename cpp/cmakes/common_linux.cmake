@@ -1,11 +1,7 @@
-# Linux: 使用 readelf 读取共享库 SONAME。
-
+# 使用 readelf 读取共享库 SONAME。
 find_program(READELF_EXECUTABLE readelf)
 
-# 获取动态库的 SONAME（库的真实名称）
-# 参数：
-#   LIB_PATH - 动态库文件路径
-#   OUT_VAR  - 输出变量名，用于返回 SONAME
+# 获取动态库的 SONAME（库的真实名称）。
 function(get_dynamic_library_soname LIB_PATH OUT_VAR)
     if (NOT READELF_EXECUTABLE)
         set(${OUT_VAR} "" PARENT_SCOPE)
