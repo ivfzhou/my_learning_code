@@ -3,10 +3,17 @@ find_program(READELF_EXECUTABLE readelf)
 
 # 获取动态库的 SONAME（库的真实名称）。
 function(get_dynamic_library_soname LIB_PATH OUT_VAR)
+    # 如果库文件不存在，则返回空值（库可能在编译阶段才生成）
+    if (NOT EXISTS ${LIB_PATH})
+        set(${OUT_VAR} "" PARENT_SCOPE)
+        return()
+    endif ()
+    
     if (NOT READELF_EXECUTABLE)
         set(${OUT_VAR} "" PARENT_SCOPE)
         return()
     endif ()
+    
     execute_process(
             COMMAND ${READELF_EXECUTABLE} -d ${LIB_PATH}
             OUTPUT_VARIABLE LIB_DYNAMIC_SECTION
