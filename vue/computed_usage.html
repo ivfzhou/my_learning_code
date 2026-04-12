@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>computed usage</title>
+    <script type="importmap">
+        {
+          "imports": {
+            "vue": "https://unpkg.com/vue@3.5.32/dist/vue.esm-browser.js"
+          }
+        }
+    </script>
+</head>
+<body>
+<div id="app">
+    <div>
+        计算属性：{{ messageComputed }}
+        <input type="text" @change="message = $event.target.value"/>
+    </div>
+</div>
+<script type="module">
+    import {createApp, ref, computed} from 'vue'
+
+    const message = ref('hello')
+    createApp({
+        setup() {
+            const messageComputed = computed({
+                get(previousValue) {
+                    console.log('previousValue', previousValue)
+                    return message.value
+                },
+                set(newValue) {
+                    console.log('newValue', previousValue)
+                    message.value = newValue
+                }
+            })
+
+            return {
+                messageComputed,
+                message
+            }
+        }
+    }).mount('#app')
+</script>
+</body>
+</html>

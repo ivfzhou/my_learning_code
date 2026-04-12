@@ -13,11 +13,18 @@
 </head>
 <body>
 <div id="app">
-    <div>事件修饰符：
+    <div>
+        事件修饰符：
         <form>
             <button @click.prevent="handlePreventedSubmitClick">提交</button>
             {{ submitClickCount }}
         </form>
+    </div>
+
+    <div>
+        <button @click="(event) => handleClick(event)">点击</button>
+        <button @click="handleClick($event)">点击</button>
+        <button @click="handleClick">点击</button>
     </div>
 </div>
 <script type="module">
@@ -34,7 +41,7 @@
             return {handlePreventedSubmitClick, submitClickCount}
         },
         methods: {
-            handleClick() {
+            handleClick(event) {
                 this.submitClickCount++
             }
         }

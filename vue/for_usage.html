@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>for usage</title>
+    <script type="importmap">
+        {
+          "imports": {
+            "vue": "https://unpkg.com/vue@3.5.32/dist/vue.esm-browser.js"
+          }
+        }
+    </script>
+</head>
+<body>
+<div id="app">
+    <div>
+        list：{{ list }}
+        <div v-for="(value, index) in list" :key="index">
+            {{ value }} - {{ index }}
+        </div>
+        <div v-for="(value, index) of list">
+            {{ value }} - {{ index }}
+        </div>
+    </div>
+
+    <div>
+        obj：{{ obj }}
+        <div v-for="(value, key, index) in obj">
+            {{ key }} - {{ index }} - {{ value }}
+        </div>
+    </div>
+
+    <div>
+        <template v-for="n in 10">
+            {{ n }}
+        </template>
+    </div>
+</div>
+<script type="module">
+    import {createApp, ref} from 'vue'
+
+    createApp({
+        setup() {
+            const list = ref(['a', 'b', 'c'])
+            const obj = ref({a: 1, 2: 'b'})
+            return {
+                list,
+                obj
+            }
+        }
+    }).mount('#app')
+</script>
+</body>
+</html>
