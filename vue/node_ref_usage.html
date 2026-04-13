@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>node ref usage</title>
+    <script type="importmap">
+        {
+          "imports": {
+            "vue": "https://unpkg.com/vue@3.5.32/dist/vue.esm-browser.js"
+          }
+        }
+    </script>
+</head>
+<body>
+<div id="app">
+    <div>
+        value：<span :ref="fn">{{ value }}</span>
+        <input type="text" v-model="value"/>
+    </div>
+
+</div>
+<script type="module">
+    import {
+        createApp,
+        ref,
+        useTemplateRef,
+    } from 'vue'
+
+    createApp({
+        setup() {
+            const value = ref('')
+            return {value}
+        },
+        methods: {
+            fn(value) {
+                console.log(value.innerHTML);
+            }
+        }
+    }).mount('#app')
+</script>
+</body>
+</html>

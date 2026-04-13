@@ -8,4 +8,5 @@ export default {
         }
     },
     template: `<span>{{ demoDescription }}</span>`
+    // template: '#my-template-element'
 }

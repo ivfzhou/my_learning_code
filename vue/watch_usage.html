@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>watch usage</title>
+    <script type="importmap">
+        {
+          "imports": {
+            "vue": "https://unpkg.com/vue@3.5.32/dist/vue.esm-browser.js"
+          }
+        }
+    </script>
+</head>
+<body>
+<div id="app">
+    <div>
+        value：<span ref="span">{{ value }}</span>
+        <input ref="input" type="text" v-model="value"/>
+    </div>
+
+    <div>
+        obj：{{ obj }}
+        <input type="text" v-model="obj.name"/>
+    </div>
+
+</div>
+<script type="module">
+    import {
+        createApp,
+        ref,
+        watch,
+        watchEffect,
+        onWatcherCleanup,
+        useTemplateRef,
+        watchPostEffect,
+        watchSyncEffect
+    } from 'vue'
+
+    createApp({
+        setup() {
+            const value = ref('')
+            const spanNode = useTemplateRef('span')
+            watch(value, (newValue, oldValue) => {
+                console.log(`span node value: ${spanNode.value.innerHTML}`)
+                console.log(`newValue: ${newValue}, oldValue: ${oldValue}`)
+            }, {flush: 'post'})
+            /*watch(() => value.value, (newValue, oldValue, onCleanup) => {
+                console.log(`newValue: ${newValue}, oldValue: ${oldValue}`)
+            })
+            const value2 = ref('')
+            watch([value, value2], ([newValue, newValue2]) => {
+                console.log(`newValue: ${newValue}, newValue2: ${newValue2}`)
+            })*/
+
+            const obj = ref({name: 'zs'})
+            watch(
+                obj,
+                (newValue, oldValue) => {
+                    console.log(`newValue: ${newValue}, oldValue: ${oldValue}`)
+                },
+                {deep: 2, immediate: true, once: true, flush: 'post'}
+            )
+
+            watchEffect((onCleanup) => {
+                console.log(`obj.name: ${obj.value.name}`)
+            }, {flush: 'sync'})
+
+            watchEffect(async () => {
+                onWatcherCleanup(() => {
+                    console.log('cleanup')
+                })
+            })
+
+            watchPostEffect(() => {
+            })
+            const unwatch = watchSyncEffect(() => {
+            })
+
+            return {value, obj}
+        }
+    }).mount('#app')
+</script>
+</body>
+</html>
