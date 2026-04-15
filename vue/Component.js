@@ -1,9 +1,16 @@
-import { ref } from 'vue'
+import {ref} from 'vue'
 
 export default {
     props: ['title'],
     setup(props, ctx) {
         ctx.emits('fn')
+        ctx.attrs
     },
-    template: `#app`
+    template: `#app`,
+    directives: {
+        // 在模板中启用 v-highlight
+        highlight: {
+            /* ... */
+        }
+    }
 }

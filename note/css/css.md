@@ -827,7 +827,7 @@
 
 ## 3.18 动画
 
-- **animation**：所有 animation-* 属性的简写属性。不继承。属性设置顺序：name、duration、timing-function delay、iteration-count、direction。
+- **animation**：所有 animation-* 属性的简写属性。不继承。属性设置顺序：name、duration、timing-function、delay、iteration-count、direction。
     - none 0 ease 0 1 normal：默认值。
 - **animation-name**：规定 @keyframes 动画的名称。不继承。
     - none：默认值。规定无动画效果（可用于覆盖来自级联的动画）。
@@ -852,6 +852,7 @@
 - **animation-direction**：规定动画是向前播放、向后播放还是交替播放。不继承。如果把动画设置为只播放一次，则该属性没有效果。
     - normal：默认值。动画应该正常播放。
     - alternate：动画应该轮流反向播放。
+    - reverse：反向播放。
 - **animation-fill-mode**：规定元素在不播放动画时（在开始之前、结束之后、或同时）的样式。不继承。其属性值是由逗号分隔的一个或多个填充模式关键词。
     - none：默认值。不改变默认行为。
     - forwards：当动画完成后，保持最后一个属性值（在最后一个关键帧中定义）。
@@ -1054,7 +1055,7 @@
 - **grid-template-areas**：规定如何使用命名的网格项显示列和行。不继承。用 `.` 表示空白区域。
     - none：默认值。
     - *itemNames*：规定每列和每行应如何显示的序列。
-        
+      
         ```css
         /* 使命名项目 "myArea" 在五列网格布局中横跨两列 */
         .item1 {
