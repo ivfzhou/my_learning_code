@@ -2,7 +2,7 @@ import {ref} from 'vue'
 
 export default {
     props: ['title'],
-    setup(props, ctx) {
+    async setup(props, ctx) {
         ctx.emits('fn')
         ctx.attrs
     },

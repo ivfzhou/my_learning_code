@@ -1,11 +1,11 @@
 <script setup>
-import Root from '@/route/Root.vue'
 
 </script>
 
 <template>
-  <Root/>
+  <div>Home</div>
 </template>
 
 <style scoped>
+
 </style>
