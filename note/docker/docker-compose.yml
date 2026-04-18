@@ -11,8 +11,8 @@ services:
         ipv4_address: 172.16.3.128
     environment:
       MYSQL_ROOT_PASSWORD: 123456
-    #ports:
-    #  - "3306:3306"
+    ports:
+      - "3306:3306"
     volumes:
       - /home/ivfzhou/volumes/mysql/data/:/var/lib/mysql/:rw
       - /home/ivfzhou/volumes/mysql/config/:/etc/mysql/conf.d/:rw
@@ -28,8 +28,8 @@ services:
     extra_hosts:
       - "ivfzhoudebian:172.16.3.1"
     working_dir: /data
-    #ports:
-    #  - "6379:6379"
+    ports:
+      - "6379:6379"
     volumes:
       - /home/ivfzhou/volumes/redis/config:/config:rw
       - /home/ivfzhou/volumes/redis/data:/data:rw
@@ -226,9 +226,9 @@ services:
       - /home/ivfzhou/volumes/rabbitmq/.erlang.cookie:/var/lib/rabbitmq/.erlang.cookie:rw
       - /home/ivfzhou/volumes/rabbitmq/log:/var/log/rabbitmq:rw
       - /home/ivfzhou/volumes/rabbitmq/mnesia:/var/lib/rabbitmq/mnesia:rw
-    #ports:
-    #  - "15672:15672"
-    #  - "5672:5672"
+    ports:
+      - "15672:15672"
+      - "5672:5672"
     environment:
       RABBITMQ_DEFAULT_USER: guest
       RABBITMQ_DEFAULT_PASS: guest
@@ -238,8 +238,8 @@ services:
     container_name: tusd
     hostname: ivfzhoudockertusd
     privileged: true
-    #ports:
-    #  - "8080:8080"
+    ports:
+      - "8080:8080"
     networks:
       network:
         ipv4_address: 172.16.3.141
@@ -687,6 +687,7 @@ services:
     ports:
       - "80:80"
       - "443:443"
+      - "8000:8000"
     volumes:
       - /home/ivfzhou/volumes/nginx/config/nginx.conf:/etc/nginx/nginx.conf:rw
       - /home/ivfzhou/volumes/nginx/config/conf.d:/etc/nginx/conf.d:rw

@@ -1,5 +1,5 @@
 <script setup>
-import Root from '@/route/Root.vue'
+import Root from '@/slot_selector/Root.vue'
 
 </script>
 
