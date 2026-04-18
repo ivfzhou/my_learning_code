@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>descendant selector</title>
+    <style>
+        .parent[attr] .child {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+<div class="parent" attr>
+    <div class="child">
+        Child
+    </div>
+</div>
+</body>
+</html>
