@@ -1,5 +1,8 @@
 <script setup>
-import Root from '@/slot_selector/Root.vue'
+import {version} from 'vue'
+import Root from '@/next_tick.vue'
+
+console.log(version)
 
 </script>
 
@@ -7,5 +10,4 @@ import Root from '@/slot_selector/Root.vue'
   <Root/>
 </template>
 
-<style scoped>
-</style>
+<style scoped></style>
