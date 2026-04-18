@@ -42,7 +42,7 @@
 
 # 二、选择器
 
-1. 多个选择器空格间隔声明，表示交集选择。而逗号分割选择器声明，表示并集选择。
+1. 多个选择器接壤声明，表示交集选择。而逗号分割选择器声明，表示并集选择。
 
 ## 2.1 简单选择器
 
@@ -102,7 +102,7 @@
 ## 2.4 元素选择器
 
 1. ***element***：选择 *element* 元素。
-1. ***element1* *element2***：选取 *element1* 下所有的 *element2* 元素。
+1. ***selector1* *selector2***：选取 *selector1* 下所有的 *selector2* 元素。
 1. ***element1*>*element2***：选择直接父元素是 *element1* 的 *element2* 元素。
 1. ***element1*+*element2***：选择 *element1* 元素之后的直接兄弟元素 *element2*。
 1. ***element1*~*element2***：选择 *element1* 元素之后的兄弟元素 *element2*。
