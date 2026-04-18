@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>selector scope</title>
+    <style>
+        div>p {
+            color: blue;
+        }
+
+        p {
+            color: red;
+        }
+
+        div p {
+            color: green;
+        }
+    </style>
+</head>
+<body>
+<div id="root">
+    <p>Hello</p>
+</div>
+</body>
+</html>
