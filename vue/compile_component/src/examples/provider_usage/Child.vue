@@ -1,5 +1,5 @@
 <script setup>
-import DeepChild from '@/provider_usage/DeepChild.vue'
+import DeepChild from '@/examples/provider_usage/DeepChild.vue'
 </script>
 
 <template>

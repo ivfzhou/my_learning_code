@@ -1,7 +1,7 @@
 <script setup>
 import {shallowRef} from 'vue'
-import ComponentA from '@/keep_alive_usage/ComponentA.vue'
-import ComponentB from '@/keep_alive_usage/ComponentB.vue'
+import ComponentA from '@/examples/keep_alive_usage/ComponentA.vue'
+import ComponentB from '@/examples/keep_alive_usage/ComponentB.vue'
 
 let currentComponent = shallowRef(ComponentA)
 </script>

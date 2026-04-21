@@ -59,7 +59,7 @@ const myStrategy = (hydrate, forEachElement) => {
   }
 }
 const AsyncComponent = defineAsyncComponent({
-  loader: () => import('@/async_component/AsyncComponent.vue'),
+  loader: () => import('@/examples/async_component/AsyncComponent.vue'),
   hydrate: myStrategy
 })
 </script>

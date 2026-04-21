@@ -1,5 +1,5 @@
 <script setup>
-import Child from "@/deep_selector/Child.vue"
+import Child from "@/examples/deep_selector/Child.vue"
 </script>
 
 <template>

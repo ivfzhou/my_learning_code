@@ -1,8 +1,8 @@
 <script setup>
 import {ref, computed} from 'vue'
-import Home from '@/route/Home.vue'
-import About from '@/route/About.vue'
-import NotFound from '@/route/NotFound.vue'
+import Home from '@/examples/route/Home.vue'
+import About from '@/examples/route/About.vue'
+import NotFound from '@/examples/route/NotFound.vue'
 
 const routes = {
   '/': Home,

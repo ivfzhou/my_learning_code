@@ -1,6 +1,6 @@
 <script setup>
 import {ref} from 'vue'
-import Child from '@/model_usage/Child.vue'
+import Child from '@/examples/model_usage/Child.vue'
 
 const value = ref('')
 </script>

@@ -1,6 +1,6 @@
 <script setup>
 import {useAttrs, watch} from 'vue'
-import DeepChild from '@/attrs_usage/DeepChild.vue'
+import DeepChild from '@/examples/attrs_usage/DeepChild.vue'
 
 const attrs = useAttrs()
 console.log('first attrs', attrs)

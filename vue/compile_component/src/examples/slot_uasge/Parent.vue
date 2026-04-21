@@ -1,6 +1,6 @@
 <script setup>
 import {ref} from 'vue'
-import Child from '@/slot_uasge/Child.vue'
+import Child from '@/examples/slot_uasge/Child.vue'
 
 const slotName = ref('header')
 </script>

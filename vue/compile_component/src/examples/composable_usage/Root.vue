@@ -1,7 +1,7 @@
 <script setup>
 import {ref} from 'vue'
-import {useMouseTrack} from "@/composable_usage/mouse_track.js";
-import {useFetch} from "@/composable_usage/fetch.js";
+import {useMouseTrack} from "@/examples/composable_usage/mouse_track.js";
+import {useFetch} from "@/examples/composable_usage/fetch.js";
 
 const {x, y} = useMouseTrack()
 

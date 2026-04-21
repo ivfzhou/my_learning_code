@@ -1,5 +1,5 @@
 <script setup>
-import Child from '@/slot_selector/Child.vue'
+import Child from '@/examples/slot_selector/Child.vue'
 </script>
 
 <template>

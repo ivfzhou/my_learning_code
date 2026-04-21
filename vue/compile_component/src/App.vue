@@ -1,6 +1,6 @@
 <script setup>
 import {version} from 'vue'
-import Root from '@/next_tick.vue'
+import Root from '@/examples/next_tick.vue'
 
 console.log(version)
 
