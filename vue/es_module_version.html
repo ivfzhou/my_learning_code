@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <title>es module version</title>
     <!-- https://unpkg.com/vue@3.5.32/dist/vue.esm-browser.prod.js -->
+    <!-- https://unpkg.com/vue@3.5.32/dist/vue.runtime.esm-bundler.js -->
+    <!-- https://unpkg.com/vue@3.5.32/dist/vue.runtime.esm-browser.prod.js -->
     <script type="importmap">
         {
           "imports": {
@@ -14,20 +16,12 @@
 </head>
 <body>
 <div id="app">
-    <span>{{ demoDescription }}</span>
 </div>
 <script type="module">
     /* ES 模块不能通过 file:// 协议工作 */
-    import {createApp, ref} from 'vue'
+    import {createApp} from 'vue'
 
-    createApp({
-        setup() {
-            const demoDescription = ref('this is es module version usage.')
-            return {
-                demoDescription
-            }
-        }
-    }).mount('#app')
+    createApp({}).mount('#app')
 </script>
 </body>
 </html>

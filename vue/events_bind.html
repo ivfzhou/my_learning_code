@@ -2,7 +2,7 @@
 <html lang="zh">
 <head>
     <meta charset="UTF-8">
-    <title>events bind usage</title>
+    <title>events bind</title>
     <script type="importmap">
         {
           "imports": {
@@ -14,17 +14,41 @@
 <body>
 <div id="app">
     <div>
-        事件修饰符：
-        <form>
-            <button @click.prevent="handlePreventedSubmitClick">提交</button>
-            {{ submitClickCount }}
-        </form>
+        fn: {{ fn }}
+        <br/>
+        <button @click="fn = null">set to null</button>
+        <br/>
+        <div v-on:click="fn">v-on:click="fn"</div>
+        <div @click="fn">@click="fn"</div>
     </div>
-
+    <hr/>
     <div>
-        <button @click="(event) => handleClick(event)">点击</button>
-        <button @click="handleClick($event)">点击</button>
-        <button @click="handleClick">点击</button>
+        eventname: {{ eventname }}
+        <br/>
+        <input @change="eventname = $event.target.value"/>
+        <br/>
+        <button @click="eventname = null">set to null</button>
+        <div @[eventname]="fn">@[eventname]="fn"</div>
+        <div v-on:[eventname]="fn">v-on:[eventname]="fn"</div>
+    </div>
+    <hr/>
+    <div>
+        <div @click="console.log('parent clicked')">
+            parent
+            <div @click="console.log('child clicked')">
+                child
+            </div>
+            <!-- .stop 修饰符调用 event.stopPropagation() -->
+            <div @click.stop="console.log('child clicked')">
+                child has stop
+            </div>
+        </div>
+    </div>
+    <hr/>
+    <div>
+        <a href="./events_bind" @click="console.log($event.target)">a element</a>
+        <br/>
+        <a href="./events_bind" @click.prevent="console.log($event.target)">a element has prevent</a>
     </div>
 </div>
 <script type="module">
@@ -32,18 +56,12 @@
 
     createApp({
         setup() {
-            const submitClickCount = ref(0)
-
-            function handlePreventedSubmitClick() {
-                submitClickCount.value++
+            const fn = (event) => {
+                console.log(event.target)
             }
+            const eventName = ref('click')
 
-            return {handlePreventedSubmitClick, submitClickCount}
-        },
-        methods: {
-            handleClick(event) {
-                this.submitClickCount++
-            }
+            return {fn, eventname: eventName}
         }
     }).mount('#app')
 </script>

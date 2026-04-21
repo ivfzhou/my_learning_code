@@ -2,7 +2,7 @@
 <html lang="zh">
 <head>
     <meta charset="UTF-8">
-    <title>attributes bind usage</title>
+    <title>attributes bind</title>
     <script type="importmap">
         {
           "imports": {
@@ -13,50 +13,50 @@
 </head>
 <body>
 <div id="app">
-    <div>标准写法：<span v-bind:id="boundSpanId">{{ boundSpanId }}</span></div>
-
-    <div>简略写法：<span :id="boundSpanId">{{ boundSpanId }}</span></div>
-
-    <div>同名变量绑定：<span :title="title">{{ title }}</span></div>
-
-    <div>同名变量绑定：<span v-bind:title="title">{{ title }}</span></div>
-
-    <div>绑定布尔属性：
-        <button :disabled="isButtonDisabled">按钮</button>
+    <div>
+        value: {{ value }}
+        <br/>
+        <input @change="value = $event.target.value"/>
+        <br/>
+        <button @click="value = null">set to null</button>
+        <br/>
+        <div v-bind:id="value">v-bind:id="value"</div>
+        <div :id="value">:id="value"</div>
+        <div :value>:value</div>
+        <div v-bind:value>v-bind:value</div>
+        <div v-bind:disabled="value">v-bind:disabled="value"</div>
     </div>
-
-    <div>绑定多个属性：<span v-bind="boundAttributes">{{ boundAttributes }}</span></div>
-
-    <div>表达式：<span :id=" boundSpanId + '_modified' ">{{ boundSpanId }}</span></div>
-
-    <div>动态参数：<span :[dynamicattributename]="dynamicattributename">{{ dynamicattributename }}</span></div>
-
-    <div>动态参数移除：<span :[removedattributename]="dynamicattributename">{{ dynamicattributename }}</span></div>
+    <hr/>
+    <div>
+        obj: {{ obj }}
+        <br/>
+        <button @click="Object.defineProperty(obj, 'age', {value: 18}); console.log(obj.age)">addProperty</button>
+        <br/>
+        <div v-bind="obj">v-bind="obj"</div>
+    </div>
+    <hr/>
+    <div>
+        attributename: {{ attributename }}
+        <br/>
+        <input @change="attributename = $event.target.value"/>
+        <br/>
+        <button @click="attributename = null">set to null</button>
+        <div :[attributename]="value">:[attributename]="value"</div>
+        <div v-bind:[attributename]="value">v-bind:[attributename]="value"</div>
+    </div>
 </div>
 <script type="module">
     import {createApp, ref} from 'vue'
 
     createApp({
         setup() {
-            const boundSpanId = ref('id')
-            const title = ref('演示标题')
-            const dynamicAttributeName = ref('id')
-            const dynamicattributename = ref('id')
-            const isButtonDisabled = ref(true)
-            const removedattributename = ref(null)
-            const boundAttributes = ref({
-                id: 'id',
-                class: 'class',
+            const value = ref('')
+            const obj = ref({
+                id: 1,
+                name: 'zs'
             })
-            return {
-                boundSpanId,
-                title,
-                isButtonDisabled,
-                boundAttributes,
-                dynamicAttributeName,
-                dynamicattributename,
-                removedattributename
-            }
+            const attributeName = ref('id')
+            return {value, obj, attributename: attributeName}
         }
     }).mount('#app')
 </script>

@@ -2,24 +2,18 @@
 <html lang="zh">
 <head>
     <meta charset="UTF-8">
-    <title>global version usage</title>
+    <title>global version</title>
     <script src="https://unpkg.com/vue@3.5.32/dist/vue.global.js"></script>
-    <!-- <script src="https://unpkg.com/vue@3.5.32/dist/vue.global.prod.js"></script> -->
+    <!-- https://unpkg.com/vue@3.5.32/dist/vue.global.prod.js -->
+    <!-- https://unpkg.com/vue@3.5.32/dist/vue.runtime.global.js -->
+    <!-- https://unpkg.com/vue@3.5.32/dist/vue.runtime.global.prod.js -->
 </head>
 <body>
 <div id="app">
-    <span>{{ demoDescription }}</span>
 </div>
 <script>
-    const {createApp, ref} = Vue
-    createApp({
-        setup() {
-            const demoDescription = ref('this is a global vue usage.')
-            return {
-                demoDescription,
-            }
-        }
-    }).mount('#app')
+    const {createApp} = Vue
+    createApp({}).mount('#app')
 </script>
 </body>
 </html>

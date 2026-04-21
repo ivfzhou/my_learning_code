@@ -2,7 +2,7 @@
 <html lang="zh">
 <head>
     <meta charset="UTF-8">
-    <title>for usage</title>
+    <title>for</title>
     <script type="importmap">
         {
           "imports": {
@@ -14,26 +14,46 @@
 <body>
 <div id="app">
     <div>
-        list：{{ list }}
-        <div v-for="(value, index) in list" :key="index">
-            {{ value }} - {{ index }}
-        </div>
-        <div v-for="(value, index) of list">
-            {{ value }} - {{ index }}
-        </div>
+        list: {{ list }}
+        <br/>
+        <button @click="list.pop()">pop</button>
+        <button @click="list.push({id: 4, name: 'tq'})">push</button>
     </div>
-
     <div>
-        obj：{{ obj }}
-        <div v-for="(value, key, index) in obj">
-            {{ key }} - {{ index }} - {{ value }}
-        </div>
+        <div v-for="({id, name}, i) of list" :key="id"> {{ i }} -- {{ id }} -- {{ name }}</div>
     </div>
-
+    <hr/>
     <div>
-        <template v-for="n in 10">
-            {{ n }}
+        list: {{ list }}
+        <br/>
+        <button @click="list.pop()">pop</button>
+        <button @click="list.push({id: 4, name: 'tq'})">push</button>
+    </div>
+    <div>
+        <template v-for="({id, name}, i) of list" :key="id">
+            <div>{{ i }} -- {{ id }} -- {{ name }}</div>
         </template>
+    </div>
+    <hr/>
+    <div>
+        obj: {{ obj }}
+        <br/>
+        <button @click="Object.defineProperty(obj, 'gender', {value: 'man', enumerable: true}); console.log(obj.gender)">
+            addProperty
+        </button>
+    </div>
+    <div>
+        <!-- 等价于调用 Object.values() -->
+        <div v-for="(v, k, i) in obj">{{ i }} -- {{ k }} -- {{ v }}</div>
+    </div>
+    <hr/>
+    <div>
+        count: {{ count }}
+        <br/>
+        <input type="number" @change="(el) => count = Number(el.target.value)"/>
+    </div>
+    <div>
+        <div v-for="v in count" :key="v">{{ v }}</div>
     </div>
 </div>
 <script type="module">
@@ -41,12 +61,10 @@
 
     createApp({
         setup() {
-            const list = ref(['a', 'b', 'c'])
-            const obj = ref({a: 1, 2: 'b'})
-            return {
-                list,
-                obj
-            }
+            const list = ref([{id: 1, name: 'zs'}, {id: 2, name: 'ls'}, {id: 3, name: 'ww'}])
+            const obj = ref({id: 4, name: 'zl', age: 18})
+            const count = ref(3)
+            return {list, obj, count}
         }
     }).mount('#app')
 </script>

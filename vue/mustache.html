@@ -2,7 +2,7 @@
 <html lang="zh">
 <head>
     <meta charset="UTF-8">
-    <title>mustache usage</title>
+    <title>mustache</title>
     <script type="importmap">
         {
           "imports": {
@@ -13,40 +13,23 @@
 </head>
 <body>
 <div id="app">
-    <div>文本插值：{{ plainTextMessage }}</div>
-
-    <div>HTML 插值：<span v-html="rawHtmlContent"></span></div>
-
     <div>
-        <button @click="incrementExpressionNumber">自增</button>
-        表达式：{{ expressionNumber }}
+        message：{{ fn(message) }}
+        <br/>
+        <input @change="message = $event.target.value"/>
     </div>
-
-    <div>函数：{{ getPlainTextMessage() }}</div>
 </div>
 <script type="module">
     import {createApp, ref} from 'vue'
 
-    createApp({
+    const app = createApp({
         setup() {
-            const plainTextMessage = ref('hello mustache.')
-            const rawHtmlContent = ref(`<span style="color: red;">hello mustache.</span>`)
-            const expressionNumber = ref(1)
-            return {
-                plainTextMessage,
-                rawHtmlContent,
-                expressionNumber
-            }
-        },
-        methods: {
-            incrementExpressionNumber() {
-                this.expressionNumber++
-            },
-            getPlainTextMessage() {
-                return this.plainTextMessage
-            }
+            const message = ref('')
+            return {message}
         }
-    }).mount('#app')
+    })
+    app.config.globalProperties.fn = (message) => message + '_changed'
+    app.mount('#app')
 </script>
 </body>
 </html>

@@ -2,7 +2,7 @@
 <html lang="zh">
 <head>
     <meta charset="UTF-8">
-    <title>if usage</title>
+    <title>if</title>
     <script type="importmap">
         {
           "imports": {
@@ -14,20 +14,37 @@
 <body>
 <div id="app">
     <div>
-        if：{{ f }}
-        <span v-if="f">展示</span>
-        <span v-else-if="true">展示</span>
-        <span v-else>不展示</span>
+        status1: {{ status1 }}
+        <button @click="status1 = !status1">change</button>
+        <br/>
+        status2: {{ status2 }}
+        <button @click="status2 = !status2">change</button>
     </div>
-
     <div>
-        <template v-if="f">
-            <span>展示</span>
-        </template>
+        <span v-if="status1">status1 showed</span>
+        <span v-else-if="status2">status2 showed</span>
+        <span v-else>no status showed</span>
     </div>
-
+    <hr/>
     <div>
-        <span v-show="!f">展示</span>
+        <div>
+            templateIfStatus: {{ templateIfStatus }}
+            <button @click="templateIfStatus = !templateIfStatus">change</button>
+        </div>
+        <div>
+            <template v-if="templateIfStatus">
+                <span>templateIfStatus showed</span>
+            </template>
+        </div>
+    </div>
+    <hr/>
+    <div>
+        showStatus: {{ showStatus }}
+        <button @click="showStatus = !showStatus">change</button>
+        <button @click="printShowSpanStyle">print display value</button>
+    </div>
+    <div>
+        <span id="showSpan" v-show="showStatus">showStatus showed</span>
     </div>
 </div>
 <script type="module">
@@ -35,10 +52,13 @@
 
     createApp({
         setup() {
-            const f = ref(true)
-            return {
-                f
-            }
+            const status1 = ref(true)
+            const status2 = ref(true)
+            const templateIfStatus = ref(true)
+            const showStatus = ref(true)
+            const printShowSpanStyle = () => console.log(window.document.getElementById('showSpan').style.display)
+
+            return {status1, status2, templateIfStatus, showStatus, printShowSpanStyle}
         }
     }).mount('#app')
 </script>
