@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>attribute passthrough</title>
+    <script type="importmap">
+        {
+          "imports": {
+            "vue": "https://unpkg.com/vue@3.5.32/dist/vue.esm-browser.js"
+          }
+        }
+    </script>
+</head>
+<body>
+<div id="app">
+    <div>
+        <parent></parent>
+    </div>
+    <hr/>
+
+    <div>
+        <parent2></parent2>
+    </div>
+</div>
+<script type="module">
+    import {createApp} from 'vue'
+
+    const Child = {
+        template: `<div>Child</div>`
+    }
+    const Parent = {
+        template: `<Child key="value"/>`,
+        components: {Child}
+    }
+
+    const Child2 = {
+        template: `<div class="b" style="color: red;">
+$attr: {{ $attrs }}<br/>
+custom-attr: {{ $attrs['custom-attr'] }}<br/>
+click: {{ $attrs.onClick }}
+</div>`
+    }
+    const Child3 = {
+        components: {Child2},
+        template: `<Child2/>`
+    }
+    const Parent2 = {
+        template: `<Child3 class="a" style="font-size: 2em;" custom-attr="yes" @click="console.log('yes')"/>`,
+        components: {Child3}
+    }
+
+    createApp({components: {Parent, Parent2}}).mount('#app')
+</script>
+</body>
+</html>

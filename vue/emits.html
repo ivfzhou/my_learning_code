@@ -61,7 +61,7 @@
     }
     const Parent3 = {
         components: {Child3},
-        template: `<Child3 @fn="(arg) => { console.log(arg) }"/>`
+        template: `<Child3 @fn.once="(arg) => { console.log(arg) }"/>`
     }
 
     createApp({components: {Parent, Parent2, Parent3}}).mount('#app')
