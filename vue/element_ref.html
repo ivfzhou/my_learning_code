@@ -2,7 +2,7 @@
 <html lang="zh">
 <head>
     <meta charset="UTF-8">
-    <title>node ref usage</title>
+    <title>element ref</title>
     <script type="importmap">
         {
           "imports": {
@@ -14,27 +14,43 @@
 <body>
 <div id="app">
     <div>
-        value：<span :ref="fn">{{ value }}</span>
-        <input type="text" v-model="value"/>
+        <div ref="div">element</div>
     </div>
+    <hr/>
 
+    <div>
+        <div ref="list" v-for="v in 3">{{ v }}</div>
+    </div>
+    <hr/>
+
+    <div>
+        <div :ref="fn" :key="value">func ref element</div>
+        set value: <input @change="value = $event.target.value"/>
+    </div>
 </div>
 <script type="module">
     import {
         createApp,
+        onMounted,
         ref,
         useTemplateRef,
     } from 'vue'
 
     createApp({
         setup() {
-            const value = ref('')
-            return {value}
-        },
-        methods: {
-            fn(value) {
-                console.log(value.innerHTML);
+            const el = useTemplateRef('div')
+            const els = useTemplateRef('list')
+            const fn = (el) => {
+                console.log(`fn: ${el && el.innerHTML}`)
             }
+            const value = ref('')
+
+            onMounted(() => {
+                console.log(`el: ${el.value.innerHTML}`)
+                console.log(`els: ${els.value[0].innerHTML}`)
+            })
+
+            return {fn, value}
         }
     }).mount('#app')
 </script>

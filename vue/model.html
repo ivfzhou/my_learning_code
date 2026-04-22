@@ -2,7 +2,7 @@
 <html lang="zh">
 <head>
     <meta charset="UTF-8">
-    <title>mode usage</title>
+    <title>model</title>
     <script type="importmap">
         {
           "imports": {
@@ -14,15 +14,89 @@
 <body>
 <div id="app">
     <div>
-        {{ value }}
-        <br/>
-        <textarea v-model.lazy="value"></textarea>
+        value: {{ value }}<br/>
+        input value: <span id="valueId"></span><br/>
+        set value: <input id="inputId" v-model="value"/>
     </div>
+    <hr/>
 
     <div>
-        {{ toggle }}
-        <br/>
-        <input type="checkbox" v-model="toggle" :true-value="'yes'" :false-value="'no'"/>
+        toggle: {{ toggle }}<br/>
+        <input id="inputId2" type="checkbox" v-model="toggle" value="checkboxValue"/><br/>
+        <button @click="toggle = !toggle">toggle</button>
+    </div>
+    <hr/>
+
+    <div>
+        toggle2: {{ toggle2 }}<br/>
+        <input id="inputId3" type="radio" v-model="toggle2" value="on"/><br/>
+        <button @click="toggle2 = toggle2 === 'on' ? 'off' : 'on'">toggle</button>
+    </div>
+    <hr/>
+
+    <div>
+        value2: {{ value2 }}<br/>
+        <textarea id="textareaId" v-model="value2"></textarea><br/>
+        set value2: <input @change="value2 = $event.target.value"/>
+    </div>
+    <hr/>
+
+    <div>
+        value3: {{ value3 }}<br/>
+        <select id="selectId" v-model="value3">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+        </select><br/>
+        set value3: <input @change="value3 = $event.target.value"/>
+    </div>
+    <hr/>
+
+    <div>
+        value4: {{ value4 }}<br/>
+        <input type="checkbox" value="a" v-model="value4"/>
+        <input type="checkbox" value="b" v-model="value4"/>
+        <input type="checkbox" value="c" v-model="value4"/><br/>
+        push: <input @change="value4.push($event.target.value)"/><br/>
+        <button @click="value4.pop()">pop</button>
+    </div>
+    <hr/>
+
+    <div>
+        value5: {{ value5 }}<br/>
+        <select id="selectId2" v-model="value5" multiple>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+        </select><br/>
+        push: <input @change="value5.push($event.target.value)"/><br/>
+        <button @click="value5.pop()">pop</button>
+    </div>
+    <hr/>
+
+    <div>
+        value6: {{ value6 }}<br/>
+        <input type="checkbox" true-value="yes" false-value="no" v-model="value6"/><br/>
+        set value6: <input @change="value6 = $event.target.value"/>
+    </div>
+    <hr/>
+
+    <div>
+        value7: {{ value7 }}<br/>
+        lazy input: <input v-model.lazy="value7"/><br/>
+    </div>
+    <hr/>
+
+    <div>
+        value8: {{ value8 }} -- {{ typeof value8 }}<br/>
+        number input: <input v-model.number="value8"/><br/>
+        input: <input v-model="value8"/><br/>
+    </div>
+    <hr/>
+
+    <div>
+        value9: {{ value9 }}<br/>
+        trim input: <input v-model.trim="value9"/><br/>
     </div>
 </div>
 <script type="module">
@@ -32,10 +106,17 @@
         setup() {
             const value = ref('')
             const toggle = ref(false)
-            return {
-                value,
-                toggle
-            }
+            const toggle2 = ref('on')
+            const value2 = ref('')
+            const value3 = ref('')
+            const value4 = ref([])
+            const value5 = ref([])
+            const value6 = ref('')
+            const value7 = ref('')
+            const value8 = ref(0)
+            const value9 = ref('')
+
+            return {value, toggle, toggle2, value2, value3, value4, value5, value6, value7, value8, value9}
         }
     }).mount('#app')
 </script>

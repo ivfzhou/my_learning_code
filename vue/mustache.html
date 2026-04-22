@@ -14,9 +14,8 @@
 <body>
 <div id="app">
     <div>
-        message：{{ fn(message) }}
-        <br/>
-        <input @change="message = $event.target.value"/>
+        value：{{ fn(value) }}<br/>
+        set value: <input @change="value = $event.target.value"/>
     </div>
 </div>
 <script type="module">
@@ -24,11 +23,11 @@
 
     const app = createApp({
         setup() {
-            const message = ref('')
-            return {message}
+            const value = ref('')
+            return {value}
         }
     })
-    app.config.globalProperties.fn = (message) => message + '_changed'
+    app.config.globalProperties.fn = (value) => value + '_changed'
     app.mount('#app')
 </script>
 </body>

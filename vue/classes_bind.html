@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>classes bind</title>
+    <script type="importmap">
+        {
+          "imports": {
+            "vue": "https://unpkg.com/vue@3.5.32/dist/vue.esm-browser.js"
+          }
+        }
+    </script>
+</head>
+<body>
+<div id="app">
+    <div>
+        value: {{ value }}<br/>
+        set value: <input @change="value = $event.target.value"/>
+        <div class="classA" :class="value">element</div>
+    </div>
+    <hr/>
+
+    <div>
+        obj: {{ obj }}<br/>
+        <button @click="obj.id = !obj.id">toggle id</button>
+        <button @click="obj.name = !obj.name">toggle name</button>
+        <button @click="Object.defineProperty(obj, 'age', {value: true}); console.log(obj.age)">add property</button>
+        <div class="classA" :class="obj">element</div>
+    </div>
+    <hr/>
+
+    <div>
+        arr: {{ arr }}<br/>
+        push arr: <input @change="arr.push($event.target.value)"/><br/>
+        <button @click="arr.pop()">pop</button>
+        <div class="classA" :class="arr">element</div>
+    </div>
+    <hr/>
+
+    <div>
+        arr2: {{ arr2 }}<br/>
+        <button @click="arr2[0].name = !arr2[0].name">toggle name</button>
+        <div :class="arr2">element</div>
+    </div>
+    <hr/>
+
+    <div>
+        value: {{ value }}<br/>
+        set value: <input @change="value = $event.target.value"/>
+        <div :class="[value ? 'id' : '', 'name']">element</div>
+    </div>
+</div>
+<script type="module">
+    import {createApp, ref} from 'vue'
+
+    createApp({
+        setup() {
+            const value = ref('')
+            const obj = ref({
+                id: true,
+                name: true
+            })
+            const arr = ref(['id', 'name', ''])
+            const arr2 = ref([{'name': true}, 'id', ''])
+            return {value, obj, arr, arr2}
+        }
+    }).mount('#app')
+</script>
+</body>
+</html>

@@ -2,7 +2,7 @@
 <html lang="zh">
 <head>
     <meta charset="UTF-8">
-    <title>computed usage</title>
+    <title>computed</title>
     <script type="importmap">
         {
           "imports": {
@@ -14,30 +14,39 @@
 <body>
 <div id="app">
     <div>
-        计算属性：{{ messageComputed }}
-        <input type="text" @change="message = $event.target.value"/>
+        valueComputed：{{ valueComputed }}<br/>
+        set value: <input @change="value = $event.target.value"/>
+    </div>
+    <hr/>
+
+    <div>
+        valueComputedCanSet：{{ valueComputedCanSet }}<br/>
+        set valueComputedCanSet: <input @change="messageComputedCanSet = $event.target.value"/>
     </div>
 </div>
 <script type="module">
     import {createApp, ref, computed} from 'vue'
 
-    const message = ref('hello')
     createApp({
         setup() {
-            const messageComputed = computed({
-                get(previousValue) {
-                    console.log('previousValue', previousValue)
-                    return message.value
+            const value = ref('')
+            const valueComputed = computed((oldValue) => {
+                console.log(oldValue)
+                return value.value
+            })
+            const valueComputedCanSet = computed({
+                get: (oldValue) => {
+                    return value.value
                 },
-                set(newValue) {
-                    console.log('newValue', previousValue)
-                    message.value = newValue
+                set: (newValue) => {
+                    value.value = newValue
                 }
             })
 
             return {
-                messageComputed,
-                message
+                valueComputed,
+                value,
+                valueComputedCanSet
             }
         }
     }).mount('#app')

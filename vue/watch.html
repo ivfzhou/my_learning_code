@@ -2,7 +2,7 @@
 <html lang="zh">
 <head>
     <meta charset="UTF-8">
-    <title>watch usage</title>
+    <title>watch</title>
     <script type="importmap">
         {
           "imports": {
@@ -14,15 +14,87 @@
 <body>
 <div id="app">
     <div>
-        value：<span ref="span">{{ value }}</span>
-        <input ref="input" type="text" v-model="value"/>
+        value: {{value}}<br/>
+        set value: <input @change="value = $event.target.value"/>
+    </div>
+    <hr/>
+
+    <div>
+        obj: {{obj}}<br/>
+        set obj.id: <input @change="obj.id = $event.target.value"/>
+    </div>
+    <hr/>
+
+    <div>
+        value2: {{value2}}<br/>
+        set value2: <input @change="value2 = $event.target.value"/>
     </div>
 
     <div>
-        obj：{{ obj }}
-        <input type="text" v-model="obj.name"/>
+        value3: {{value3}}<br/>
+        obj2: {{obj2}}<br/>
+        value4: {{value4}}<br/>
+        set value3: <input @change="value3 = $event.target.value"/><br/>
+        set obj2.id: <input @change="obj2.id = $event.target.value"/><br/>
+        set value4: <input @change="value4 = $event.target.value"/><br/>
     </div>
+    <hr/>
 
+    <div>
+        obj3: {{obj3}}<br/>
+        set obj3.id: <input @change="obj3.id = $event.target.value"/>
+    </div>
+    <hr/>
+
+    <div>
+        value5: {{value5}}<br/>
+        set value5: <input @change="value5 = $event.target.value"/>
+    </div>
+    <hr/>
+
+    <div>
+        value6: {{value6}}<br/>
+        set value6: <input @change="value6 = $event.target.value"/>
+    </div>
+    <hr/>
+
+    <div>
+        value7: {{value7}}<br/>
+        value8: {{value8}}<br/>
+        set value7: <input @change="value7 = $event.target.value"/><br/>
+        set value8: <input @change="value8 = $event.target.value"/><br/>
+    </div>
+    <hr/>
+
+    <div>
+        value9: {{value9}}<br/>
+        set value9: <input @change="value9 = $event.target.value"/>
+    </div>
+    <hr/>
+
+    <div>
+        value10: {{value10}}<br/>
+        set value10: <input @change="value10 = $event.target.value"/>
+    </div>
+    <hr/>
+
+    <div>
+        value11: <span id="value11">{{value11}}</span><br/>
+        set value11: <input @change="value11 = $event.target.value"/>
+    </div>
+    <hr/>
+
+    <div>
+        value12: <span id="value12">{{value12}}</span><br/>
+        set value12: <input @change="value12 = $event.target.value"/>
+    </div>
+    <hr/>
+
+    <div>
+        value13: {{value13}}<br/>
+        set value13: <input @change="value13 = $event.target.value"/><br/>
+        <button @click="unwatch">unwatch</button>
+    </div>
 </div>
 <script type="module">
     import {
@@ -31,54 +103,153 @@
         watch,
         watchEffect,
         onWatcherCleanup,
-        useTemplateRef,
-        watchPostEffect,
-        watchSyncEffect
     } from 'vue'
 
     createApp({
         setup() {
             const value = ref('')
-            const spanNode = useTemplateRef('span')
-            watch(value, (newValue, oldValue) => {
-                console.log(`span node value: ${spanNode.value.innerHTML}`)
-                console.log(`newValue: ${newValue}, oldValue: ${oldValue}`)
-            }, {flush: 'post'})
-            /*watch(() => value.value, (newValue, oldValue, onCleanup) => {
-                console.log(`newValue: ${newValue}, oldValue: ${oldValue}`)
+            watch(value, (newVal, oldVal, onCleanup) => {
+                console.log(`newVal: ${newVal}, oldVal: ${oldVal}`)
             })
+
+            const obj = ref({
+                id: 1,
+                name: 'zs'
+            })
+            watch(obj, (newVal, oldVal, onCleanup) => {
+                console.log(`newVal: ${newVal}, oldVal: ${oldVal}`)
+            })
+
             const value2 = ref('')
-            watch([value, value2], ([newValue, newValue2]) => {
-                console.log(`newValue: ${newValue}, newValue2: ${newValue2}`)
-            })*/
+            watch(() => value2.value, (newVal, oldVal, onCleanup) => {
+                console.log(`newVal: ${newVal}, oldVal: ${oldVal}`)
+            })
 
-            const obj = ref({name: 'zs'})
-            watch(
-                obj,
-                (newValue, oldValue) => {
-                    console.log(`newValue: ${newValue}, oldValue: ${oldValue}`)
-                },
-                {deep: 2, immediate: true, once: true, flush: 'post'}
-            )
+            const value3 = ref('')
+            const obj2 = ref({
+                id: 1,
+                name: 'zs'
+            })
+            const value4 = ref('')
+            const fn = () => value4.value
+            watch([value3, obj2, fn], ([newValue3, newObj2, newFn], [oldValue3, oldObj2, oldFn], onCleanup) => {
+                console.log(`newValue3: ${newValue3}, oldValue3: ${oldValue3}`)
+                console.log(`newObj2: ${JSON.stringify(newObj2)}, oldObj2: ${JSON.stringify(oldObj2)}`)
+                console.log(`newFn: ${newFn}, oldFn: ${oldFn}`)
+            })
 
-            watchEffect((onCleanup) => {
-                console.log(`obj.name: ${obj.value.name}`)
+            const obj3 = ref({
+                id: 1,
+                name: 'zs'
+            })
+            watch(obj3, (newVal, oldVal, onCleanup) => {
+                console.log(`newVal: ${JSON.stringify(newVal)}, oldVal: ${JSON.stringify(oldVal)}`)
+            }, {deep: 2})
+            watch(() => obj3.value, (newVal, oldVal, onCleanup) => {
+                console.log(`newVal: ${JSON.stringify(newVal)}, oldVal: ${JSON.stringify(oldVal)}`)
+            }, {deep: 2})
+
+            const value5 = ref('')
+            watch(value5, (newVal, oldVal, onCleanup) => {
+                console.log(`value5, newVal: ${newVal}, oldVal: ${oldVal}`)
+            }, {immediate: true})
+
+            const value6 = ref('')
+            watch(value6, (newVal, oldVal, onCleanup) => {
+                console.log(`newVal: ${newVal}, oldVal: ${oldVal}`)
+            }, {once: true})
+
+            const value7 = ref('')
+            const value8 = ref('')
+            watchEffect(async (onCleanup) => {
+                console.log(`value7: ${value7.value}`)
+                const value = await new Promise((resolve) => {
+                    setTimeout(() => {
+                        resolve(value8.value) /* 异步代码的响应式变量没追踪 */
+                    }, 1000)
+                })
+                console.log(`value8: ${value}`)
+            })
+
+            const value9 = ref('')
+            watch(value9, async (newValue, oldValue, onCleanup) => {
+                let stop = false
+
+                setTimeout(() => {
+                    onCleanup(() => { /* onCleanup 能异步代码中使用 */
+                        console.log('onCleanup value9')
+                        stop = true
+                    })
+                }, 10)
+
+                const value = await new Promise((resolve) => {
+                    setTimeout(() => {
+                        resolve(newValue)
+                    }, 3000)
+                })
+
+                if (!stop) console.log(`value9: ${value}`)
+            })
+
+            const value10 = ref('')
+            watch(value10, async (newValue, oldValue, onCleanup) => {
+                let stop = false
+
+                onWatcherCleanup(() => {
+                    console.log('onCleanup value10')
+                    stop = true
+                })
+
+                const value = await new Promise((resolve) => {
+                    setTimeout(() => {
+                        resolve(newValue)
+                    }, 3000)
+                })
+
+                if (!stop) console.log(`value10: ${value}`)
+            })
+
+            // watchEffect(callback, { flush: 'post' })
+            // watchPostEffect(() => { })
+            const value11 = ref('')
+            watch(value11, () => {
+                console.log(window.document.getElementById('value11').innerHTML)
+            }, {flush: 'post'})
+
+            // watchEffect(callback, { flush: 'sync' })
+            // watchSyncEffect(() => { })
+            const value12 = ref('')
+            watch(value12, () => {
+                console.log(window.document.getElementById('value12').innerHTML)
             }, {flush: 'sync'})
 
-            watchEffect(async () => {
-                onWatcherCleanup(() => {
-                    console.log('cleanup')
-                })
+            const value13 = ref('')
+            const unwatch = watch(value13, (newValue) => {
+                console.log('value13', newValue)
             })
 
-            watchPostEffect(() => {
-            })
-            const unwatch = watchSyncEffect(() => {
-            })
-
-            return {value, obj}
+            return {
+                value,
+                value2,
+                value3,
+                value4,
+                value5,
+                value6,
+                value7,
+                value8,
+                value9,
+                value10,
+                value11,
+                value12,
+                value13,
+                unwatch,
+                obj,
+                obj2,
+                obj3
+            }
         }
     }).mount('#app')
+
 </script>
 </body>
 </html>

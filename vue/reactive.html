@@ -2,7 +2,7 @@
 <html lang="zh">
 <head>
     <meta charset="UTF-8">
-    <title>reactive usage</title>
+    <title>reactive</title>
     <script type="importmap">
         {
           "imports": {
@@ -13,31 +13,18 @@
 </head>
 <body>
 <div id="app">
-    <div>
-        userProfile.name：{{ userProfile.name }}
-        <button @click="updateUserProfileName">更新</button>
-    </div>
-    <div>
-        userProfile：{{ userProfile }}
-        <button @click="replaceUserProfile">更新</button>
-    </div>
+    <div>{{ value11.id + 2 }}</div>
+    <hr/>
 
     <div>
-        浅层引用：{{ shallowUserProfile.name }}
-        <button @click="updateShallowUserProfileName">更新</button>
+        value12: {{ value12 }}<br/>
+        <button @click="changeList">change list</button>
     </div>
-    <div>
-        浅层引用：{{ shallowUserProfile.nestedProfile.name }}
-        <button @click="updateNestedProfileName">更新</button>
-    </div>
+    <hr/>
 
     <div>
-        数字：{{ reactiveNumber }}
-        <button @click="incrementReactiveNumber">更新</button>
-    </div>
-
-    <div>
-        内部属性解包：{{ reactiveMap.get(1) + 1 }}
+        value13: {{ value13 }}<br/>
+        <button @click="changeMap">change map</button>
     </div>
 </div>
 <script type="module">
@@ -45,56 +32,52 @@
 
     createApp({
         setup() {
-            const userProfile = reactive({name: 'zs'})
+            const value = ref(0)
+            const value2 = ref(value)
+            console.log(value === value2) // true
 
-            const originalUserObject = {}
-            const reactiveUserObject = reactive(originalUserObject)
-            console.log(reactiveUserObject === reactive(originalUserObject))
-            console.log(reactiveUserObject === reactive(reactive(originalUserObject)))
+            const value3 = reactive({})
+            const value4 = reactive(value3)
+            console.log(value3 === value4) // true
 
-            const userName = 'zs'
-            reactiveUserObject.name = userName
-            console.log(reactiveUserObject.name === userName)
+            const obj = {id: {}}
+            const value5 = ref(obj)
+            const value6 = ref(obj.id)
+            // value5.value.id 自动解包
+            console.log(value5.value.id === value6.value) // true
+            console.log(value5.value.id === obj.id) // false
 
-            const nestedProfile = {}
-            reactiveUserObject.nestedObj = nestedProfile
-            console.log(reactiveUserObject.nestedObj === nestedProfile)
+            const obj2 = {id: 1, name: 'zs'}
+            const value7 = ref(obj2)
+            const {id, name} = value7.value
+            console.log(id, name)
 
-            const shallowUserProfile = shallowReactive({name: 'zs', nestedProfile: {name: 'zs'}})
+            const obj3 = {id: {}}
+            const value9 = reactive(obj3)
+            const value10 = reactive(obj3.id)
+            console.log(value9.id === value10) // true
+            console.log(value9.id === obj3.id) // false
+            console.log(value10 === obj3.id) // false
 
-            const numericState = reactive({num: 1})
-            let {num: detachedNumber} = numericState
-            detachedNumber++
-            console.log(numericState.num)
+            const value11 = ref({id: 1})
 
-            const reactiveNumber = reactive(1)
-
-            const reactiveMap = reactive(new Map([[1, reactive(2)]]))
-            console.log(reactiveMap.get(1))
-
-            return {
-                userProfile,
-                shallowUserProfile,
-                reactiveNumber,
-                reactiveMap
+            const list = [{id: 1}]
+            const value12 = ref(list)
+            console.log(value12.value[0].id)
+            const changeList = () => {
+                list[0].id = 2
+                console.log(list[0].id)
             }
-        },
-        methods: {
-            updateUserProfileName() {
-                this.userProfile.name = 'li'
-            },
-            replaceUserProfile() {
-                this.userProfile = {name: 'li'}
-            },
-            updateShallowUserProfileName() {
-                this.shallowUserProfile.name = 'li'
-            },
-            updateNestedProfileName() {
-                this.shallowUserProfile.nestedProfile.name = 'li'
-            },
-            incrementReactiveNumber() {
-                this.reactiveNumber++
+
+            const map = new Map([['id', 1]])
+            const value13 = ref(map)
+            console.log(value13.value.get('id'))
+            const changeMap = () => {
+                map.set('id', 2)
+                console.log(map.get('id'))
             }
+
+            return {value11, value12, value13, changeList, changeMap}
         }
     }).mount('#app')
 </script>

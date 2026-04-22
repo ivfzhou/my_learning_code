@@ -12,43 +12,117 @@
     </script>
 </head>
 <body>
+<script type="text/javascript">
+    function clickFn(event, el) {
+        console.log(event, el)
+    }
+</script>
 <div id="app">
     <div>
-        fn: {{ fn }}
-        <br/>
-        <button @click="fn = null">set to null</button>
-        <br/>
+        fn: {{ fn }}<br/>
+        <button @click="fn = null">set fn to null</button>
         <div v-on:click="fn">v-on:click="fn"</div>
         <div @click="fn">@click="fn"</div>
+        <div onclick="clickFn(event, this)">onclick="clickFn(event, this)"</div>
     </div>
     <hr/>
+
     <div>
-        eventname: {{ eventname }}
-        <br/>
-        <input @change="eventname = $event.target.value"/>
-        <br/>
+        eventname: {{ eventname }}<br/>
+        set eventname: <input @change="eventname = $event.target.value"/><br/>
         <button @click="eventname = null">set to null</button>
         <div @[eventname]="fn">@[eventname]="fn"</div>
         <div v-on:[eventname]="fn">v-on:[eventname]="fn"</div>
     </div>
     <hr/>
+
     <div>
         <div @click="console.log('parent clicked')">
             parent
-            <div @click="console.log('child clicked')">
-                child
-            </div>
+            <div @click="console.log('child clicked')">child</div>
             <!-- .stop 修饰符调用 event.stopPropagation() -->
-            <div @click.stop="console.log('child clicked')">
-                child has stop
-            </div>
+            <div @click.stop="console.log('child clicked')">child has stop</div>
         </div>
     </div>
     <hr/>
+
     <div>
-        <a href="./events_bind" @click="console.log($event.target)">a element</a>
-        <br/>
+        <a href="./events_bind" @click="console.log($event.target)">a element</a><br/>
         <a href="./events_bind" @click.prevent="console.log($event.target)">a element has prevent</a>
+    </div>
+    <hr/>
+
+    <div>
+        <!-- 仅当 event.target 是元素本身时才会触发事件处理器 -->
+        <div @click.self="console.log('parent has self')">
+            parent has self
+            <div>child in parent has self</div>
+        </div>
+        <div @click="console.log('parent')">
+            parent
+            <div>child</div>
+        </div>
+    </div>
+    <hr/>
+
+    <div>
+        <div @click="console.log('parent')">
+            parent
+            <div @click="console.log('child')">child</div>
+        </div>
+        <div @click.capture="console.log('parent has capture')">
+            parent has capture
+            <div @click="console.log('child in parent has capture')">child in parent has capture</div>
+        </div>
+    </div>
+    <hr/>
+
+    <div>
+        <div @click="console.log($event.target)">element</div>
+        <div @click.once="console.log($event.target)">element has once</div>
+    </div>
+    <hr/>
+
+    <div>
+        <div @scroll="console.log($event.target)" style="width: 200px; height: 100px; overflow: auto;">
+            <div style="width: 500px; height: 400px;">content</div>
+        </div>
+        <div @scroll.passive="console.log($event.target)" style="width: 200px; height: 100px; overflow: auto;">
+            <div style="width: 500px; height: 400px;">content has passive</div>
+        </div>
+    </div>
+    <hr/>
+
+    <div>
+        keyup: <input @keyup="console.log($event.key)"/><br/>
+        enter keyup: <input @keyup.enter="console.log($event.key)"/><br/>
+        tab keyup: <input @keyup.tab="console.log($event.key)"/><br/>
+        delete keyup: <input @keyup.delete="console.log($event.key)"/><br/>
+        esc keyup: <input @keyup.esc="console.log($event.key)"/><br/>
+        space keyup: <input @keyup.space="console.log($event.key)"/><br/>
+        up keyup: <input @keyup.up="console.log($event.key)"/><br/>
+        down keyup: <input @keyup.down="console.log($event.key)"/><br/>
+        left keyup: <input @keyup.left="console.log($event.key)"/><br/>
+        right keyup: <input @keyup.right="console.log($event.key)"/>
+    </div>
+    <hr/>
+
+    <div>
+        ctrl keyup: <input @keyup.ctrl="console.log($event.key)"/><br/>
+        alt keyup: <input @keyup.alt="console.log($event.key)"/><br/>
+        shift keyup: <input @keyup.shift="console.log($event.key)"/><br/>
+        meta keyup: <input @keyup.meta="console.log($event.key)"/><br/>
+        ctrl.c keyup: <input @keyup.ctrl.c="console.log($event.key)"/>
+        <div @click.ctrl="console.log($event.target)">ctrl click</div>
+        <div @click.ctrl.exact="console.log($event.target)">ctrl exact click</div>
+        <div @click.exact="console.log($event.target)">exact click</div>
+    </div>
+    <hr/>
+
+    <div>
+        <div @click.left="console.log($event.target)">left click</div>
+        <div @click.right="console.log($event.target)">right click</div>
+        <div @click.middle="console.log($event.target)">middle click</div>
     </div>
 </div>
 <script type="module">

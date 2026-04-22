@@ -14,45 +14,36 @@
 <body>
 <div id="app">
     <div>
-        list: {{ list }}
-        <br/>
+        list: {{ list }}<br/>
         <button @click="list.pop()">pop</button>
         <button @click="list.push({id: 4, name: 'tq'})">push</button>
-    </div>
-    <div>
         <div v-for="({id, name}, i) of list" :key="id"> {{ i }} -- {{ id }} -- {{ name }}</div>
     </div>
     <hr/>
+
     <div>
-        list: {{ list }}
-        <br/>
+        list: {{ list }}<br/>
         <button @click="list.pop()">pop</button>
         <button @click="list.push({id: 4, name: 'tq'})">push</button>
-    </div>
-    <div>
         <template v-for="({id, name}, i) of list" :key="id">
             <div>{{ i }} -- {{ id }} -- {{ name }}</div>
         </template>
     </div>
     <hr/>
+
     <div>
-        obj: {{ obj }}
-        <br/>
+        obj: {{ obj }}<br/>
         <button @click="Object.defineProperty(obj, 'gender', {value: 'man', enumerable: true}); console.log(obj.gender)">
-            addProperty
+            add property
         </button>
-    </div>
-    <div>
         <!-- 等价于调用 Object.values() -->
         <div v-for="(v, k, i) in obj">{{ i }} -- {{ k }} -- {{ v }}</div>
     </div>
     <hr/>
+
     <div>
-        count: {{ count }}
-        <br/>
-        <input type="number" @change="(el) => count = Number(el.target.value)"/>
-    </div>
-    <div>
+        count: {{ count }}<br/>
+        set count: <input type="number" @change="(el) => count = Number(el.target.value)"/>
         <div v-for="v in count" :key="v">{{ v }}</div>
     </div>
 </div>

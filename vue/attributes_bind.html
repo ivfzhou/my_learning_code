@@ -14,12 +14,9 @@
 <body>
 <div id="app">
     <div>
-        value: {{ value }}
-        <br/>
-        <input @change="value = $event.target.value"/>
-        <br/>
+        value: {{ value }}<br/>
+        set value: <input @change="value = $event.target.value"/><br/>
         <button @click="value = null">set to null</button>
-        <br/>
         <div v-bind:id="value">v-bind:id="value"</div>
         <div :id="value">:id="value"</div>
         <div :value>:value</div>
@@ -27,19 +24,18 @@
         <div v-bind:disabled="value">v-bind:disabled="value"</div>
     </div>
     <hr/>
+
     <div>
-        obj: {{ obj }}
-        <br/>
-        <button @click="Object.defineProperty(obj, 'age', {value: 18}); console.log(obj.age)">addProperty</button>
+        obj: {{ obj }}<br/>
+        <button @click="Object.defineProperty(obj, 'age', {value: 18}); console.log(obj.age)">add property</button>
         <br/>
         <div v-bind="obj">v-bind="obj"</div>
     </div>
     <hr/>
+
     <div>
-        attributename: {{ attributename }}
-        <br/>
-        <input @change="attributename = $event.target.value"/>
-        <br/>
+        attributename: {{ attributename }}<br/>
+        set attributename: <input @change="attributename = $event.target.value"/><br/>
         <button @click="attributename = null">set to null</button>
         <div :[attributename]="value">:[attributename]="value"</div>
         <div v-bind:[attributename]="value">v-bind:[attributename]="value"</div>
