@@ -22,17 +22,17 @@
 <script type="module">
     import {createApp} from 'vue'
 
-    const ComponentA = {
+    const componentA = {
         template: '#componentA'
     }
-    const ComponentB = {
+    const componentB = {
         template: '#componentB'
     }
     const App = {
         setup() {
 
         },
-        components: {ComponentA, ComponentB},
+        components: {ComponentA: componentA, ComponentB: componentB},
         template: `
 <component-a></component-a>
 <component-b></component-b>

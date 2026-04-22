@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>dynamic component</title>
+    <script type="importmap">
+        {
+          "imports": {
+            "vue": "https://unpkg.com/vue@3.5.32/dist/vue.esm-browser.js"
+          }
+        }
+    </script>
+</head>
+<body>
+<div id="app">
+    <div>
+        componentName: {{ componentName }}<br/>
+        set componentName: <input @change.self="componentName = $event.target.value"/><br/>
+        <component :is="componentName"></component>
+    </div>
+    <hr/>
+
+    <div>
+        index: {{ index }}<br/>
+        set index: <input @change.self.number="index = $event.target.value"/><br/>
+        <component :is="list[index]"></component>
+    </div>
+</div>
+<script type="module">
+    import {createApp, ref} from 'vue'
+
+    const componentA = {template: `<div>ComponentA</div>`}
+    const componentB = {template: `<div>ComponentB</div>`}
+    const componentC = {template: `<div>ComponentC</div>`}
+    const app = createApp({
+        setup() {
+            const componentName = ref('componentA')
+            const index = ref(0)
+            const list = [componentA, componentB, componentC]
+            return {componentName, index, list}
+        },
+        component: {componentA, componentB, componentC},
+    })
+    app.component('componentA', componentA)
+    app.component('componentB', componentB)
+    app.component('componentC', componentC)
+    app.mount('#app')
+</script>
+</body>
+</html>

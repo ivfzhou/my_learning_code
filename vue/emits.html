@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>emits</title>
+    <script type="importmap">
+        {
+          "imports": {
+            "vue": "https://unpkg.com/vue@3.5.32/dist/vue.esm-browser.js"
+          }
+        }
+    </script>
+</head>
+<body>
+<div id="app">
+    <div>
+        <parent></parent>
+    </div>
+    <hr/>
+
+    <div>
+        <parent2></parent2>
+    </div>
+    <hr/>
+
+    <div>
+        <parent3></parent3>
+    </div>
+</div>
+<script type="module">
+    import {createApp} from 'vue'
+
+    const Child = {
+        emits: ['fn'],
+        template: `<div @click="$emit('fn', 'yes')">Child</div>`
+    }
+    const Parent = {
+        components: {Child},
+        template: `
+<Child @fn="(s)=>console.log('hello', s)"/>
+`
+    }
+
+    const Child2 = {
+        emits: ['click'],
+        template: `<div @click="$emit('click')">Child2</div>`,
+    }
+    const Parent2 = {
+        components: {Child2},
+        template: `<Child2 @click="console.log('ok')"/>`
+    }
+
+    const Child3 = {
+        emits: {
+            fn: (arg) => {
+                console.log(`validate: ${arg}`)
+                return true
+            }
+        },
+        template: `<div @click="$emit('fn', 'ok')">Child3</div>`
+    }
+    const Parent3 = {
+        components: {Child3},
+        template: `<Child3 @fn="(arg) => { console.log(arg) }"/>`
+    }
+
+    createApp({components: {Parent, Parent2, Parent3}}).mount('#app')
+</script>
+</body>
+</html>

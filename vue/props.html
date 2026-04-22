@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>props</title>
+    <script type="importmap">
+        {
+          "imports": {
+            "vue": "https://unpkg.com/vue@3.5.32/dist/vue.esm-browser.js"
+          }
+        }
+    </script>
+</head>
+<body>
+<template id="parent2">
+    <child2 value-a="hello"></child2>
+</template>
+<div id="app">
+    <div>
+        <parent></parent>
+    </div>
+    <hr/>
+
+    <div>
+        <parent2></parent2>
+    </div>
+    <hr/>
+
+    <div>
+        <parent3></parent3>
+    </div>
+</div>
+<script type="module">
+    import {createApp, watch, ref} from 'vue'
+
+    const Child = {
+        props: ['value'],
+        setup(props) {
+            // const {value} = props
+            watch(() => props.value, () => {
+                console.log('watched')
+            })
+        },
+        template: `<div></div>`,
+    }
+    const Parent = {
+        setup() {
+            const value = ref('')
+            return {value}
+        },
+        template: `
+set value: <input @change.self="value = $event.target.value"/><br/>
+<Child :value="value"/>
+`,
+        components: {Child}
+    }
+
+    const Child2 = {
+        props: ['valueA'],
+        template: `<div>Child2 - {{ valueA }}</div>`
+    }
+    const Parent2 = {
+        template: '#parent2',
+        components: {Child2}
+    }
+
+    const Child3 = {
+        props: {
+            b: Boolean,
+            s: String,
+            n: Number,
+            o: Object,
+            a: Array,
+            f: Function,
+            defaultObject: {
+                type: Object,
+                default(props) {
+                    console.log(`defaultObject ${JSON.stringify(props)}`)
+                    return {}
+                }
+            },
+            requiredProp: {
+                type: [String, Number],
+                required: true,
+            },
+            defaultString: {
+                type: String,
+                default: 'abc',
+            },
+            defaultFunction: {
+                type: Function,
+                default() {
+                }
+            },
+            validateProp: {
+                type: [String],
+                validator(value, props) {
+                    console.log(`validator, value: ${value}, props: ${JSON.stringify(props)}`)
+                    return true
+                }
+            },
+            nullProps: {
+                type: null,
+            },
+            undefinedProps: {
+                type: undefined,
+            },
+            propA: {
+                type: [Boolean, Number]
+            },
+            propB: {
+                type: [String, Boolean]
+            },
+            propC: {
+                type: [Boolean, String]
+            }
+        },
+        template: `
+<div>
+    <div>boolean: {{ b }}</div>
+    <div>string: {{ s }}</div>
+    <div>number: {{ n }}</div>
+    <div>object: {{ o }}</div>
+    <div>array: {{ a }}</div>
+    <div>function: {{ f }}</div>
+    <div>defaultObject: {{ defaultObject }}</div>
+    <div>requiredProp: {{ requiredProp }}</div>
+    <div>defaultString: {{ defaultString }}</div>
+    <div>defaultFunction: {{ defaultFunction }}</div>
+    <div>validateProp: {{ validateProp }}</div>
+    <div>nullProps: {{ nullProps }}</div>
+    <div>undefinedProps: {{ undefinedProps }}</div>
+    <div>propA: {{ propA }}</div>
+    <div>propB: {{ typeof propB }}</div>
+    <div>propC: {{ typeof propC }}</div>
+</div>
+`
+    }
+    const Parent3 = {
+        template: `<Child3 :requiredProp="1" :nullProps="'ok'" :undefinedProps="'ok'" :propA="1" propB propC=""/>`,
+        components: {Child3}
+    }
+
+    createApp({components: {Parent, Parent2, Parent3}}).mount('#app')
+</script>
+</body>
+</html>

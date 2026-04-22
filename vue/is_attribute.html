@@ -2,7 +2,7 @@
 <html lang="zh">
 <head>
     <meta charset="UTF-8">
-    <title>split file usage</title>
+    <title>is attribute</title>
     <script type="importmap">
         {
           "imports": {
@@ -13,13 +13,20 @@
 </head>
 <body>
 <div id="app">
-    <p>hello world</p>
+    <table>
+        <tbody is="vue:component-a"></tbody>
+    </table>
 </div>
 <script type="module">
     import {createApp} from 'vue'
-    import App from './App.js'
 
-    createApp(App).mount('#app')
+    createApp({
+        components: {
+            componentA: {
+                template: `<div>element</div>`
+            }
+        }
+    }).mount('#app')
 </script>
 </body>
 </html>

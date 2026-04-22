@@ -2,7 +2,7 @@
 <html lang="zh">
 <head>
     <meta charset="UTF-8">
-    <title>component life cycle</title>
+    <title>lifecycle</title>
     <script type="importmap">
         {
           "imports": {
@@ -13,15 +13,26 @@
 </head>
 <body>
 <div id="app">
-    <button @click="click">点击</button>
-    <br/>
-    <input type="text" v-model="message"/>
-    <component v-if="show" :message="message"></component>
+    <div>
+        <button @click="show = !show">toggle show</button>
+        <br/>
+        set message: <input @change.self="message = $event.target.value"/>
+        <component-a v-if="show" :message="message"></component-a>
+    </div>
+    <hr/>
+
+    <div>
+        <button @click="show2 = !show2">toggle show2</button>
+        <br/>
+        <keep-alive>
+            <component-a v-if="show2" message="hello"></component-a>
+        </keep-alive>
+    </div>
 </div>
 <script type="module">
     import {createApp, ref} from 'vue'
 
-    const Component = {
+    const componentA = {
         props: ['message'],
         template: `<div>{{ message }}</div>`,
         beforeCreate() {
@@ -47,20 +58,22 @@
         },
         unmounted() {
             console.log('unmounted')
+        },
+        activated() {
+            console.log('activated')
+        },
+        deactivated() {
+            console.log('deactivated')
         }
     }
     createApp({
         setup() {
             const show = ref(false)
+            const show2 = ref(false)
             const message = ref('')
-            return {show, message}
+            return {show, show2, message}
         },
-        methods: {
-            click() {
-                this.show = !this.show
-            }
-        },
-        components: {Component}
+        components: {componentA}
     }).mount('#app')
 </script>
 </body>
