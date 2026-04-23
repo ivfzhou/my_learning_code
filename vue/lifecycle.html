@@ -33,16 +33,36 @@
     import {createApp, ref} from 'vue'
 
     const componentA = {
+        data() {
+            return {value: 'ok'}
+        },
+        computed: {
+            valueComputed() {
+                return this.value
+            }
+        },
+        methods: {
+            m() {
+            }
+        },
+        watch: {
+            value: () => {
+            }
+        },
         props: ['message'],
         template: `<div>{{ message }}</div>`,
         beforeCreate() {
-            console.log('beforeCreate')
+            console.log(`beforeCreate, message: ${this.message}`)
         },
         created() {
-            console.log('created')
+            console.log(`created, value: ${this.value}, valueComputed: ${this.valueComputed}, m: ${typeof this.m}, watchValue: ${typeof this.$watch}`)
         },
         beforeMount() {
             console.log('beforeMount')
+        },
+        async serverPrefetch() {
+            await new Promise(() => {
+            })
         },
         mounted() {
             console.log('mounted')

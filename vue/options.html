@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>options</title>
+    <script type="importmap">
+        {
+          "imports": {
+            "vue": "https://unpkg.com/vue@3.5.32/dist/vue.esm-browser.js"
+          }
+        }
+    </script>
+</head>
+<body>
+<div id="app">
+    <div>
+        set value: <input @change.self="value = $event.target.value"/><br/>
+        set value2: <input @change.self="value2 = parseFloat($event.target.value)"/><br/>
+        set value3: <input @change.self="value3 = Boolean($event.target.value)"/><br/>
+        set value4.a: <input @change.self="value4.a = $event.target.value"/><br/>
+        <button @click="md1">md1</button>
+        <br/>
+        value: {{ value }}<br/>
+        value2: {{ value2 }}, type: {{ typeof value2 }}<br/>
+        value3: {{ value3 }}, type: {{ typeof value3 }}<br/>
+        value4: {{ value4 }}<br/>
+        calcA: {{ calcA }}<br/>
+        calcB: {{ calcB }}<br/>
+        calcC: {{ calcC }}<br/>
+    </div>
+    <hr/>
+
+    <div>
+        <child ref="child"></child>
+    </div>
+    <hr/>
+
+    <div>
+        <child2></child2>
+    </div>
+    <hr/>
+
+    <div>
+        <child3></child3>
+    </div>
+    <hr/>
+
+    <div>
+        <child4></child4>
+    </div>
+    <hr/>
+
+    <div>
+        <p v-red>red</p>
+    </div>
+    <hr/>
+
+    <div>
+        <button @click="show$Variables">show $ variables</button>
+    </div>
+</div>
+<script type="module">
+    import {createApp, h} from 'vue'
+
+    const Child = {
+        data() {
+            return {
+                value: ''
+            }
+        },
+        props: ['propA'],
+        computed: {
+            calcA: (vm) => {
+                return vm.value
+            }
+        },
+        methods: {
+            md() {
+                return 'md'
+            }
+        },
+        watch: {
+            value() {
+            }
+        },
+        emits: ['fn'],
+        expose: ['value', 'calcA', 'md'],
+        template: `<div>Child</div>`
+    }
+    const Child2 = {
+        mounted() {
+            throw new Error('Child2 error')
+        },
+        template: `<div>Child2</div>`
+    }
+    const Child3 = {
+        render() {
+            // return '<p>str</p>'
+            // return 123
+            // return false
+            // return null
+            // return undefined
+            // return h('div', 'Child3')
+            return [h('div', 'Child3'), h('div', 'Child3 again')]
+        }
+    }
+    const key = Symbol()
+    const Child4 = {
+        // inject: ['strKey'],
+        inject: {
+            strKey: 'strKey',
+            key: key,
+            key2: {
+                from: key,
+                default() {
+                    return []
+                }
+            }
+        },
+        template: `<div>strKey: {{ strKey }}<br/>key2: {{ key2 }}</div>`
+    }
+    createApp({
+        name: 'Root',
+        data() {
+            return {
+                value: '',
+                value2: 1,
+                value3: true,
+                value4: {
+                    a: ''
+                }
+            }
+        },
+        props: {
+            param: String
+        },
+        computed: {
+            calcA() {
+                return this.value
+            },
+            calcB: (vm) => {
+                return vm.value2
+            },
+            calcC: {
+                get() {
+                    return this.value3
+                },
+                set(value) {
+                    this.value3 = value
+                }
+            }
+        },
+        methods: {
+            md1() {
+                console.log('md1')
+            },
+            valueChanged() {
+                console.log(`value changed, value: ${this.value}`)
+            },
+            calcAChanged() {
+                console.log(`calcA changed, value: ${this.calcA}`)
+            },
+            show$Variables() {
+                console.log('$data', this.$data)
+                console.log('$props', this.$props)
+                console.log('$el', this.$el)
+                console.log('$options', this.$options)
+                console.log('$parent', this.$parent)
+                console.log('$root', this.$root)
+                console.log('$slots', this.$slots)
+                console.log('$refs', this.$refs)
+                console.log('$attrs', this.$attrs)
+            }
+        },
+        watch: {
+            value: 'valueChanged',
+            value2(newValue, oldValue, cleanup) {
+                console.log(`value2 watched, newValue: ${newValue}, oldValue: ${oldValue}`)
+            },
+            value3: {
+                handler(newValue, oldValue, cleanup) {
+                    console.log(`value3 watched, newValue: ${newValue}, oldValue: ${oldValue}`)
+                },
+                immediate: false,
+                deep: 0,
+                flush: 'pre'
+            },
+            calcA: [
+                'calcAChanged',
+                (newValue, oldValue, cleanup) => {
+                    console.log(`calcA watched, newValue: ${newValue}, oldValue: ${oldValue}`)
+                },
+                {
+                    handler: (newValue, oldValue, cleanup) => {
+                        console.log(`calcA watched, newValue: ${newValue}, oldValue: ${oldValue}`)
+                    }
+                }
+            ],
+            'value4.a': (newValue, oldValue, cleanup) => {
+                console.log(`value4.a watched, newValue: ${newValue}, oldValue: ${oldValue}`)
+            },
+        },
+        emits: {
+            aFn: (arg) => {
+                return true
+            }
+        },
+        expose: [],
+        mounted() {
+            console.log(JSON.stringify(this.$refs.child))
+            console.log(this.$refs.child.md())
+        },
+        components: {Child, Child2, Child3, Child4},
+        errorCaptured(err, errComponent, info) {
+            console.log(`err: ${err}, info: ${info}`)
+            console.log(errComponent)
+            return false
+        },
+        template: undefined,
+        render: undefined,
+        compilerOptions: {
+            isCustomElement(tag) {
+                return false
+            },
+            whitespace: 'condense',
+            delimiters: ['{{', '}}'],
+            comments: false
+        },
+        mixins: [{}],
+        extends: {},
+        // provide() {
+        //     return {}
+        // },
+        provide: {
+            strKey: 'anything',
+            [key]: 'anything2'
+        },
+        inheritAttrs: true,
+        directives: {
+            red: {
+                mounted(el) {
+                    el.style.color = 'red'
+                }
+            }
+        }
+    }).mount('#app')
+</script>
+</body>
+</html>

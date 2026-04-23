@@ -6,10 +6,8 @@ const color = ref('red')
 
 <template>
   <div>
-    <div>
-      <input type="text" v-model="color"/>
-    </div>
-    <p class="a b">Hello</p>
+    set color: <input v-model="color"/><br/>
+    <p class="a">Hello</p>
   </div>
 </template>
 

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>provide and inject</title>
+    <script type="importmap">
+        {
+          "imports": {
+            "vue": "https://unpkg.com/vue@3.5.32/dist/vue.esm-browser.js"
+          }
+        }
+    </script>
+</head>
+<body>
+<div id="app">
+    <div>
+        <parent></parent>
+    </div>
+</div>
+<script type="module">
+    import {createApp, defineComponent, provide, inject, ref} from 'vue'
+
+    const key = Symbol()
+    const Child = defineComponent(
+        () => {
+            const value = inject(key)
+            return {value}
+        },
+        {
+            template: `
+<div>
+    set value: <input @change="(e) => value = e.target.value"/><br/>
+    inject value: {{ value }}
+</div>
+`
+        }
+    )
+    const Parent = defineComponent(
+        () => {
+            const value = ref('')
+            provide(key, value)
+            return {value}
+        },
+        {
+            components: {Child},
+            template: `
+<div>
+    <Child/>
+    value: {{ value }}
+</div>
+`
+        }
+    )
+    createApp({components: {Parent}}).mount('#app')
+</script>
+</body>
+</html>

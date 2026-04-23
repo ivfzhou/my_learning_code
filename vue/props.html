@@ -64,6 +64,27 @@ set value: <input @change.self="value = $event.target.value"/><br/>
         components: {Child2}
     }
 
+    class ClassA {
+        constructor(name) {
+            this.name = name
+        }
+
+        toString() {
+            return `ClassA: ${this.name}`
+        }
+    }
+
+    class ClassB extends ClassA {
+        constructor(name, age) {
+            super(name)
+            this.age = age
+        }
+
+        toString() {
+            return `ClassB: ${this.name} ${this.age}`
+        }
+    }
+
     const Child3 = {
         props: {
             b: Boolean,
@@ -113,7 +134,8 @@ set value: <input @change.self="value = $event.target.value"/><br/>
             },
             propC: {
                 type: [Boolean, String]
-            }
+            },
+            propD: ClassA
         },
         template: `
 <div>
@@ -133,11 +155,17 @@ set value: <input @change.self="value = $event.target.value"/><br/>
     <div>propA: {{ propA }}</div>
     <div>propB: {{ typeof propB }}</div>
     <div>propC: {{ typeof propC }}</div>
+    <div>propD: {{ typeof propD }} {{ propD }}</div>
 </div>
 `
     }
     const Parent3 = {
-        template: `<Child3 :requiredProp="1" :nullProps="'ok'" :undefinedProps="'ok'" :propA="1" propB propC=""/>`,
+        data() {
+            return {
+                propD: new ClassB('zs', 18)
+            }
+        },
+        template: `<Child3 :requiredProp="1" :nullProps="'ok'" :undefinedProps="'ok'" :propA="1" propB propC="" :propD="propD"/>`,
         components: {Child3}
     }
 

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>slot</title>
+    <script type="importmap">
+        {
+          "imports": {
+            "vue": "https://unpkg.com/vue@3.5.32/dist/vue.esm-browser.js"
+          }
+        }
+    </script>
+</head>
+<body>
+<div id="app">
+    <div>
+        <parent></parent>
+    </div>
+    <hr/>
+
+    <div>
+        <parent2></parent2>
+    </div>
+    <hr/>
+
+    <div>
+        <parent3></parent3>
+    </div>
+</div>
+<script type="module">
+    import {createApp, defineComponent, ref, useTemplateRef} from 'vue'
+
+    const Child = defineComponent({
+        template: `
+<div>
+    Child
+    <slot>default slot content</slot>
+</div>
+`
+    })
+    const Parent = defineComponent(
+        () => {
+            const value = ref('')
+            return {value}
+        },
+        {
+            template: `
+<div>
+    set value: <input @change="(e) => value = e.target.value"/><br/>
+    <Child></Child>
+    <Child>{{ value }}</Child>
+</div>
+`,
+            components: {Child}
+        }
+    )
+
+    const Child2 = defineComponent({
+        template: `
+<div>
+    <slot name="header"/>
+    <br/>
+    <slot/>
+    <br/>
+    <slot name="footer"/>
+</div>
+`
+    })
+    const Parent2 = defineComponent(
+        () => {
+            const name = ref('')
+            return {name}
+        },
+        {
+            template: `
+<div>
+    <Child2>
+        parent provide
+        <template v-slot:header>
+            parent provide header
+        </template>
+        default content
+        <template #footer>
+            parent provide footer
+        </template>
+    </Child2>
+    set slot name: <input @change="(e) => name = e.target.value"/><br/>
+    <Child2>
+        <template #[name]>custom value</template>
+    </Child2>
+</div>
+`,
+            components: {Child2}
+        }
+    )
+    const Child3 = defineComponent(
+        () => {
+            const value = ref('child3')
+            return {value}
+        },
+        {
+            template: `
+<div>
+    set value: <input @change="(e) => value = e.target.value"/><br/>
+    <slot :value="value"/>
+</div>
+`
+        }
+    )
+    const Parent3 = defineComponent({
+        components: {Child3},
+        template: `
+<div>
+    <Child3 v-slot="params">
+        parent get {{ params.value }}
+    </Child3>
+    <Child3>
+        <template #default="params">
+            parent get {{ params.value }}
+        </template>
+    </Child3>
+</div>
+`
+    })
+    createApp({components: {Parent, Parent2, Parent3}}).mount('#app')
+</script>
+</body>
+</html>

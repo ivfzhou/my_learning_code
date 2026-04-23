@@ -1,14 +1,13 @@
 <script setup>
 import {useCssModule} from "vue"
 
-const style = useCssModule('name')
+const customStyleName = useCssModule('name')
 </script>
 
 <template>
-  <div :class="name.p">
-    Hello
-  </div>
-  <p :class="style.a">Hello</p>
+  <p :class="customStyleName.a">Hello</p>
+  <p :class="name.b">Hello</p>
+  <p :class="$style.c">Hello</p>
 </template>
 
 <style module="name">
@@ -16,7 +15,13 @@ const style = useCssModule('name')
   color: blue;
 }
 
-.p {
+.b {
   color: aquamarine;
+}
+</style>
+
+<style module>
+.c {
+  color: red;
 }
 </style>
