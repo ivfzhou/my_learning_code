@@ -154,47 +154,100 @@ w
 
 # 六、openssl 操作案例
 
-1. 创建私钥：`openssl genrsa -out ivfzhou.pem.key -passout pass:123456 4096`
+1. 生成私钥：
 
-2. 查看私钥信息：`openssl rsa -in ivfzhou.pem.key -text -noout -passin pass:123456`
+   ```shell
+   openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:2048 -aes256 -pass pass:123456 -out pkey_rsa_2048_aes256cbc_123456.p8.pem
+   openssl genpkey -algorithm EC -pkeyopt ec_paramgen_curve:P-256 -aes256 -pass pass:123456 -out pkey_ecdsa_128_aes256cbc_123456.p8.pem
+   openssl genpkey -algorithm ED25519 -aes256 -pass pass:123456 -out pkey_eddsa_25519_aes256cbc_123456.p8.pem
+   ```
 
-3. 查看私钥信息：`openssl pkcs8 -in ivfzhou.pem.key.p8 [ -passin pass:123456 | -nocrypt ] -text -noout`
+2. RSA 私钥转成 PKCS#1 格式：`openssl pkey -traditional -in pkey_rsa_2048_aes256cbc_123456.p8.pem -passin pass:123456 -aes256 -out pkey_rsa_2048_aes256cbc_123456.p1.pem -passout pass:123456`
 
-4. 创建证书：`openssl req -x509 -new -key ivfzhou.pem.key -days 365 -out ivfzhou.pem.crt -subj '/C=CN/ST=HuNan/L=Changsha/O=ivfzhou Ltd/OU=ivfzhou/CN=ivfzhou/emailAddress=ivfzhou@126.com'`，C=Country 国家代码 CN=CommonName 通用名称 O=Organization 组织 OU=OrganizationUnit 组织单位 ST=StateOrProvince 州或省 L=Locality 城市 STREET=StreetAddress 街道 EMAIL=EmailAddress 电子邮件 DC=DomainComponent 域名组件。
+3. 查看私钥的对称加密算法：`openssl asn1parse -in pkey_rsa_2048_aes256cbc_123456.p8.pem`
 
-5. 查看证书信息：`openssl x509 -in ivfzhou.pem.crt -text -noout`
+4. 查看私钥位数信息：`openssl pkey -in pkey_rsa_2048_aes256cbc_123456.p8.pem -passin pass:123456 -text -noout`
 
-6. 查看证书信息：`openssl crl2pkcs7 -nocrl -certfile ivfzhou.pem.crt | openssl pkcs7 -print_certs -text -noout`
+5. 计算私钥的公钥：`openssl pkey -pubout -in pkey_rsa_2048_aes256cbc_123456.p8.pem -passin pass:123456 -out pubkey_rsa_2048.spki.pem`
 
-7. 查看证书指纹：`openssl x509 -in ivfzhou.pem.crt -noout -fingerprint -sha1`
+6. 查看公钥算法：`openssl asn1parse -in pubkey_rsa_2048.spki.pem`
 
-8. 查看证书指纹：`sha1sum ivfzhou.der.crt`
+7. 生成证书签名请求: 
 
-9. 创建证书签名请求：`openssl req -new -key ivfzhou0.pem.key -out ivfzhou0.pem.csr -subj '/C=CN/ST=HuNan/L=Changsha/O=ivfzhou0 Ltd/OU=ivfzhou0/CN=ivfzhou0/emailAddress=ivfzhou0@126.com'`
+   ```shell
+   C=Country 国家代码
+   CN=CommonName 通用名称
+   O=Organization 组织
+   OU=OrganizationUnit 组织单位
+   ST=StateOrProvince 州或省
+   L=Locality 城市
+   STREET=StreetAddress 街道
+   EMAIL=EmailAddress 电子邮件
+   DC=DomainComponent 域名组件
+   openssl req -new -key pkey_rsa_2048_aes256cbc_123456.p8.pem -passin pass:123456 -subj "/C=CN/ST=Hunan/L=Changsha/O=ivfzhou test/CN=rsa_ca_cert" -out csr_rsa_ca.p10.pem
+   ```
 
-10. 对请求签名：`openssl x509 -req -in ivfzhou0.pem.csr -CA ivfzhou.pem.crt -CAkey ivfzhou.pem.key -days 365 -out ivfzhou0.ivfzhou.pem.crt`
+8. 用私钥自签名证书：`openssl x509 -req -in csr_rsa_ca.p10.pem -signkey pkey_rsa_2048_aes256cbc_123456.p8.pem -passin pass:123456 -days 3650 -sha256 -extfile ca_ext.cnf -out cert_rsa_ca.x509.pem`
 
-11. 导出 pkcs#12 格式：`openssl pkcs12 -export -inkey ivfzhou0.pem.key -in ivfzhou0.ivfzhou.pem.crt -out ivfzhou0.pfx -passout pass:123456`
+9. 查看证书内容：`openssl x509 -in cert_rsa_ca.x509.pem -text -noout -fingerprint`
 
-12. pkcs#12 中导出私钥：`openssl pkcs12 -in ivfzhou0.pfx -legacy -nocerts -out ivfzhou0_1.pem.key -passin pass:123456 -passout pass:123456`
+10. 从证书中提取公钥：`openssl x509 -in cert_rsa_ca.x509.pem -pubkey -noout -out pubkey_rsa_2048.spki.pem`
 
-13. pkcs#12 中导出证书：`openssl pkcs12 -in ivfzhou0.pfx -nokeys -out ivfzhou0_1.pem.crt -passin pass:123456`
+11. 签发证书：`openssl x509 -req -in csr_rsa_sign.p10.pem -CAkey pkey_rsa_2048_aes256cbc_123456.p8.pem -passin pass:123456 -CA cert_rsa_ca.x509.pem -CAcreateserial -sha256 -days 365 -out cert_rsa_sign.x509.pem`
 
-14. 证书 pem 转 der 格式：`openssl x509 -in ivfzhou0.ivfzhou.pem.crt -inform pem -out ivfzhou0.ivfzhou.der.crt -outform der`
+12. PEM 与 DER 编码互转：
 
-15. 证书请求格式转换：`openssl req -in ivfzhou1.pem.csr -inform pem -out ivfzhou1.der.csr -outform der`
+    ```shell
+    openssl pkey -in pkey_rsa_2048_aes256cbc_123456.p8.pem -inform pem -passin pass:123456 -out pkey_rsa_2048.p8.der -outform der
+    openssl pkey -pubin -in pubkey_rsa_2048.spki.pem -inform pem -out pubkey_rsa_2048.spki.der -outform der
+    openssl x509 -in cert_rsa_ca.x509.pem -inform pem -out cert_rsa_ca.x509.der -outform der
+    openssl req -in csr_rsa_ca.p10.pem -inform pem -out csr_rsa_ca.p10.der -outform der
+    openssl pkey -in pkey_rsa_2048.p8.der -inform der -out pkey_rsa_2048_aes256cbc_123456.p8.pem -outform pem -aes256 -passout pass:123456
+    ```
 
-16. 对证书请求签名：`openssl sha1 -sign ivfzhou1.pem.key ivfzhou1.der.csr > sha1.sign`
+13. 私钥与证书合并成 PKCS#12 格式：`openssl pkcs12 -export -inkey pkey_rsa_2048_aes256cbc_123456.p8.pem -passin pass:123456 -in cert_rsa_ca.x509.pem -certfile csr_rsa_ca.p10.pem -out cert_rsa_sign_123456.p12.der -passout pass:123456`
 
-17. 对私钥加密：`openssl pkey -in <file> -out <file> -aes256 -passin pass:<123456>`
+14. 查看 PKCS#12 里证书信息：`openssl pkcs12 -in cert_rsa_sign_123456.p12.der -passin pass:123456 -nokeys -info`
 
-18. 判断证书和私钥模数：`openssl [rsa | x509] -noout -modulus -in <file>`
+15. PKCS#12 中导出私钥：`openssl pkcs12 -in cert_rsa_sign_123456.p12.der -passin pass:123456 -out pkey_rsa_2048_aes256cbc_123456.p8.pem -passout pass:123456 -nocerts`
 
-19. 从证书中提取公钥：`openssl x509 -pubkey -noout -in <cert> -out <pub>`
+16. PKCS#12 中导出证书：`openssl pkcs12 -in cert_rsa_sign_123456.p12.der -passin pass:123456 -out cert_rsa_sign.x509.pem -nokeys`
+
+17. 验证签名：`openssl verify -CAfile cert_rsa_ca.x509.pem -untrusted cert_rsa_middle_ca.x509.pem cert_rsa_sign.pem`
+
+18. 对证书请求签名：`openssl sha1 -sign ivfzhou1.pem.key ivfzhou1.der.csr > sha1.sign`
+
+19. 判断证书和私钥模数：`openssl [rsa | x509] -noout -modulus -in <file>`
 
 20. 校验私钥签名：`openssl dgst -sha1 -verify <pub> -signature <sign> <origin>`
 
 21. 从签名数据中获取散列值：`openssl rsautl -verify -pubin -inkey <pub> -in <sign> -out <hash>`
+
+22. 例子，[ca_ext.cnf](./ca_ext.cnf)、[server_ext.cnf](./server_ext.cnf)、[code_ext.cnf](./code_ext.cnf)、[client_ext.cnf](./client_ext.cnf)、[email_ext.cnf](./email_ext.cnf)、[time_ext.cnf](./time_ext.cnf)、[ocsp_ext.cnf](./ocsp_ext.cnf)：
+
+    ```shell
+    openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:2048 -aes256 -pass pass:123456 -out pkey_rsa_2048_aes256cbc_123456.p8.pem
+    openssl req -new -key pkey_rsa_2048_aes256cbc_123456.p8.pem -passin pass:123456 -subj "/C=CN/ST=Hunan/L=Changsha/O=ivfzhou test/CN=rsa_ca_cert" -out csr_rsa_ca.p10.pem
+    openssl x509 -req -in csr_rsa_ca.p10.pem -signkey pkey_rsa_2048_aes256cbc_123456.p8.pem -passin pass:123456 -days 3650 -sha256 -extfile ./ca_ext.cnf -out cert_rsa_ca.x509.pem
+    
+    openssl genpkey -algorithm EC -pkeyopt ec_paramgen_curve:P-256 -aes256 -pass pass:123456 -out pkey_ecdsa_128_aes256cbc_123456.p8.pem
+    openssl req -new -key pkey_ecdsa_128_aes256cbc_123456.p8.pem -passin pass:123456 -subj "/C=CN/ST=Hunan/L=Changsha/O=ivfzhou test/CN=ecdsa_middle_ca_cert" -out csr_ecdsa_middle_ca.p10.pem
+    openssl x509 -req -in csr_ecdsa_middle_ca.p10.pem -CAkey pkey_rsa_2048_aes256cbc_123456.p8.pem -passin pass:123456 -CA cert_rsa_ca.x509.pem -CAcreateserial -sha256 -days 1825 -extfile ./ca_ext.cnf -out cert_ecdsa_middle_ca.x509.pem
+    
+    openssl genpkey -algorithm ED25519 -aes256 -pass pass:123456 -out pkey_server_eddsa_25519_aes256cbc_123456.p8.pem
+    openssl req -new -key pkey_server_eddsa_25519_aes256cbc_123456.p8.pem -passin pass:123456 -subj "/C=CN/ST=Hunan/L=Changsha/O=ivfzhou test/CN=eddsa_server_cert" -out csr_server_eddsa.p10.pem
+    openssl x509 -req -in csr_server_eddsa.p10.pem -CAkey pkey_ecdsa_128_aes256cbc_123456.p8.pem -passin pass:123456 -CA cert_ecdsa_middle_ca.x509.pem -CAcreateserial -sha256 -days 365 -extfile ./server_ext.cnf -out cert_server_eddsa.x509.pem
+    
+    openssl pkcs12 -export -inkey pkey_server_eddsa_25519_aes256cbc_123456.p8.pem -passin pass:123456 -in cert_server_eddsa.x509.pem -certfile cert_ecdsa_middle_ca.x509.pem -out cert_server_eddsa_123456.p12.der -passout pass:123456
+    openssl verify -CAfile cert_rsa_ca.x509.pem -untrusted cert_ecdsa_middle_ca.x509.pem cert_server_eddsa.x509.pem
+    
+    openssl genpkey -algorithm ED25519 -aes256 -pass pass:123456 -out pkey_code_eddsa_25519_aes256cbc_123456.p8.pem
+    openssl req -new -key pkey_code_eddsa_25519_aes256cbc_123456.p8.pem -passin pass:123456 -subj "/C=CN/ST=Hunan/L=Changsha/O=ivfzhou test/CN=eddsa_code_cert" -out csr_code_eddsa.p10.pem
+    openssl x509 -req -in csr_code_eddsa.p10.pem -CAkey pkey_ecdsa_128_aes256cbc_123456.p8.pem -passin pass:123456 -CA cert_ecdsa_middle_ca.x509.pem -CAcreateserial -sha256 -days 365 -extfile ./code_ext.cnf -out cert_code_eddsa.x509.pem
+    
+    openssl pkcs12 -export -inkey pkey_code_eddsa_25519_aes256cbc_123456.p8.pem -passin pass:123456 -in cert_code_eddsa.x509.pem -certfile cert_ecdsa_middle_ca.x509.pem -out cert_code_eddsa_123456.p12.der -passout pass:123456
+    openssl verify -CAfile cert_rsa_ca.x509.pem -untrusted cert_ecdsa_middle_ca.x509.pem cert_code_eddsa.x509.pem
+    ```
 
 # 七、配置文件
 
