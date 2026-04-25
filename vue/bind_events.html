@@ -47,8 +47,8 @@
     <hr/>
 
     <div>
-        <a href="./events_bind" @click="console.log($event.target)">a element</a><br/>
-        <a href="./events_bind" @click.prevent="console.log($event.target)">a element has prevent</a>
+        <a @click="console.log($event.target)" href="./events_bind">a element</a><br/>
+        <a @click.prevent="console.log($event.target)" href="./events_bind">a element has prevent</a>
     </div>
     <hr/>
 

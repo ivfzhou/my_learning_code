@@ -24,7 +24,7 @@
     <hr/>
 
     <div>
-        <div :ref="fn" :key="value">func ref element</div>
+        <div :key="value" :ref="fn">func ref element</div>
         set value: <input @change="value = $event.target.value"/>
     </div>
 </div>

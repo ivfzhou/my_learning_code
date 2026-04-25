@@ -1,6 +1,6 @@
 <script setup>
 import {version} from 'vue'
-import Root from '@/examples/model/Root.vue'
+import Root from '@/examples/router/dynamic_params/Root.vue'
 
 console.log(version)
 

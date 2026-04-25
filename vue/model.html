@@ -54,9 +54,9 @@
 
     <div>
         value4: {{ value4 }}<br/>
-        <input type="checkbox" value="a" v-model="value4"/>
-        <input type="checkbox" value="b" v-model="value4"/>
-        <input type="checkbox" value="c" v-model="value4"/><br/>
+        <input type="checkbox" v-model="value4" value="a"/>
+        <input type="checkbox" v-model="value4" value="b"/>
+        <input type="checkbox" v-model="value4" value="c"/><br/>
         push: <input @change="value4.push($event.target.value)"/><br/>
         <button @click="value4.pop()">pop</button>
     </div>
@@ -64,7 +64,7 @@
 
     <div>
         value5: {{ value5 }}<br/>
-        <select id="selectId2" v-model="value5" multiple>
+        <select id="selectId2" multiple v-model="value5">
             <option value="1">1</option>
             <option value="2">2</option>
             <option value="3">3</option>
@@ -76,7 +76,7 @@
 
     <div>
         value6: {{ value6 }}<br/>
-        <input type="checkbox" true-value="yes" false-value="no" v-model="value6"/><br/>
+        <input false-value="no" true-value="yes" type="checkbox" v-model="value6"/><br/>
         set value6: <input @change="value6 = $event.target.value"/>
     </div>
     <hr/>

@@ -17,7 +17,7 @@
         list: {{ list }}<br/>
         <button @click="list.pop()">pop</button>
         <button @click="list.push({id: 4, name: 'tq'})">push</button>
-        <div v-for="({id, name}, i) of list" :key="id"> {{ i }} -- {{ id }} -- {{ name }}</div>
+        <div :key="id" v-for="({id, name}, i) of list"> {{ i }} -- {{ id }} -- {{ name }}</div>
     </div>
     <hr/>
 
@@ -25,7 +25,7 @@
         list: {{ list }}<br/>
         <button @click="list.pop()">pop</button>
         <button @click="list.push({id: 4, name: 'tq'})">push</button>
-        <template v-for="({id, name}, i) of list" :key="id">
+        <template :key="id" v-for="({id, name}, i) of list">
             <div>{{ i }} -- {{ id }} -- {{ name }}</div>
         </template>
     </div>
@@ -43,8 +43,8 @@
 
     <div>
         count: {{ count }}<br/>
-        set count: <input type="number" @change="(el) => count = Number(el.target.value)"/>
-        <div v-for="v in count" :key="v">{{ v }}</div>
+        set count: <input @change="(el) => count = Number(el.target.value)" type="number"/>
+        <div :key="v" v-for="v in count">{{ v }}</div>
     </div>
 </div>
 <script type="module">

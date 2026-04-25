@@ -17,7 +17,7 @@
         obj: {{ obj }}<br/>
         set obj.color: <input @change="obj.color = $event.target.value"/><br/>
         set obj.fontSize: <input @change="obj.fontSize = $event.target.value"/><br/>
-        <div style="color: green; text-decoration-line: underline" :style="obj">element</div>
+        <div :style="obj" style="color: green; text-decoration-line: underline">element</div>
     </div>
     <hr/>
 
@@ -25,7 +25,7 @@
         arr: {{ arr }}<br/>
         set arr[0].color: <input @change="arr[0].color = $event.target.value"/><br/>
         set arr[1].fontSize: <input @change="arr[1].fontSize = $event.target.value"/><br/>
-        <div style="color: green; text-decoration-line: underline" :style="arr">element</div>
+        <div :style="arr" style="color: green; text-decoration-line: underline">element</div>
     </div>
     <hr/>
 

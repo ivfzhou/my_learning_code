@@ -3,9 +3,9 @@
 </script>
 
 <template>
-<div class="b">
-  Child
-</div>
+  <div class="b">
+    Child
+  </div>
 </template>
 
 <style scoped>

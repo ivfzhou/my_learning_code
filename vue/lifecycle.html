@@ -17,7 +17,7 @@
         <button @click="show = !show">toggle show</button>
         <br/>
         set message: <input @change.self="message = $event.target.value"/>
-        <component-a v-if="show" :message="message"></component-a>
+        <component-a :message="message" v-if="show"></component-a>
     </div>
     <hr/>
 
@@ -25,7 +25,7 @@
         <button @click="show2 = !show2">toggle show2</button>
         <br/>
         <keep-alive>
-            <component-a v-if="show2" message="hello"></component-a>
+            <component-a message="hello" v-if="show2"></component-a>
         </keep-alive>
     </div>
 </div>

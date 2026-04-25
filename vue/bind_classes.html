@@ -16,7 +16,7 @@
     <div>
         value: {{ value }}<br/>
         set value: <input @change="value = $event.target.value"/>
-        <div class="classA" :class="value">element</div>
+        <div :class="value" class="classA">element</div>
     </div>
     <hr/>
 
@@ -25,7 +25,7 @@
         <button @click="obj.id = !obj.id">toggle id</button>
         <button @click="obj.name = !obj.name">toggle name</button>
         <button @click="Object.defineProperty(obj, 'age', {value: true}); console.log(obj.age)">add property</button>
-        <div class="classA" :class="obj">element</div>
+        <div :class="obj" class="classA">element</div>
     </div>
     <hr/>
 
@@ -33,7 +33,7 @@
         arr: {{ arr }}<br/>
         push arr: <input @change="arr.push($event.target.value)"/><br/>
         <button @click="arr.pop()">pop</button>
-        <div class="classA" :class="arr">element</div>
+        <div :class="arr" class="classA">element</div>
     </div>
     <hr/>
 
