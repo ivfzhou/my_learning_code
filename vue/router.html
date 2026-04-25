@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>router</title>
+</head>
+<body>
+<div id="app">
+    <router-link to="/router/user">/user</router-link>
+    <br/>
+    <router-link to="/router/app">/app</router-link>
+    <br/>
+    <router-view></router-view>
+</div>
+<script src="https://unpkg.com/vue@3.5.32/dist/vue.global.js"></script>
+<script src="https://unpkg.com/vue-router@5.0.6/dist/vue-router.global.js"></script>
+<script>
+    const {createApp, defineComponent} = Vue
+    const {createRouter, createWebHistory} = VueRouter
+
+    const app = createApp({})
+    const router = createRouter({
+        history: createWebHistory('/'),
+        routes: [
+            {
+                path: '/',
+                redirect: '/router/user',
+            },
+            {
+                path: '/router/user',
+                component: defineComponent({template: `<div>User</div>`}),
+            },
+            {
+                path: '/router/app',
+                component: defineComponent({template: `<div>App</div>`}),
+            },
+        ]
+    })
+    app.use(router)
+    app.mount('#app')
+</script>
+</body>
+
+</html>
