@@ -5,12 +5,15 @@ const route = useRoute()
 </script>
 
 <template>
-  <div>
-    <p>User route.fullPath is {{ route.fullPath }}</p>
-    <RouterView/>
+  <div class="root">
+    <p>NestedProfile</p>
+    <p>fullPath: {{ route.fullPath }}</p>
   </div>
 </template>
 
 <style scoped>
-
+.root {
+  border: 2px solid black;
+  margin: 2px;
+}
 </style>

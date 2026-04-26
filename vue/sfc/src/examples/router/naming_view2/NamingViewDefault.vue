@@ -5,11 +5,15 @@ const route = useRoute()
 </script>
 
 <template>
-  <div>
-    <p>Order route params is {{ route.params }}</p>
+  <div class="root">
+    <p>NamingViewDefault</p>
+    <p>fullPath: {{ route.fullPath }}</p>
   </div>
 </template>
 
 <style scoped>
-
+.root {
+  border: 2px solid black;
+  margin: 2px;
+}
 </style>

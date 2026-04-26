@@ -5,11 +5,14 @@ const route = useRoute()
 </script>
 
 <template>
-  <div>
-    <p>Order2 route params is {{ route.params }}</p>
+  <div class="root">
+    <p>Regular 2</p>
+    <p>id: {{ route.params.id }}</p>
   </div>
 </template>
 
 <style scoped>
-
+.root {
+  border: 2px solid black;
+}
 </style>
