@@ -5,7 +5,26 @@ const router = createRouter({
     strict: true,
     linkActiveClass: 'router-link-active',
     linkExactActiveClass: 'router-link-exact-active',
+    scrollBehavior: (to, from, savedPosition) => {
+        // return {top: 0, left: 0} // 始终滚动到顶部
+        // return {el: '#id2', top: 0}
+        // return // 不滚动。
+        // return savedPosition // 浏览器前后退行为。
+        // console.log(savedPosition)
+        // return {top: 0, behavior: 'smooth'}
+        return new Promise(resolve => {
+            setTimeout(() => {
+                resolve({top: 0, behavior: 'smooth'})
+            }, 500)
+        }) // 延迟滚动。
+    },
     routes: [
+        // 兜底组件。
+        {
+            path: '/:any(.*)+',
+            component: () => import('@/examples/router/404.vue')
+        },
+
         // 动态参数。
         {
             path: '/dynamicParams/:id/:name',
@@ -32,10 +51,17 @@ const router = createRouter({
         {
             path: '/nested/',
             component: () => import('@/examples/router/nested/Nested.vue'),
+            meta: {parentMetaKey: 'value'},
+            beforeEnter: [(to, from) => {
+                console.log('parent before enter', from.path, to.path)
+            }],
             children: [
                 {
                     path: 'profile',
                     component: () => import('@/examples/router/nested/NestedProfile.vue'),
+                    beforeEnter: [(to, from) => {
+                        console.log('child profile before enter', from.path, to.path)
+                    }],
                 },
                 {
                     path: 'post',
@@ -44,6 +70,7 @@ const router = createRouter({
                 {
                     path: '',
                     component: () => import('@/examples/router/nested/NestedDefault.vue'),
+                    meta: {childMetaKey: 'value2'},
                 }
             ]
         },
@@ -170,13 +197,26 @@ const router = createRouter({
             path: '/hit/exact',
             component: () => import('@/examples/router/hit/HitExact.vue'),
         },
-
-        // 兜底组件。
-        {
-            path: '/:any(.*)+',
-            component: () => import('@/examples/router/404.vue')
-        }
     ]
+})
+
+router.beforeEach(async (to, from) => {
+    console.log('before each', from.path, to.path, ', to meta', to.meta)
+
+    // 返回 false 以取消导航
+    // return false
+
+    // 重定向
+    // if (to.path === '/hit') return {name: 'root', params: {param: '123'}}
+    // if (to.path === '/hit') return '/namingView/123'
+})
+
+router.beforeResolve((to, from) => {
+    console.log('before resolve', from.path, to.path)
+})
+
+router.afterEach((to, from, failure) => {
+    console.log('after each', from.path, to.path, failure)
 })
 
 export default router

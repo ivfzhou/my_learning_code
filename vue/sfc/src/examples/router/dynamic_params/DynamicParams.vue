@@ -1,11 +1,14 @@
 <script setup>
-import {onBeforeRouteUpdate, useRoute} from 'vue-router'
+import {onBeforeRouteLeave, onBeforeRouteUpdate, useRoute} from 'vue-router'
 
 const route = useRoute()
 
 onBeforeRouteUpdate((to, from) => {
-  console.log('onBeforeRouteUpdate to', to, from)
-  console.log('onBeforeRouteUpdate from', from)
+  console.log('onBeforeRouteUpdate', from.path, to.path)
+})
+
+onBeforeRouteLeave((to, from) => {
+  console.log('onBeforeRouteLeave', from.path, to.path)
 })
 </script>
 
