@@ -1,5 +1,6 @@
 <script setup>
-import {onMounted, ref} from 'vue'
+import {ref} from 'vue'
+import {isNavigationFailure, NavigationFailureType, useRouter} from 'vue-router'
 import MyRouterLink from "@/examples/router/MyRouterLink.vue";
 
 const id = ref(1)
@@ -7,10 +8,23 @@ const name = ref('zs')
 const id2 = ref('abc')
 const nestedPath = ref('')
 const anyPath = ref('')
-onMounted(() => {
-  const style = getComputedStyle(document.getElementById('myRouterLink'))
-  console.log(style.scrollMarginTop)
-})
+const router = useRouter()
+
+async function routerPush() {
+  const result = await router.push('/dynamicParams/1/zs')
+  if (isNavigationFailure(result, NavigationFailureType.duplicated)) {
+    console.log('route duplicated', result.to.fullPath, result.from.fullPath)
+  }
+}
+
+async function occurRedirect() {
+  await router.push('/redirect')
+  if (router.currentRoute.value.redirectedFrom) {
+    console.log('redirectedFrom is', router.currentRoute.value.redirectedFrom)
+  }
+}
+
+console.log('router.getRoutes', router.getRoutes())
 </script>
 
 <template>
@@ -95,6 +109,16 @@ onMounted(() => {
 
   <div id="myRouterLink">
     <MyRouterLink :to="`/dynamicParams/${id}/${name}`">MyRouterLink</MyRouterLink>
+  </div>
+  <hr/>
+
+  <div>
+    <button @click.self="routerPush">To Dynamic Params</button>
+  </div>
+  <hr/>
+
+  <div>
+    <button @click="occurRedirect">Occur Redirect</button>
   </div>
   <hr/>
 

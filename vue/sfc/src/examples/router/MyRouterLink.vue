@@ -5,7 +5,6 @@ const props = defineProps({
   ...RouterLink.props
 })
 const link = useLink(props)
-console.log('link', link)
 </script>
 
 <template>
