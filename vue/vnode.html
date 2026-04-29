@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>vnode</title>
+    <script type="importmap">
+        {
+          "imports": {
+            "vue": "https://unpkg.com/vue@3.5.32/dist/vue.esm-browser.js"
+          }
+        }
+    </script>
+</head>
+<body>
+<div id="app">
+    <comp1></comp1>
+    <hr/>
+    <comp2></comp2>
+    <hr/>
+    <comp3></comp3>
+    <hr/>
+    <comp4></comp4>
+    <hr/>
+    <comp5></comp5>
+    <hr/>
+    <comp6></comp6>
+    <hr/>
+    <comp7></comp7>
+    <hr/>
+    <comp8></comp8>
+    <hr/>
+    <comp12></comp12>
+    <hr/>
+</div>
+<script type="module">
+    import {createApp, h, defineComponent, withModifiers, withDirectives} from 'vue'
+
+    const Comp1 = defineComponent({
+        setup() {
+            return () => h('p', 'hello')
+        }
+    })
+    const Comp2 = defineComponent({
+        render: () => h(
+            'div',
+            {
+                id: 'div',
+                '.prop': 'a',
+                '^attr': 'b',
+                class: ['hello', {'world': true}],
+                style: {color: 'red'},
+                onClickOnce: withModifiers(() => {
+                    console.log('this is', this)
+                }, ['self'])
+            },
+            ['div', h('br'), h('span', 'value')]
+        )
+    })
+    const Comp3 = defineComponent({
+        setup() {
+            return () => [h('p', 'hello'), h('p', 'world')]
+        }
+    })
+    const Comp4 = defineComponent({
+        setup() {
+            return () => 'ok'
+        }
+    })
+    const Comp5 = () => 'yes'
+    const Comp6 = defineComponent({
+        setup() {
+            const node = h('p', 'show once')
+            return () => h('div', [node, node])
+        }
+    })
+    const Comp7 = defineComponent({
+        setup() {
+            return {
+                node: h('p', 'ok')
+            }
+        },
+        template: `<component :is="node"></component>`
+    })
+    const Comp8 = defineComponent(() => {
+        return () => h(Comp7)
+    })
+    const Comp9 = defineComponent({
+        setup(props, {slots}) {
+            debugger
+            return () => [
+                h('div', slots.default({key: 'value'})),
+                h('div', slots.header({
+                    key: 'value'
+                }))
+            ]
+        }
+    })
+    const Comp10 = defineComponent((props, {slots}) => {
+        return () => h(Comp9, ({key}) => 'default slot content')
+    })
+    const Comp11 = defineComponent((props, {slots}) => {
+        return () => h(Comp9, null, {
+            default: () => 'default slot content',
+            header: () => 'header slot content'
+        })
+    })
+    const Comp12 = defineComponent(() => {
+        return () => withDirectives(h('div', 'content'), ['xyz', '<p>hello</p>', 'modifier1', 'modifier2'])
+    })
+
+    createApp(
+        {
+            components: {Comp1, Comp2, Comp3, Comp4, Comp5, Comp6, Comp7, Comp8, Comp12}
+        }
+    ).mount('#app')
+</script>
+</body>
+</html>
