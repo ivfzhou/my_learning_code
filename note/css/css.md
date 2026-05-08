@@ -920,80 +920,21 @@
     - nowrap：默认值。规定弹性项目不会换行。
     - wrap：规定弹性项目会在需要时换行。
     - wrap-reverse：规定弹性项目会在需要时换行，以反方向。
-- **justify-content**：规定项目在弹性容器内的对齐方式，当项目未用到所有可用空间时。控制主轴方向。不继承。
-    
-    - flex-start：默认值。项目位于容器的开头。
-    - flex-end：项目位于容器的结尾。
-    - center：项目位于容器中央。
-    - space-between：项目在行与行之间留有间隔。
-    - space-around：项目在行之前、行之间和行之后留有空间。
-- **align-items**：规定弹性容器内项目的对齐方式。控制交叉轴方向。不继承。属性为弹性容器内的项目指定默认对齐方式。
-    
-    - stretch：默认。项目被拉伸以适合容器。
-    
-    - center：项目位于容器的中央。
-    
-    - flex-start：项目位于容器的开头。
-    
-    - flex-end：项目位于容器的末端。
-    
-    - baseline：项目被定位到容器的基线。
-      
-          ```css
-          /* 将弹性 <div> 元素的所有项目的居中对齐 */
-          div {
-              display: flex;
-              align-items: center;
-          }
-          ```
-- **align-content**：规定弹性容器内的行之间的对齐方式，当项目不使用所有可用空间时。不继承。属性修改 flex-wrap 属性的行为。它与 align-items 相似，但是它不对齐弹性项目，而是对齐弹性线。必须有多行项目，此属性才能生效！
-    - stretch：默认值。行拉伸以占据剩余空间。
-    - center：朝着弹性容器的中央对行打包。
-    - flex-start：朝着弹性容器的开头对行打包。
-    - flex-end：朝着弹性容器的结尾对行打包。
-    - space-between:行均匀分布在弹性容器中。
-    - space-around:行均匀分布在弹性容器中，两端各占一半。
-        ```css
-        /* 将行打包到弹性容器的中央 */
-        div {
-            width: 70px;
-            height: 300px;
-            border: 1px solid #c3c3c3;
-            display: flex;
-            flex-wrap: wrap;
-            align-content: center;
-        }
-        ```
 - **order**：设置弹性项目相对于其余项目的顺序。不继承。如果元素不是弹性项目，则 order 属性无效。
-    - 0：默认值。
+  - 0：默认值。
     - *number*：规定弹性项目的顺序。
-- **align-self**：规定弹性容器内所选项目的对齐方式。不继承。覆盖容器的 align-items 属性。
-    - auto：默认。元素继承其父容器的 align-items 属性，如果没有父容器，则为 stretch。
-    - stretch：元素被拉伸以适应容器。
-    - center：元素位于容器的中央。
-    - flex-start：元素位于容器的开头。
-    - flex-end：元素位于容器的末端。
-    - baseline：元素被定位到容器的基线。
-        ```css
-        /* 把弹性元素内的项目之一居中对齐 */
-        #myBlueDiv {
-            align-self: center;
-        }
-        ```
 - **flex**：flex-grow、flex-shrink 以及 flex-basis 的简写属性。不继承。
     - 0 1 auto：默认值。
     - none：等同于 0 0 auto。
     - auto：等同于 1 1 auto。
     - initial：等同于 0 1 auto。
-- **flex-grow**：规定项目相对于其余项目的增量。当容器有剩余空间时，子元素如何放大来填满容器。值越大，增量越大。不继承。
-    
-    - 0：默认值。不放大。
+- **flex-grow**：规定项目相对于其余项目的增量。不继承。用于容器内项目上。
+    - 0：默认值。
     - *number*：规定该项目相对于其余弹性项目的增长量。
-- **flex-shrink**：规定项目相对于其余项目的减量。当容器空间不足时，控制子元素如何收缩自己来适应容器。0 不缩小，值越大缩小越厉害。不继承。
-    
+- **flex-shrink**：规定项目相对于其余项目的减量。不继承。用于容器内项目上。
     - 1：默认值。
     - *number*：规定项目相对于其余弹性项目的收缩量。
-- **flex-basis**：规定弹性项目的初始长度。不继承。
+- **flex-basis**：规定弹性项目的初始长度。不继承。用于容器内项目上。
     - auto：默认值。长度等于弹性项目的长度。如果该项目未规定长度，则长度将依据其内容。
     - *number*：长度单位或百分百，规定弹性项目的初始长度。
     - *percentage*
@@ -1043,21 +984,25 @@
               "menu footer footer footer footer";
         }
         ```
+
 - **grid-template**：grid-template-rows、grid-template-columns 以及 grid-areas 属性的简写属性。不继承。
-  
+
     - none none none：默认值。
+
 - **grid-template-rows**：指定网格布局中的行的尺寸。不继承。值是用空格分隔的列表，其中每个值指定相应行的高度。
     - none：未设置尺寸。在需要时创建行。
     - auto：行的尺寸取决于容器的大小以及行中项目内容的大小。
     - max-content：根据行中的最大项目设置每行的尺寸。
     - min-content：根据行中的最小项目设置每行的尺寸。
     - *length*：设置行的尺寸，通过使用合法的长度值。
+
 - **grid-template-columns**：指定列的尺寸以及网格布局中的列数。不继承。这些值是一个用空格分隔的列表，其中每个值指定相应列的尺寸。
     - none：默认值。在需要时创建列。
     - auto：列的尺寸取决于容器的大小以及列中项目内容的大小。
     - max-content：根据列中最大的项目设置每列的尺寸。
     - min-content：根据列中最小的项目设置每列的尺寸。
     - *length*：设置列的尺寸，通过使用合法的长度值。
+
 - **grid-template-areas**：规定如何使用命名的网格项显示列和行。不继承。用 `.` 表示空白区域。
     - none：默认值。
     - *itemNames*：规定每列和每行应如何显示的序列。
@@ -1095,11 +1040,13 @@
               "menu footer footer footer footer";
         }
         ```
+
 - **grid-auto-rows**：规定默认的行尺寸。不继承。该属性只会影响未设置尺寸的行。
     - auto：默认值。由行中的最大项目的尺寸决定行的尺寸。
     - max-content：根据行中的最大项目设置每行的尺寸。
     - min-content：根据行中的最大项目设置每行的尺寸。
     - *length*：设置行的尺寸，通过使用合法的长度值。
+
 - **grid-auto-columns**：规定默认的列尺寸。不继承。该属性只会影响未设置尺寸的列。
     - auto：默认值。由容器尺寸决定列的尺寸。
     - fit-content()
@@ -1108,21 +1055,26 @@
     - minmax(min.max)：设置大于或等于 min 且小于或等于 max 的尺寸范围。
     - *length*：设置列的尺寸，通过使用合法的长度值。
     - *percentage*：设置列的尺寸，通过使用百分比值。
+
 - **grid-auto-flow**：规定如何在网格中插入自动放置的项目。不继承。
     - row：默认值。通过填充每一行来放置项目。
     - column：通过填充每一列来放置项目。
     - dense：放置项目以填充网格中的任何孔。
     - row dense：通过填充每一行来放置项目，并填充网格中的任何孔。
     - column dense：通过填充每一列来放置项目，并填充网格中的任何孔。
+
 - **grid-gap**：grid-row-gap 和 grid-column-gap 的简写属性。不继承。只设一个值，则第二个值等于第一个值。
-  
+
     - 0 0：默认值。
+
 - **grid-row-gap**：规定列间隙的尺寸。不继承。
     - 0：默认值。
     - *length*：任何合法的长度值。比如像素或百分百。
+
 - **grid-column-gap**：规定列间隙的尺寸。不继承。
     - 0：默认值。
     - *length*：任何合法长度值，比如像素或百分百。
+
 - **grid-area**：即可规定网格项的名称，也可以是 grid-row-start、grid-column-start、grid-row-end 以及 grid-column-end 属性的简写属性。不继承。
     - auto / auto / auto / auto：默认值。
     - *itemname*：规定网格项目的项目。
@@ -1132,6 +1084,7 @@
           grid-area: 2 / 1 / span 2 / span 3;
       }
       ```
+
 - **grid-column**：grid-column-start 和 grid-column-end 属性的简写属性。
     - auto / auto：默认值。
         ```css
@@ -1143,24 +1096,64 @@
             grid-column: 1 / 3;
         }
         ```
+
 - **grid-column-start**：规定网格项目从何处开始。不继承。
     - auto：默认值。项目将随着流放置。
     - span *n*：规定项目将横跨的列数。
     - *column-line*：规定从哪列开始显示项目。
+
 - **grid-column-end**：规定如何结束网格项目。不继承。
     - auto：默认值。项目将横跨一列。
     - span *n*：规定项目将横跨的列数。
     - *column-line*：规定在哪列上停止显示项目。
+
 - **grid-row**：grid-row-start 和 grid-row-end 属性的简写属性。不继承。
-  
+
     - auto / auto：默认值。
+
 - **grid-row-start**：规定网格项目从何处开始。不继承。
     - auto：默认值。项目将随着流定位。
     - *row-line*：规定从哪行开始显示项目。
+
 - **grid-row-end**：规定网格项目在何处结束。不继承。
     - auto：默认值。项目将横跨一行。
     - span *n*：规定项目将横跨的行数。
     - *column-line*：规定从哪行结束显示项目。
+
+- **justify-content**：规定项目在弹性容器内的对齐方式，当项目未用到所有可用空间时。控制主轴方向。不继承。
+
+    - flex-start：默认值。项目位于容器的开头。
+    - flex-end：项目位于容器的结尾。
+    - center：项目位于容器中央。
+    - space-between：项目在行与行之间留有间隔。
+    - space-around：项目在行之前、行之间和行之后留有空间。
+
+- **align-content**：规定弹性容器内的行之间的对齐方式，当项目不使用所有可用空间时。不继承。属性修改 flex-wrap 属性的行为。它与 align-items 相似，但是它不对齐弹性项目，而是对齐弹性线。必须有多行项目，此属性才能生效！控制整组子项在交叉轴方向如何分布。
+
+    - stretch：默认值。行拉伸以占据剩余空间。
+
+    - center：朝着弹性容器的中央对行打包。
+
+    - flex-start：朝着弹性容器的开头对行打包。
+
+    - flex-end：朝着弹性容器的结尾对行打包。
+
+    - space-between:行均匀分布在弹性容器中。
+
+    - space-around:行均匀分布在弹性容器中，两端各占一半。
+
+      ```css
+      /* 将行打包到弹性容器的中央 */
+      div {
+          width: 70px;
+          height: 300px;
+          border: 1px solid #c3c3c3;
+          display: flex;
+          flex-wrap: wrap;
+          align-content: center;
+      }
+      ```
+
 - **justify-items**：规定网格项在行内方向的对齐方式。在网格容器上设置。不继承。
     - legacy：默认值。仅在以 legacy 开头时，justify-self 值为 auto 的网格项继承网格容器的 justify-items 属性值。它的存在是为了实现 HTML 的 center 元素和 align 属性的遗留对齐行为。
     - normal：取决于布局上下文，但类似于网格布局的 stretch。
@@ -1172,6 +1165,27 @@
     - right：将项目右对齐。
     - *overflow-alignment*：safe 会将项目的对齐方式设置为 start，如果内容溢出。unsafe 保持对齐值，无论项目内容是否溢出。
     - *baseline-alignment*：元素与父元素的基线对齐。
+
+- **align-items**：规定弹性容器内项目的对齐方式。控制交叉轴方向。不继承。属性为弹性容器内的项目指定默认对齐方式。
+
+    - stretch：默认。项目被拉伸以适合容器。
+
+    - center：项目位于容器的中央。
+
+    - flex-start：项目位于容器的开头。
+
+    - flex-end：项目位于容器的末端。
+
+    - baseline：项目被定位到容器的基线。
+
+      ```css
+      /* 将弹性 <div> 元素的所有项目的居中对齐 */
+      div {
+          display: flex;
+          align-items: center;
+      }
+      ```
+
 - **justify-self**：规定网格项在行内方向的对齐方式。在网格项上设置。不继承。
     - auto：默认值。继承网格容器的 justify-self 属性值。
     - normal：取决于布局上下文，但类似于未设置 size 时网格项在网格布局中的 stretch。如果设置了 size ，则属性值的行为类似于 start。
@@ -1183,6 +1197,27 @@
     - right：将项目右对齐。
     - *overflow-alignment*：safe 会将项目的对齐方式设置为 start，如果内容溢出。unsafe 保持对齐值，无论项目内容是否溢出。
     - *baseline alignment*：元素与父元素的基线对齐。
+
+- **align-self**：规定弹性容器内所选项目的对齐方式。不继承。覆盖容器的 align-items 属性。
+
+    - auto：默认。元素继承其父容器的 align-items 属性，如果没有父容器，则为 stretch。
+
+    - stretch：元素被拉伸以适应容器。
+
+    - center：元素位于容器的中央。
+
+    - flex-start：元素位于容器的开头。
+
+    - flex-end：元素位于容器的末端。
+
+    - baseline：元素被定位到容器的基线。
+
+      ```css
+      /* 把弹性元素内的项目之一居中对齐 */
+      #myBlueDiv {
+          align-self: center;
+      }
+      ```
 
 ## 3.21 其他
 
