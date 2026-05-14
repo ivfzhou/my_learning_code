@@ -817,12 +817,12 @@
     - 0：默认值。
     - *time*：规定完成过渡效果需要花费的时间（以秒或毫秒计）。
 - **transition-timing-function**：规定过渡效果的速度曲线。不继承。
-    - ease：默认值。慢速开始，然后变快，然后慢速结束的过渡效果（cubic-bezier(0.25, 0.1, 0.25, 1)）。
-    - linear：规定以相同速度开始至结束的过渡效果（等于 cubic-bezier(0, 0, 1, 1)）。
-    - ease-in：规定以慢速开始的过渡效果（等于 cubic-bezier(0.42, 0, 1, 1)）。
-    - ease-out：规定以慢速结束的过渡效果（等于 cubic-bezier(0, 0, 0.58, 1)）。
-    - ease-in-out：规定以慢速开始和结束的过渡效果（等于 cubic-bezier(0.42, 0, 0.58, 1)）。
-    - ubic-bezier(*number*, *number*, *number*, *number*)：在 cubic-bezier 函数中定义自己的值。可能的值是 0 至 1 之间的数值。
+    - ease：默认值。先快后慢（cubic-bezier(0.25, 0.1, 0.25, 1)）。
+    - linear：匀速（等于 cubic-bezier(0, 0, 1, 1)）。
+    - ease-in：先慢后快（等于 cubic-bezier(0.42, 0, 1, 1)）。
+    - ease-out：先快后慢（等于 cubic-bezier(0, 0, 0.58, 1)）。
+    - ease-in-out：两头慢中间快（等于 cubic-bezier(0.42, 0, 0.58, 1)）。
+    - ubic-bezier(*number*, *number*, *number*, *number*)：在 cubic-bezier 函数中定义自己的值。https://cubic-bezier.com。
 - **transition-delay**：规定合适开始过渡效果。不继承。
     - 0：默认值。
     - *time*：规定在过渡效果开始之前需要等待的时间，以秒或毫秒计。
@@ -1647,7 +1647,7 @@
             }
         }
         ```
-- **@import**：将样式表导入另一张样式表。须位于文档顶部（但是在任何 @charset 声明之后）。语法：`@import url|string list-of-mediaqueries;`。
+- **@import**：将样式表导入另一张样式表。须位于文档顶部（但是在任何 @charset 声明之后）。语法：`@import url|string list-of-mediaqueries;`。1
     - 例子：
         ```css
         /* 只在媒体为 screen 且视口最大宽度 768 像素时导入 "mobstyle.css" 样式表： */

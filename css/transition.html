@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>transition</title>
+    <style>
+        #root {
+            width: 500px;
+            height: 500px;
+            border-width: 2px;
+            border-style: solid;
+            border-color: black;
+        }
+
+        .box {
+            position: relative;
+            left: 0;
+            width: 20px;
+            height: 20px;
+            border-width: 2px;
+            border-style: solid;
+            border-color: brown;
+            transition-property: all;
+            transition-duration: 3s;
+            transition-timing-function: ease-in-out;
+        }
+
+        .box:active {
+            left: 400px;
+        }
+    </style>
+</head>
+<body>
+<div id="root">
+    <div class="box"></div>
+</div>
+</body>
+</html>
