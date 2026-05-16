@@ -93,7 +93,7 @@ const router = createRouter({
             ]
         },
 
-        // 命令路由。
+        // 命名路由。
         {
             path: '/namingView/:param',
             name: 'root',
