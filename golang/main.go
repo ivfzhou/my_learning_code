@@ -31,7 +31,7 @@ import (
 )
 
 func main() {
-	to := 20
+	to := 21
 	switch to {
 	case 1:
 		x := byte(1)
@@ -177,6 +177,9 @@ func main() {
 		println(base64.StdEncoding.EncodeToString(file))
 	case 20:
 		println(getMainFuncDirectory())
+	case 21:
+		rg := regexp.MustCompile(`^.*?(@v.*?)/.*$`)
+		fmt.Println(rg.FindStringSubmatch("comm@v0.0.0-20260502063458-e61198fd041b/query/gen.go"))
 	}
 }
 

@@ -1,6 +1,6 @@
 <script setup>
 import {version} from 'vue'
-import Root from '@/examples/jsx/Root.vue'
+import Root from '@/examples/router/Root.vue'
 
 console.log(version)
 
