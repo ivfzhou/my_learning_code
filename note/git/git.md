@@ -2,7 +2,7 @@
 
 1. Git 源码包中的命令补齐脚本 `contrib/completion/git-completion.bash` 复制到 `/etc/bash_completion.d/`
    对应的目录中。重新加载自动补齐脚本，使之在当前的 shell 中生效 `. /etc/bash_completion`。
-1. ![](/home/ivfzhou/src/my_learning_code/note/git/工作区、版本库、暂存区原理图.jpeg)
+1. ![](./工作区、版本库、暂存区原理图.jpeg)
 
 # 二、文件说明
 
@@ -231,6 +231,7 @@ ProxyCommand connect-proxy -S 127.0.0.1:7897 %h %p
 - `git remote rm <origin>`：移除名为 origin 的远程仓库配置。
 - `git remote rename <origin> <newname>`：将远程仓库 origin 重命名为新名称。
 - `git fetch --all`：从所有远程仓库拉取最新的分支和提交数据到本地远程跟踪分支。
+- `git fetch <remote>`：从 *remote* 远程仓库拉取最新的分支和提交数据到本地远程跟踪分支。
 - `git fetch --no-tags`：拉取远程分支及提交数据但不下载里程碑（tag）对象。
 - `git ls-remote --heads <remote> <pattern>`：按模式过滤列出远程仓库的分支引用。
 - `git ls-remote --tags <remote>`：列出远程仓库的所有标签（tag）引用。
@@ -362,3 +363,17 @@ ProxyCommand connect-proxy -S 127.0.0.1:7897 %h %p
 - `git submodule status`：显示各子模块的当前提交哈希、路径及状态摘要（与记录版本是否一致）。
 - `git submodule init`：根据 `.gitmodules` 配置初始化子模块，在 `.git/config` 中完成本地注册。
 - `git submodule update`：依据注册信息克隆缺失的子模块，或将其检出到记录的提交版本。
+
+## 20. 合并其它版本库
+
+1. `git remote add <other-git> <url>`：添加其它版本库。
+2. `git fetch <other-git>`：拉取数据。
+3. `git checkout -b <branch-name1> <other-git/master>`：基于远程版本库创建分支。
+4. `git read-tree --prefix=<dir> <branch-name1>`：将远程版本库文件写入暂存区。
+5. `git checkout master`：切换原分支。
+6. `git write-tree`：获取当前暂存区的树 ID。
+7. `git rev-parse HEAD`、`git rev-parse <branch-name1>`：获取到提交 ID。
+8. `git commit-tree <暂存区树 ID> -p <HEAD 提交 ID> -p <branch-name1 树 ID> -m <提交说明>`：创建树获取 ID。
+9. `git reset <新树 ID>`：将版本库重置到新的树。
+10. `git log`：查看其它版本库i合并进来的日志。
+
