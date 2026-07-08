@@ -65,7 +65,7 @@ cd ~/src/
 git clone git@github.com:git/git.git -o github
 sudo apt install libcurl4-openssl-dev zlib1g-dev libssl-dev libexpat1-dev gettext
 make clean
-make NO_DOC=1 NO_TCLTK=1 prefix=~/programs/git install
+make NO_DOC=1 NO_TCLTK=1 NO_RUST=1 prefix=~/programs/git install
 ```
 
 # 七、设置访问远程仓库账密
