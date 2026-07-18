@@ -11,7 +11,8 @@
 1. Chrome 浏览器下载地址：https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb。
 1. ssh 复制文件：scp src ivfzhou@ivfzhoudebian:~/src。
 1. UID 类型：1-999 虚拟用户，1000+ 普通用户。
-1. 安装拼音输入法：`sudo apt install ibus-libpinyin`
+1. 安装拼音输入法：`sudo apt install ibus-libpinyin`。
+1. 制作U盘启动盘：`sudo dd of=/dev/sda4 if=/home/ivfzhou/下载/debian-13.6.0-amd64-DVD-1.iso`。
 
 # 二、文件类型
 
