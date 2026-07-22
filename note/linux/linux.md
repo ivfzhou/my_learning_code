@@ -364,9 +364,11 @@ w
 
 # 八、导入证书
 
-1. 路径 /usr/local/share/ca-certificates/ivfzhou.crt  
-
-2. 运行 sudo update-ca-certificates --verbose
+```shell
+sudo cp <ca.crt> /usr/local/share/ca-certificates/
+# 只识别 .crt 结尾的证书。
+sudo update-ca-certificates --verbose
+```
 
 # 九、添加字体
 
