@@ -12,7 +12,7 @@
 1. ssh 复制文件：scp src ivfzhou@ivfzhoudebian:~/src。
 1. UID 类型：1-999 虚拟用户，1000+ 普通用户。
 1. 安装拼音输入法：`sudo apt install ibus-libpinyin`。
-1. 制作U盘启动盘：`sudo dd of=/dev/sda4 if=/home/ivfzhou/下载/debian-13.6.0-amd64-DVD-1.iso`。
+1. 制作U盘启动盘：`sudo dd of=</dev/sda> if=<path>/<to>/<iso> status=progress`。
 
 # 二、文件类型
 
