@@ -59,7 +59,7 @@ services:
 ```shell
 mkdir -p ~/volumes/nginx/config
 mkdir -p ~/volumes/nginx/logs
-mkdir -p ~/volumes/nginx/sl
+mkdir -p ~/volumes/nginx/ssl
 mkdir -p ~/volumes/nginx/config/conf.d
 cp ~/src/my_learning_code/note/nginx/default.conf ~/volumes/nginx/config/conf.d/default.conf
 cp ~/src/my_learning_code/note/nginx/nginx.conf ~/volumes/nginx/config/nginx.conf
