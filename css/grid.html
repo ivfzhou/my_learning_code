@@ -37,8 +37,59 @@
         padding: 16px;
         border-radius: 8px;
     }
+
+    /* 基础效果 */
+    .example1 {
+        display: grid;
+        grid-template-rows: 100px 100px 100px;
+        grid-template-columns: 100px 100px 100px;
+        width: 500px;
+        height: 500px;
+        border: 1px solid black;
+    }
+    .example1>div {
+        border: 1px solid black;
+        width: 50px;
+        height: 50px;
+    }
+
+    /* 使用 area */
+    .example2 {
+        display: grid;
+        grid-template-rows: 100px 100px 100px;
+        grid-template-columns: 100px 100px 100px;
+        grid-template-areas:
+                "b b b"
+                "c c c"
+                "a a a";
+        width: 500px;
+        height: 500px;
+        border: 1px solid black;
+    }
+    .example2>div {
+        border: 1px solid black;
+        width: 50px;
+        height: 50px;
+    }
 </style>
 <body>
+<div class="example1">
+    <div>a</div>
+    <div>a</div>
+    <div>a</div>
+    <div>b</div>
+    <div>b</div>
+    <div>b</div>
+    <div>c</div>
+    <div>c</div>
+    <div>c</div>
+</div>
+
+<div class="example2">
+    <div style="grid-area: a;">a</div>
+    <div style="grid-area: b;">b</div>
+    <div style="grid-area: c;">c</div>
+</div>
 
 <div class="grid-container">
     <div class="item" style="grid-area: header">Header</div>

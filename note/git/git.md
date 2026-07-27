@@ -93,8 +93,20 @@ ProxyCommand connect-proxy -S 127.0.0.1:7897 %h %p
 
 ## 生成一个没有父提交的新提交对象
 
-- `git cat-file commit <commit> | sed -e '/^parent/d' > tmpfile`
-- `git hash-object -t commit -w -- tmpfile`
+```shell
+git cat-file commit <commit> | sed -e '/^parent/d' > tmpfile
+git hash-object -t commit -w -- tmpfile
+```
+
+## 提取提交与回放
+
+```shell
+# 提取从 <起始提交> 之后（不含它）到 <结束提交> 的所有提交
+git format-patch <起始提交>..<结束提交> -o /path/to/patches/
+
+# 在目标仓库中
+git am /path/to/patches/*.patch
+```
 
 ## 1. 公钥密钥
 

@@ -1016,6 +1016,7 @@
             display: grid;
             grid-template-areas: "myArea myArea . . .";
         }
+        
         /* 命名所有项目，并制作一张现成网页模板 */
         .item1 {
             grid-area: header;
@@ -1039,8 +1040,8 @@
               "menu main main main right right"
               "menu footer footer footer footer";
         }
-        ```
-
+    ```
+    
 - **grid-auto-rows**：规定默认的行尺寸。不继承。该属性只会影响未设置尺寸的行。
     - auto：默认值。由行中的最大项目的尺寸决定行的尺寸。
     - max-content：根据行中的最大项目设置每行的尺寸。
@@ -1219,7 +1220,18 @@
       }
       ```
 
-## 3.21 其他
+### `justify、align、items、content、self` 对照表
+
+| 属性              | 设置在 | 作用轴 | Flexbox   | Grid | 控制范围     |
+| ----------------- | ------ | ------ | --------- | ---- | ------------ |
+| `justify-content` | 容器   | 主轴   | ✅         | ✅    | 整组子项分布 |
+| `align-content`   | 容器   | 交叉轴 | ✅（多行） | ✅    | 多行间分布   |
+| `justify-items`   | 容器   | 主轴   | ❌         | ✅    | 所有子项默认 |
+| `align-items`     | 容器   | 交叉轴 | ✅         | ✅    | 所有子项默认 |
+| `justify-self`    | 子项   | 主轴   | ❌         | ✅    | 单个子项覆盖 |
+| `align-self`      | 子项   | 交叉轴 | ✅         | ✅    | 单个子项覆盖 |
+
+## 3.22 其他
 
 - **opacity**：设置元素的不透明等级。
 

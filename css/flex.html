@@ -11,6 +11,8 @@
         justify-content: center; /* 水平居中 */
         align-items: center; /* 垂直居中 */
         height: 300px;
+        width: 300px;
+        border: 1px solid black;
     }
 
     /* 三栏布局 */
@@ -69,14 +71,13 @@
         flex: 1 1 250px; /* 最小250px，可放大可缩小 */
         max-width: 350px; /* 最大不超过350px */
     }
-
 </style>
 <body>
 
 <div class="parent">
-    <div>a</div>
-    <div>b</div>
-    <div>c</div>
+    <div style="border: 1px solid black; width: 50px; height: 50px">a</div>
+    <div style="border: 1px solid black; width: 50px; height: 50px">b</div>
+    <div style="border: 1px solid black; width: 50px; height: 50px">c</div>
 </div>
 
 <hr/>
