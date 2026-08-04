@@ -43,7 +43,7 @@
 - DATE：3 字节。格式：YYYY-MM-dd，范围 [0000-01-01,9999-12-31]。插入字符型或者整型两位数：1-69 表示 2001-2069，70-99 表示 1970-1999。字符型格式：'YYYY-MM-dd'、'YY-MM-dd'、'YYYYMMdd'、'YYMMdd'。中间分割符 - 可以替换成 ./@+*。整形格式：YYYYMMdd、YYMMdd、(00)MMdd。
 - TIME(*n*)：3 字节。格式：HHH:mm:ss，范围 [-838:59:59, 838:59:59]。字符型格式：'D HH:mm:ss'、'HHH:mm:ss'、'HH:mm'、'D HH'、'HHHmmss'、'mmss'、'ss'。整型格式：HHHmmss、mmss、ss。
 - TIMESTAMP(*n*)：4 字节。格式：YYYY-MM-dd hh:mm:ss UTC，范围 (1970-01-01 08:00:00, 2038-1-19 11:14:07]。插入字符型或者整型两位数：1-69 表示 2001-2069，70-99 表示 1970-1999。字符型格式：'YYYY-MM-dd HH:mm:ss'、'YYYY-MM-dd'、'YY-MM-dd'、'YYMMddHHmmss'、'YYMMddHHmm'、'YYYYMMdd'、'YYMMdd'。整形格式：YYYYMMddHHmmss、YYMMddHHmmss、YYYYMMdd、YYMMdd、00MMdd。
-- DATETIME(*n*)：8 字节。格式：YYYY-MM-dd HH:mm:ss，范围 [0000-01-01 00:00:00, 9999-12-31 23:59:59]。插入字符型或者整型两位数：1-69 表示 2001-2069，70-99 表示 1970-1999。字符型格式：'YYYY-MM-dd HH:mm:ss'、'YYYY-MM-dd'、'YY-MM-dd'、'YYMMddHHmmss'、'YYMMddHHmm'、'YYYYMMdd'、'YYMMdd' 。整形格式：YYYYMMddHHmmss、YYMMddHHmmss、YYYYMMdd、YYMMdd、00MMdd。
+- DATETIME(*n*)：8 字节。*n* 指的是小数部分的显示位数，并且将存储毫秒。格式：YYYY-MM-dd HH:mm:ss，范围 [0000-01-01 00:00:00, 9999-12-31 23:59:59]。插入字符型或者整型两位数：1-69 表示 2001-2069，70-99 表示 1970-1999。字符型格式：'YYYY-MM-dd HH:mm:ss'、'YYYY-MM-dd'、'YY-MM-dd'、'YYMMddHHmmss'、'YYMMddHHmm'、'YYYYMMdd'、'YYMMdd' 。整形格式：YYYYMMddHHmmss、YYMMddHHmmss、YYYYMMdd、YYMMdd、00MMdd。
 
 ## 3. 约束
 
