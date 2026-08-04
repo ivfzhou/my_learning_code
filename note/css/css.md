@@ -922,7 +922,7 @@
     - wrap-reverse：规定弹性项目会在需要时换行，以反方向。
 - **order**：设置弹性项目相对于其余项目的顺序。不继承。如果元素不是弹性项目，则 order 属性无效。
   - 0：默认值。
-    - *number*：规定弹性项目的顺序。
+  - *number*：规定弹性项目的顺序。
 - **flex**：flex-grow、flex-shrink 以及 flex-basis 的简写属性。不继承。
     - 0 1 auto：默认值。
     - none：等同于 0 0 auto。
@@ -944,47 +944,7 @@
 - **grid**：grid-template-rows、grid-template-columns、grid-template-areas、grid-auto-rows、grid-auto-columns 以及 grid-auto-flow 属性的简写属性。
 
     - none none none auto auto row：默认值。
-        ```css
-        /* 制作一个三列网格布局，其中第一行高 150 像素 */
-        .grid-container {
-            display: grid;
-            grid: 150px / auto auto auto;
-        }
-        /* 规定两行，其中 "item1" 跨越前两行中的前两列（采用五列网格布局） */
-        .item1 {
-            grid-area: myArea;
-        }
-        .grid-container {
-            display: grid;
-            grid:
-              "myArea myArea . . ."
-              "myArea myArea . . .";
-        }
-        /* 命名所有项目，并制作一张现成的网页模板 */
-        .item1 {
-            grid-area: header;
-        }
-        .item2 {
-            grid-area: menu;
-        }
-        .item3 {
-            grid-area: main;
-        }
-        .item4 {
-            grid-area: right;
-        }
-        .item5 {
-            grid-area: footer;
-        }
-        .grid-container {
-            display: grid;
-            grid:
-              "header header header header header"
-              "menu main main main right right"
-              "menu footer footer footer footer";
-        }
-        ```
-
+    
 - **grid-template**：grid-template-rows、grid-template-columns 以及 grid-areas 属性的简写属性。不继承。
 
     - none none none：默认值。
@@ -1004,50 +964,17 @@
     - *length*：设置列的尺寸，通过使用合法的长度值。
 
 - **grid-template-areas**：规定如何使用命名的网格项显示列和行。不继承。用 `.` 表示空白区域。
+  
     - none：默认值。
     - *itemNames*：规定每列和每行应如何显示的序列。
-      
-        ```css
-        /* 使命名项目 "myArea" 在五列网格布局中横跨两列 */
-        .item1 {
-            grid-area: myArea;
-        }
-        .grid-container {
-            display: grid;
-            grid-template-areas: "myArea myArea . . .";
-        }
-        
-        /* 命名所有项目，并制作一张现成网页模板 */
-        .item1 {
-            grid-area: header;
-        }
-        .item2 {
-            grid-area: menu;
-        }
-        .item3 {
-            grid-area: main;
-        }
-        .item4 {
-            grid-area: right;
-        }
-        .item5 {
-            grid-area: footer;
-        }
-        .grid-container {
-            display: grid;
-            grid-template-areas:
-              "header header header header header"
-              "menu main main main right right"
-              "menu footer footer footer footer";
-        }
-    ```
     
 - **grid-auto-rows**：规定默认的行尺寸。不继承。该属性只会影响未设置尺寸的行。
+  
     - auto：默认值。由行中的最大项目的尺寸决定行的尺寸。
     - max-content：根据行中的最大项目设置每行的尺寸。
     - min-content：根据行中的最大项目设置每行的尺寸。
     - *length*：设置行的尺寸，通过使用合法的长度值。
-
+    
 - **grid-auto-columns**：规定默认的列尺寸。不继承。该属性只会影响未设置尺寸的列。
     - auto：默认值。由容器尺寸决定列的尺寸。
     - fit-content()
@@ -1079,25 +1006,10 @@
 - **grid-area**：即可规定网格项的名称，也可以是 grid-row-start、grid-column-start、grid-row-end 以及 grid-column-end 属性的简写属性。不继承。
     - auto / auto / auto / auto：默认值。
     - *itemname*：规定网格项目的项目。
-      ```css
-      /* 使 "item1" 在行 2 列 1 开始，并横跨两行三列 */
-      .item1 {
-          grid-area: 2 / 1 / span 2 / span 3;
-      }
-      ```
-
+    
 - **grid-column**：grid-column-start 和 grid-column-end 属性的简写属性。
     - auto / auto：默认值。
-        ```css
-        /* 使 "item1" 在列 1 开始并横跨两列 */
-        .item1 {
-            grid-column: 1 / span 2;
-        }
-        .item1 {
-            grid-column: 1 / 3;
-        }
-        ```
-
+    
 - **grid-column-start**：规定网格项目从何处开始。不继承。
     - auto：默认值。项目将随着流放置。
     - span *n*：规定项目将横跨的列数。
@@ -1143,18 +1055,6 @@
 
     - space-around:行均匀分布在弹性容器中，两端各占一半。
 
-      ```css
-      /* 将行打包到弹性容器的中央 */
-      div {
-          width: 70px;
-          height: 300px;
-          border: 1px solid #c3c3c3;
-          display: flex;
-          flex-wrap: wrap;
-          align-content: center;
-      }
-      ```
-
 - **justify-items**：规定网格项在行内方向的对齐方式。在网格容器上设置。不继承。
     - legacy：默认值。仅在以 legacy 开头时，justify-self 值为 auto 的网格项继承网格容器的 justify-items 属性值。它的存在是为了实现 HTML 的 center 元素和 align 属性的遗留对齐行为。
     - normal：取决于布局上下文，但类似于网格布局的 stretch。
@@ -1178,14 +1078,6 @@
     - flex-end：项目位于容器的末端。
 
     - baseline：项目被定位到容器的基线。
-
-      ```css
-      /* 将弹性 <div> 元素的所有项目的居中对齐 */
-      div {
-          display: flex;
-          align-items: center;
-      }
-      ```
 
 - **justify-self**：规定网格项在行内方向的对齐方式。在网格项上设置。不继承。
     - auto：默认值。继承网格容器的 justify-self 属性值。
@@ -1213,25 +1105,6 @@
 
     - baseline：元素被定位到容器的基线。
 
-      ```css
-      /* 把弹性元素内的项目之一居中对齐 */
-      #myBlueDiv {
-          align-self: center;
-      }
-      ```
-
-### `justify、align、items、content、self` 对照表
-
-| 属性              | 设置在 | 作用轴 | Flexbox   | Grid | 控制范围     |
-| ----------------- | ------ | ------ | --------- | ---- | ------------ |
-| `justify-content` | 容器   | 主轴   | ✅         | ✅    | 整组子项分布 |
-| `align-content`   | 容器   | 交叉轴 | ✅（多行） | ✅    | 多行间分布   |
-| `justify-items`   | 容器   | 主轴   | ❌         | ✅    | 所有子项默认 |
-| `align-items`     | 容器   | 交叉轴 | ✅         | ✅    | 所有子项默认 |
-| `justify-self`    | 子项   | 主轴   | ❌         | ✅    | 单个子项覆盖 |
-| `align-self`      | 子项   | 交叉轴 | ✅         | ✅    | 单个子项覆盖 |
-
-## 3.22 其他
 
 - **opacity**：设置元素的不透明等级。
 
@@ -1527,6 +1400,7 @@
        }
        ```
 - **repeating-radial-gradient([ *shape* | *size* | at *position*, ] *startColor*, ..., *lastColor*)**：重复径向渐变。
+  
     - shape：定义渐变的形状。可能的值：
         - ellipse (默认值)
         - circle
@@ -1542,6 +1416,9 @@
             background-image: repeating-radial-gradient(red, yellow 10%, green 15%);
         }
         ```
+
+- **minmax**
+- **repeat**
 
 ## 5.1 旋转
 

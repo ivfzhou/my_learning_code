@@ -1,44 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh">
 <head>
     <meta charset="UTF-8">
     <title>grid</title>
 </head>
 <style>
-    .grid-container {
-        display: grid;
-
-        /* 显式定义 3 列 */
-        grid-template-columns: 200px 1fr 150px;
-
-        /* 显式定义 3 行 */
-        grid-template-rows: 80px 1fr 60px;
-
-        /* 区域命名 */
-        grid-template-areas:
-             "header  header  header"
-             "sidebar main    aside"
-             "footer  footer  footer";
-
-        /* 隐式行/列的备用尺寸 */
-        grid-auto-rows: minmax(50px, auto);
-        grid-auto-columns: 100px;
-
-        /* 控制自动放置 */
-        grid-auto-flow: row dense;
-
-        gap: 10px;
-        height: 500px;
-    }
-
-    .item {
-        background: #4a90d9;
-        color: white;
-        padding: 16px;
-        border-radius: 8px;
-    }
-
-    /* 基础效果 */
+    /* grid-template-rows/columns */
     .example1 {
         display: grid;
         grid-template-rows: 100px 100px 100px;
@@ -47,32 +14,280 @@
         height: 500px;
         border: 1px solid black;
     }
-    .example1>div {
+
+    .example1 > div {
         border: 1px solid black;
         width: 50px;
         height: 50px;
     }
 
-    /* 使用 area */
+    /* grid-template-areas */
     .example2 {
         display: grid;
-        grid-template-rows: 100px 100px 100px;
-        grid-template-columns: 100px 100px 100px;
         grid-template-areas:
-                "b b b"
+                "b b b" /* b 横跨三列 */
                 "c c c"
                 "a a a";
         width: 500px;
         height: 500px;
         border: 1px solid black;
     }
-    .example2>div {
+
+    .example2 > div {
         border: 1px solid black;
         width: 50px;
         height: 50px;
     }
+
+    .example3 {
+        display: grid;
+        grid-template-areas:
+                ". b ." /* b 在中间列 */
+                ". . c"
+                "a . .";
+        width: 500px;
+        height: 500px;
+        border: 1px solid black;
+    }
+
+    .example3 > div {
+        border: 1px solid black;
+        width: 50px;
+        height: 50px;
+    }
+
+    /* grid-auto-flow */
+    .example4 {
+        display: grid;
+        grid-template-rows: repeat(3, 100px);
+        grid-template-columns: repeat(3, 100px);
+        width: 500px;
+        height: 500px;
+        border: 1px solid black;
+        grid-auto-flow: row;
+    }
+
+    .example4 > div {
+        border: 1px solid black;
+        width: 50px;
+        height: 50px;
+    }
+
+    .example4 > div:first-child {
+        grid-column-start: 1;
+        grid-column-end: 3;
+        grid-row-start: 1;
+        grid-row-end: 3;
+    }
+
+    .example5 {
+        display: grid;
+        grid-template-rows: repeat(3, 100px);
+        grid-template-columns: repeat(3, 100px);
+        width: 500px;
+        height: 500px;
+        border: 1px solid black;
+        grid-auto-flow: column;
+    }
+
+    .example5 > div {
+        border: 1px solid black;
+        width: 50px;
+        height: 50px;
+    }
+
+    .example5 > div:first-child {
+        grid-column-start: 1;
+        grid-column-end: 3;
+        grid-row-start: 1;
+        grid-row-end: 3;
+    }
+
+    .example6 {
+        display: grid;
+        grid-template-rows: repeat(3, 100px);
+        grid-template-columns: repeat(3, 100px);
+        width: 500px;
+        height: 500px;
+        border: 1px solid black;
+        grid-auto-flow: dense;
+    }
+
+    .example6 > div {
+        border: 1px solid black;
+        width: 50px;
+        height: 50px;
+    }
+
+    .example6 > div:first-child {
+        grid-column-start: 1;
+        grid-column-end: 3;
+        grid-row-start: 1;
+        grid-row-end: 3;
+    }
+
+    /* grid-auto-columns/rows */
+    .example7 {
+        display: grid;
+        grid-template-rows: repeat(3, 100px);
+        grid-template-columns: repeat(3, 100px);
+        width: 500px;
+        height: 500px;
+        border: 1px solid black;
+        grid-auto-columns: 40px;
+        grid-auto-flow: column;
+    }
+
+    .example7 > div {
+        border: 1px solid black;
+        width: 50px;
+        height: 50px;
+    }
+
+    .example8 {
+        display: grid;
+        grid-template-rows: repeat(3, 100px);
+        grid-template-columns: repeat(3, 100px);
+        width: 500px;
+        height: 500px;
+        border: 1px solid black;
+        grid-auto-rows: 40px;
+    }
+
+    .example8 > div {
+        border: 1px solid black;
+        width: 50px;
+        height: 50px;
+    }
+
+    /* grid-row/column-gap */
+    .example9 {
+        display: grid;
+        grid-template-rows: repeat(3, 100px);
+        grid-template-columns: repeat(3, 100px);
+        width: 500px;
+        height: 500px;
+        border: 1px solid black;
+        grid-row-gap: 10px;
+        grid-column-gap: 20px;
+    }
+
+    .example9 > div {
+        border: 1px solid black;
+        width: 50px;
+        height: 50px;
+    }
+
+    /* justify-content */
+    .example10 {
+        display: grid;
+        grid-template-rows: repeat(3, 100px);
+        grid-template-columns: repeat(3, 100px);
+        width: 500px;
+        height: 500px;
+        border: 1px solid black;
+        justify-content: center;
+    }
+
+    .example10 > div {
+        border: 1px solid black;
+        width: 50px;
+        height: 50px;
+    }
+
+    /* align-content */
+    .example11 {
+        display: grid;
+        grid-template-rows: repeat(3, 100px);
+        grid-template-columns: repeat(3, 100px);
+        width: 500px;
+        height: 500px;
+        border: 1px solid black;
+        align-content: center;
+    }
+
+    .example11 > div {
+        border: 1px solid black;
+        width: 50px;
+        height: 50px;
+    }
+
+    /* justify-items */
+    .example12 {
+        display: grid;
+        grid-template-rows: repeat(3, 100px);
+        grid-template-columns: repeat(3, 100px);
+        width: 500px;
+        height: 500px;
+        border: 1px solid black;
+        justify-items: center;
+    }
+
+    .example12 > div {
+        border: 1px solid black;
+        width: 50px;
+        height: 50px;
+    }
+
+    /* align-items */
+    .example13 {
+        display: grid;
+        grid-template-rows: repeat(3, 100px);
+        grid-template-columns: repeat(3, 100px);
+        width: 500px;
+        height: 500px;
+        border: 1px solid black;
+        align-items: center;
+    }
+
+    .example13 > div {
+        border: 1px solid black;
+        width: 50px;
+        height: 50px;
+    }
+
+    /* justify-self */
+    .example14 {
+        display: grid;
+        grid-template-rows: repeat(3, 100px);
+        grid-template-columns: repeat(3, 100px);
+        width: 500px;
+        height: 500px;
+        border: 1px solid black;
+    }
+
+    .example14 > div {
+        border: 1px solid black;
+        width: 50px;
+        height: 50px;
+    }
+
+    .example14 > div:first-child {
+        justify-self: center;
+    }
+
+    /* align-self */
+    .example15 {
+        display: grid;
+        grid-template-rows: repeat(3, 100px);
+        grid-template-columns: repeat(3, 100px);
+        width: 500px;
+        height: 500px;
+        border: 1px solid black;
+    }
+
+    .example15 > div {
+        border: 1px solid black;
+        width: 50px;
+        height: 50px;
+    }
+
+    .example15 > div:first-child {
+        align-self: center;
+    }
 </style>
 <body>
+<h1>grid-template-rows/columns</h1>
 <div class="example1">
     <div>a</div>
     <div>a</div>
@@ -85,18 +300,161 @@
     <div>c</div>
 </div>
 
+<h1>grid-template-areas</h1>
 <div class="example2">
     <div style="grid-area: a;">a</div>
     <div style="grid-area: b;">b</div>
     <div style="grid-area: c;">c</div>
 </div>
 
-<div class="grid-container">
-    <div class="item" style="grid-area: header">Header</div>
-    <div class="item" style="grid-area: sidebar">Sidebar</div>
-    <div class="item" style="grid-area: main">Main Content</div>
-    <div class="item" style="grid-area: aside">Aside</div>
-    <div class="item" style="grid-area: footer">Footer</div>
+<h1>grid-template-areas</h1>
+<div class="example3">
+    <div style="grid-area: a;">a</div>
+    <div style="grid-area: b;">b</div>
+    <div style="grid-area: c;">c</div>
+</div>
+<div class="example4">
+    <div>a</div>
+    <div>b</div>
+    <div>c</div>
+    <div>d</div>
+</div>
+
+<h1>grid-auto-flow</h1>
+<div class="example5">
+    <div>a</div>
+    <div>b</div>
+    <div>c</div>
+    <div>d</div>
+</div>
+<div class="example6">
+    <div>a</div>
+    <div>b</div>
+    <div>c</div>
+    <div>d</div>
+</div>
+
+<h1>grid-auto-columns/rows</h1>
+<div class="example7">
+    <div>a</div>
+    <div>b</div>
+    <div>c</div>
+    <div>d</div>
+    <div>e</div>
+    <div>f</div>
+    <div>g</div>
+    <div>h</div>
+    <div>i</div>
+    <div>j</div>
+    <div>k</div>
+    <div>l</div>
+    <div>m</div>
+</div>
+<div class="example8">
+    <div>a</div>
+    <div>b</div>
+    <div>c</div>
+    <div>d</div>
+    <div>e</div>
+    <div>f</div>
+    <div>g</div>
+    <div>h</div>
+    <div>i</div>
+    <div style="background-color: yellow">j</div>
+    <div>k</div>
+    <div>l</div>
+    <div style="background-color: red">m</div>
+</div>
+
+<h1>grid-row/column-gap</h1>
+<div class="example9">
+    <div>a</div>
+    <div>b</div>
+    <div>c</div>
+    <div>d</div>
+    <div>e</div>
+    <div>f</div>
+    <div>g</div>
+    <div>h</div>
+    <div>i</div>
+</div>
+
+<h1>justify-content</h1>
+<div class="example10">
+    <div>a</div>
+    <div>b</div>
+    <div>c</div>
+    <div>d</div>
+    <div>e</div>
+    <div>f</div>
+    <div>g</div>
+    <div>h</div>
+    <div>i</div>
+</div>
+
+<h1>align-content</h1>
+<div class="example11">
+    <div>a</div>
+    <div>b</div>
+    <div>c</div>
+    <div>d</div>
+    <div>e</div>
+    <div>f</div>
+    <div>g</div>
+    <div>h</div>
+    <div>i</div>
+</div>
+
+<h1>justify-items</h1>
+<div class="example12">
+    <div>a</div>
+    <div>b</div>
+    <div>c</div>
+    <div>d</div>
+    <div>e</div>
+    <div>f</div>
+    <div>g</div>
+    <div>h</div>
+    <div>i</div>
+</div>
+
+<h1>align-items</h1>
+<div class="example13">
+    <div>a</div>
+    <div>b</div>
+    <div>c</div>
+    <div>d</div>
+    <div>e</div>
+    <div>f</div>
+    <div>g</div>
+    <div>h</div>
+    <div>i</div>
+</div>
+
+<h1>justify-self</h1>
+<div class="example14">
+    <div>a</div>
+    <div>b</div>
+    <div>c</div>
+    <div>d</div>
+    <div>e</div>
+    <div>f</div>
+    <div>g</div>
+    <div>h</div>
+    <div>i</div>
+</div>
+
+<h1>align-self</h1>
+<div class="example15">
+    <div>a</div>
+    <div>b</div>
+    <div>c</div>
+    <div>d</div>
+    <div>e</div>
+    <div>f</div>
+    <div>g</div>
+    <div>h</div>
+    <div>i</div>
 </div>
 
 </body>
