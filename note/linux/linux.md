@@ -227,25 +227,31 @@ w
 22. 例子，[ca_ext.cnf](./ca_ext.cnf)、[server_ext.cnf](./server_ext.cnf)、[code_ext.cnf](./code_ext.cnf)、[client_ext.cnf](./client_ext.cnf)、[email_ext.cnf](./email_ext.cnf)、[time_ext.cnf](./time_ext.cnf)、[ocsp_ext.cnf](./ocsp_ext.cnf)：
 
     ```shell
+    # 生成根 CA。
     openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:2048 -aes256 -pass pass:123456 -out pkey_rsa_2048_aes256cbc_123456.p8.pem
     openssl req -new -key pkey_rsa_2048_aes256cbc_123456.p8.pem -passin pass:123456 -subj "/C=CN/ST=Hunan/L=Changsha/O=ivfzhou test/CN=rsa_ca_cert" -out csr_rsa_ca.p10.pem
     openssl x509 -req -in csr_rsa_ca.p10.pem -signkey pkey_rsa_2048_aes256cbc_123456.p8.pem -passin pass:123456 -days 3650 -sha256 -extfile ./ca_ext.cnf -out cert_rsa_ca.x509.pem
     
+    # 生成中间 CA。
     openssl genpkey -algorithm EC -pkeyopt ec_paramgen_curve:P-256 -aes256 -pass pass:123456 -out pkey_ecdsa_128_aes256cbc_123456.p8.pem
     openssl req -new -key pkey_ecdsa_128_aes256cbc_123456.p8.pem -passin pass:123456 -subj "/C=CN/ST=Hunan/L=Changsha/O=ivfzhou test/CN=ecdsa_middle_ca_cert" -out csr_ecdsa_middle_ca.p10.pem
     openssl x509 -req -in csr_ecdsa_middle_ca.p10.pem -CAkey pkey_rsa_2048_aes256cbc_123456.p8.pem -passin pass:123456 -CA cert_rsa_ca.x509.pem -CAcreateserial -sha256 -days 1825 -extfile ./ca_ext.cnf -out cert_ecdsa_middle_ca.x509.pem
     
+    # 生成服务器证书。
     openssl genpkey -algorithm ED25519 -aes256 -pass pass:123456 -out pkey_server_eddsa_25519_aes256cbc_123456.p8.pem
     openssl req -new -key pkey_server_eddsa_25519_aes256cbc_123456.p8.pem -passin pass:123456 -subj "/C=CN/ST=Hunan/L=Changsha/O=ivfzhou test/CN=eddsa_server_cert" -out csr_server_eddsa.p10.pem
     openssl x509 -req -in csr_server_eddsa.p10.pem -CAkey pkey_ecdsa_128_aes256cbc_123456.p8.pem -passin pass:123456 -CA cert_ecdsa_middle_ca.x509.pem -CAcreateserial -sha256 -days 365 -extfile ./server_ext.cnf -out cert_server_eddsa.x509.pem
     
+    # 将服务证书合成 PFX 格式，校验 CA 与证书的关联性。
     openssl pkcs12 -export -inkey pkey_server_eddsa_25519_aes256cbc_123456.p8.pem -passin pass:123456 -in cert_server_eddsa.x509.pem -certfile cert_ecdsa_middle_ca.x509.pem -out cert_server_eddsa_123456.p12.der -passout pass:123456
     openssl verify -CAfile cert_rsa_ca.x509.pem -untrusted cert_ecdsa_middle_ca.x509.pem cert_server_eddsa.x509.pem
     
+    # 生成代码签名证书。
     openssl genpkey -algorithm ED25519 -aes256 -pass pass:123456 -out pkey_code_eddsa_25519_aes256cbc_123456.p8.pem
     openssl req -new -key pkey_code_eddsa_25519_aes256cbc_123456.p8.pem -passin pass:123456 -subj "/C=CN/ST=Hunan/L=Changsha/O=ivfzhou test/CN=eddsa_code_cert" -out csr_code_eddsa.p10.pem
     openssl x509 -req -in csr_code_eddsa.p10.pem -CAkey pkey_ecdsa_128_aes256cbc_123456.p8.pem -passin pass:123456 -CA cert_ecdsa_middle_ca.x509.pem -CAcreateserial -sha256 -days 365 -extfile ./code_ext.cnf -out cert_code_eddsa.x509.pem
     
+    # 将代码签名证书合成 PFX 格式，校验 CA 与证书的关联性。
     openssl pkcs12 -export -inkey pkey_code_eddsa_25519_aes256cbc_123456.p8.pem -passin pass:123456 -in cert_code_eddsa.x509.pem -certfile cert_ecdsa_middle_ca.x509.pem -out cert_code_eddsa_123456.p12.der -passout pass:123456
     openssl verify -CAfile cert_rsa_ca.x509.pem -untrusted cert_ecdsa_middle_ca.x509.pem cert_code_eddsa.x509.pem
     ```
