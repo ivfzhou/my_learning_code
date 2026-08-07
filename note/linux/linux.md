@@ -575,7 +575,36 @@ LANG=en_US
 sudo update-grub
 ```
 
-# 十七、命令
+# 十七 休眠
+
+- 交换内存大于运行内存。
+
+- 关闭 Secure Boot。
+
+- 编辑 grub：
+
+  ```shell
+  # 查看交换分区的 UUID。
+  sudo blkid
+  
+  sudo vim /etc/default/grub
+  # GRUB_CMDLINE_LINUX_DEFAULT 后面加上 resume=UUID=xxx
+  
+  sudo update-grub
+  ```
+
+- 配置 Initramfs：
+
+  ```shell
+  echo "RESUME=UUID=xxx" | sudo tee /etc/initramfs-tools/conf.d/resume
+  sudo update-initramfs -u -k all
+  ```
+
+- 重启电脑。
+- 休眠：`sudo systemctl hibernate`。
+- 检查内核配置，确认内核确实编译了休眠支持：`grep -E 'CONFIG_PM_SLEEP|CONFIG_HIBERNATION' /boot/config-$(uname -r)`。
+
+# 十八、命令
 
 ## 1. 常用命令
 
