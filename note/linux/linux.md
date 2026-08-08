@@ -542,7 +542,7 @@ sudo iptables -A INPUT -s 192.168.3.0/24 -j ACCEPT
 # 十六、设置 Grub 界面字大小和背景
 
 ```shell
-sudo grub-mkfont -o /boot/grub/DejaVuSansMono.ttf -s 28 /usr/share/fonts/truetype/dejavu/DejaVuSansMono28.ttf
+sudo grub-mkfont -o /boot/grub/DejaVuSansMono22.ttf -s 22 /usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf
 ```
 
 可能需要关闭安全启动。
@@ -564,7 +564,7 @@ GRUB_BACKGROUND=/boot/grub/black2880x1800.png
 GRUB_TERMINAL_OUTPUT=gfxterm
 
 # 设置字体文件
-GRUB_FONT=/boot/grub/DejaVuSansMono28.ttf
+GRUB_FONT=/boot/grub/DejaVuSansMono22.ttf
 
 # 设置语言
 GRUB_LANG=en_US
@@ -575,7 +575,7 @@ LANG=en_US
 sudo update-grub
 ```
 
-# 十七 休眠
+# 十七、休眠
 
 - 交换内存大于运行内存。
 

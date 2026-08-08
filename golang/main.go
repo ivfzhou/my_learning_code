@@ -31,7 +31,7 @@ import (
 )
 
 func main() {
-	to := 21
+	to := 10
 	switch to {
 	case 1:
 		x := byte(1)
@@ -358,12 +358,12 @@ func regexpNonCapture() {
 }
 
 func createPng() {
-	width := 1024
-	height := 768
+	width := 2880
+	height := 1800
 	rect := image.Rect(0, 0, width, height)
 	rgba := image.NewRGBA(rect)
-	for x := 0; x < width; x++ {
-		for y := 0; y < height; y++ {
+	for x := range width {
+		for y := range height {
 			rgba.SetRGBA(x, y, color.RGBA{A: 255})
 		}
 	}
@@ -372,7 +372,7 @@ func createPng() {
 	if err != nil {
 		panic(err)
 	}
-	err = os.WriteFile(`black.png`, buf.Bytes(), 0666)
+	err = os.WriteFile(`black2880x1800.png`, buf.Bytes(), 0666)
 	if err != nil {
 		panic(err)
 	}
