@@ -11,8 +11,9 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>cn.ivfzhou.java.redis</groupId>
-    <artifactId>jedis</artifactId>
+    <artifactId>redis-jedis</artifactId>
     <version>1.0.0</version>
+    <name>redis-jedis</name>
 
     <dependencies>
         <dependency>

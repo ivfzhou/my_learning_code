@@ -10,9 +10,9 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>cn.ivfzhou.java.springcloud</groupId>
-    <artifactId>eureka2</artifactId>
+    <artifactId>springcloud-eureka2</artifactId>
     <version>1.0.0</version>
-    <name>eureka2</name>
+    <name>springcloud-eureka2</name>
 
     <dependencies>
         <dependency>

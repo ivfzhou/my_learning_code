@@ -10,8 +10,8 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>cn.ivfzhou.java.shiro</groupId>
-    <artifactId>common</artifactId>
-    <name>common</name>
+    <artifactId>shiro-common</artifactId>
+    <name>shiro-common</name>
     <version>1.0.0</version>
 
     <dependencies>

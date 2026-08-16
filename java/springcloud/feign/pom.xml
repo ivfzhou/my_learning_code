@@ -10,9 +10,9 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>cn.ivfzhou.java.springcloud</groupId>
-    <artifactId>feign</artifactId>
+    <artifactId>springcloud-feign</artifactId>
     <version>1.0.0</version>
-    <name>feign</name>
+    <name>springcloud-feign</name>
 
     <dependencies>
         <dependency>

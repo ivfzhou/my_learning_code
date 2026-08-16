@@ -10,9 +10,9 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>cn.ivfzhou.java.springcloud</groupId>
-    <artifactId>gateway</artifactId>
+    <artifactId>springcloud-gateway</artifactId>
     <version>1.0.0</version>
-    <name>gateway</name>
+    <name>springcloud-gateway</name>
 
     <dependencies>
         <dependency>

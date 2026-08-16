@@ -10,9 +10,9 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>cn.ivfzhou.java.nacos</groupId>
-    <artifactId>spring</artifactId>
+    <artifactId>nacos-spring</artifactId>
     <version>1.0.0</version>
-    <name>spring</name>
+    <name>nacos-spring</name>
     <packaging>war</packaging>
 
     <dependencies>

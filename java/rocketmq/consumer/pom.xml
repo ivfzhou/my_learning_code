@@ -11,8 +11,8 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>cn.ivfzhou.java.rocketmq</groupId>
-    <artifactId>consumer</artifactId>
-    <name>consumer</name>
+    <artifactId>rocketmq-consumer</artifactId>
+    <name>rocketmq-consumer</name>
 
     <dependencies>
         <dependency>

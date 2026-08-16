@@ -10,9 +10,9 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>cn.ivfzhou.java.nacos</groupId>
-    <artifactId>springboot</artifactId>
+    <artifactId>nacos-springboot</artifactId>
     <version>1.0.0</version>
-    <name>springboot</name>
+    <name>nacos-springboot</name>
 
     <dependencies>
         <dependency>

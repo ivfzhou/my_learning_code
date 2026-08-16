@@ -10,9 +10,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>cn.ivfzhou.java.nacos</groupId>
-    <artifactId>springcloud</artifactId>
+    <artifactId>nacos-springcloud</artifactId>
     <version>1.0.0</version>
-    <name>springcloud</name>
+    <name>nacos-springcloud</name>
 
     <dependencies>
         <dependency>

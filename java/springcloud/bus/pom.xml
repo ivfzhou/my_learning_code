@@ -11,9 +11,9 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>cn.ivfzhou.java.springcloud</groupId>
-    <artifactId>bus</artifactId>
+    <artifactId>springcloud-bus</artifactId>
     <version>1.0.0</version>
-    <name>bus</name>
+    <name>springcloud-bus</name>
 
     <dependencies>
         <dependency>
