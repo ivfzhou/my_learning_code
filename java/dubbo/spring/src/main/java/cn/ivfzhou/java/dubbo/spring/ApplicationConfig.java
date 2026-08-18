@@ -1,4 +1,4 @@
-package cn.ivfzhou.java.dubbo;
+package cn.ivfzhou.java.dubbo.spring;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;

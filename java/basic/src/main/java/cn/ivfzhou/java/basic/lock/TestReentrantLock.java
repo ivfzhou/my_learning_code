@@ -1,4 +1,4 @@
-package cn.ivfzhou.basic.lock;
+package cn.ivfzhou.java.basic.lock;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;

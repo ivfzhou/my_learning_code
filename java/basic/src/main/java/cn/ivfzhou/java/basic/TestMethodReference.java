@@ -1,4 +1,4 @@
-package cn.ivfzhou.basic;
+package cn.ivfzhou.java.basic;
 
 public final class TestMethodReference {
 

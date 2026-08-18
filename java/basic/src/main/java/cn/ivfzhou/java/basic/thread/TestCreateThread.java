@@ -1,4 +1,4 @@
-package cn.ivfzhou.basic.thread;
+package cn.ivfzhou.java.basic.thread;
 
 public final class TestCreateThread {
 

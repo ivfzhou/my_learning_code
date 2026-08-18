@@ -1,4 +1,4 @@
-package cn.ivfzhou.basic;
+package cn.ivfzhou.java.basic;
 
 import java.util.ArrayList;
 import java.util.Date;

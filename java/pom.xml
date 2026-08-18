@@ -30,6 +30,7 @@
         <module>rocketmq</module>
         <module>zookeeper</module>
         <module>dubbo</module>
+        <module>apksigner</module>
     </modules>
 
     <properties>
@@ -314,6 +315,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.15.0</version>
                 <configuration>
                     <release>${java.version}</release>
                 </configuration>

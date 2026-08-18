@@ -18,6 +18,6 @@
     <dubbo:protocol name="dubbo" port="20880"/>
 
     <!-- 注册服务 -->
-    <dubbo:service interface="cn.ivfzhou.java.dubbo.provider"
+    <dubbo:service interface="cn.ivfzhou.java.dubbo.spring.provider"
                    ref="userServiceImpl" retries="0" timeout="10"/>
 </beans>

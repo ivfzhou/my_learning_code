@@ -80,17 +80,17 @@
         </pluginRepositories>
       </profile>
       <profile>
-        <id>jdk21</id>
+        <id>jdk25</id>
         <activation>
           <!-- 默认启用 -->
           <activeByDefault>true</activeByDefault>
         </activation>
         <properties>
           <!-- 编译版本 -->
-          <maven.compiler.release>21</maven.compiler.release>
+          <maven.compiler.release>25</maven.compiler.release>
           <!-- 或者分别写 -->
-          <maven.compiler.source>21</maven.compiler.source>
-          <maven.compiler.target>21</maven.compiler.target>
+          <maven.compiler.source>25</maven.compiler.source>
+          <maven.compiler.target>25</maven.compiler.target>
           <!-- 编码 -->
           <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
           <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -99,7 +99,7 @@
     </profiles>
     
     <activeProfiles>
-      <activeProfile>jdk21</activeProfile>
+      <activeProfile>jdk25</activeProfile>
       <activeProfile>nexus</activeProfile>
     </activeProfiles>
     ```
@@ -133,19 +133,20 @@
 
 # 三、仓库地址
 
-1. Central=https://repo1.maven.org/maven2/
-1. Aliyun=http://maven.aliyun.com/nexus/content/groups/public/  
-          https://maven.aliyun.com/repository/public/
-1. Spring Lib Release=https://repo.spring.io/libs-release/
-1. Spring Plugins=https://repo.spring.io/plugins-release/
-1. Spring Lib M=https://repo.spring.io/libs-milestone/
-1. Cloudera=https://repository.cloudera.com/artifactory/cloudera-repos
-1. Redhat=https://maven.repository.redhat.com/ga/
-1. Jboos public=http://repository.jboss.org/nexus/content/groups/public
-1. Pentaho=https://nexus.pentaho.org/content/repositories/omni/
-1. Icm=http://maven.icm.edu.pl/artifactory/repo/
-1. JBossEA=https://repository.jboss.org/nexus/content/repositories/ea/
-1. JBoss Releases=https://repository.jboss.org/nexus/content/repositories/releases/
+1. Central：https://repo1.maven.org/maven2/
+1. Aliyun：http://maven.aliyun.com/nexus/content/groups/public/  
+                     https://maven.aliyun.com/repository/public/
+1. Spring Lib Release：https://repo.spring.io/libs-release/
+1. Spring Plugins：https://repo.spring.io/plugins-release/
+1. Spring Lib M：https://repo.spring.io/libs-milestone/
+1. Cloudera：https://repository.cloudera.com/artifactory/cloudera-repos
+1. Redhat：https://maven.repository.redhat.com/ga/
+1. Jboos public：http://repository.jboss.org/nexus/content/groups/public
+1. Pentaho：https://nexus.pentaho.org/content/repositories/omni/
+1. Icm：http://maven.icm.edu.pl/artifactory/repo/
+1. JBossEA：https://repository.jboss.org/nexus/content/repositories/ea/
+1. JBoss Releases：https://repository.jboss.org/nexus/content/repositories/releases/
+1. Google Maven：https://dl.google.com/dl/android/maven2
 
 # 四、命令
 

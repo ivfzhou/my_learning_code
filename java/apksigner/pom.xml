@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <parent>
+        <groupId>cn.ivfzhou</groupId>
+        <artifactId>java</artifactId>
+        <version>1.0.0</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>cn.ivfzhou.java</groupId>
+    <artifactId>apksigner</artifactId>
+    <version>1.0.0</version>
+    <name>apksigner</name>
+
+    <dependencies>
+        <!-- apksig：Android APK 签名/校验库（v1/v2/v3/v4 签名方案），用于对 APK 进行签名与验证。 -->
+        <dependency>
+            <groupId>com.android.tools.build</groupId>
+            <artifactId>apksig</artifactId>
+            <version>9.3.1</version>
+        </dependency>
+        <!-- bcprov：BouncyCastle 核心密码学提供者（JCE Provider，含 RSA 等算法与 X.509 证书底层支持）。 -->
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk18on</artifactId>
+            <version>1.85</version>
+        </dependency>
+        <!-- bcpkix：BouncyCastle 的 PKIX 扩展库（证书生成、X509v3 扩展、签名构建等高层 API），依赖 bcprov。 -->
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcpkix-jdk18on</artifactId>
+            <version>1.85</version>
+        </dependency>
+    </dependencies>
+
+</project>

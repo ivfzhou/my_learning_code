@@ -1,4 +1,4 @@
-package cn.ivfzhou.basic.concurrent;
+package cn.ivfzhou.java.basic.concurrent;
 
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;

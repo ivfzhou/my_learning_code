@@ -1,4 +1,4 @@
-package cn.ivfzhou.basic.singleton;
+package cn.ivfzhou.java.basic.singleton;
 
 public final class DoubleCheck {
 
