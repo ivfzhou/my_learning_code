@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <parent>
+        <groupId>cn.ivfzhou</groupId>
+        <artifactId>java</artifactId>
+        <version>1.0.0</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>cn.ivfzhou.java</groupId>
+    <artifactId>jarsigner</artifactId>
+    <version>1.0.0</version>
+    <name>jarsigner</name>
+
+    <dependencies>
+        <!-- maven-jarsigner：JAR 签名/校验组件，底层通过命令行调用 JDK 自带的 jarsigner 工具。 -->
+        <dependency>
+            <groupId>org.apache.maven.shared</groupId>
+            <artifactId>maven-jarsigner</artifactId>
+            <version>3.1.0</version>
+        </dependency>
+        <!-- slf4j-nop：提供 slf4j 的空实现，避免运行时打印 "No SLF4J providers were found" 警告。 -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-nop</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+    </dependencies>
+
+</project>
