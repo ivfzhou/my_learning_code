@@ -136,6 +136,7 @@
 1. Central：https://repo1.maven.org/maven2/
 1. Aliyun：http://maven.aliyun.com/nexus/content/groups/public/  
                      https://maven.aliyun.com/repository/public/
+                     https://maven.aliyun.com/repository/google
 1. Spring Lib Release：https://repo.spring.io/libs-release/
 1. Spring Plugins：https://repo.spring.io/plugins-release/
 1. Spring Lib M：https://repo.spring.io/libs-milestone/
