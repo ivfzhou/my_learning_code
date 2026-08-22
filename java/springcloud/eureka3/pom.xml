@@ -10,7 +10,7 @@
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>cn.ivfzhou.java.springcloud</groupId>
+    <groupId>cn.ivfzhou.java</groupId>
     <artifactId>springcloud-eureka3</artifactId>
     <version>1.0.0</version>
     <name>springcloud-eureka3</name>
@@ -25,5 +25,14 @@
             <artifactId>spring-cloud-starter-netflix-eureka-server</artifactId>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

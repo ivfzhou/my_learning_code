@@ -10,7 +10,7 @@
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>cn.ivfzhou.java.nacos</groupId>
+    <groupId>cn.ivfzhou.java</groupId>
     <artifactId>nacos-spring</artifactId>
     <version>1.0.0</version>
     <name>nacos-spring</name>
@@ -20,14 +20,17 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-webmvc</artifactId>
+            <version>6.2.11</version>
         </dependency>
         <dependency>
             <groupId>com.alibaba.nacos</groupId>
             <artifactId>nacos-spring-context</artifactId>
+            <version>2.1.1</version>
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
+            <version>1.5.18</version>
         </dependency>
     </dependencies>
 

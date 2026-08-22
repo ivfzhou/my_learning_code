@@ -4,13 +4,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <parent>
-        <groupId>cn.ivfzhou.java.dubbo</groupId>
+        <groupId>cn.ivfzhou.java</groupId>
         <artifactId>dubbo-springboot</artifactId>
         <version>1.0.0</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>cn.ivfzhou.java.dubbo.springboot</groupId>
+    <groupId>cn.ivfzhou.java</groupId>
     <artifactId>dubbo-springboot-protocol</artifactId>
     <version>1.0.0</version>
     <name>dubbo-springboot-protocol</name>

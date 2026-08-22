@@ -16,9 +16,8 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>consumer</module>
-        <module>producer</module>
-        <module>demo</module>
+        <module>springboot</module>
+        <module>basic</module>
     </modules>
 
 </project>

@@ -10,7 +10,7 @@
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>cn.ivfzhou.java.dubbo</groupId>
+    <groupId>cn.ivfzhou.java</groupId>
     <artifactId>dubbo-spring</artifactId>
     <version>1.0.0</version>
     <name>dubbo-spring</name>
@@ -19,14 +19,17 @@
         <dependency>
             <groupId>org.apache.dubbo</groupId>
             <artifactId>dubbo</artifactId>
+            <version>3.3.5</version>
         </dependency>
         <dependency>
             <groupId>org.apache.zookeeper</groupId>
             <artifactId>zookeeper</artifactId>
+            <version>3.9.4</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
+            <version>6.2.11</version>
         </dependency>
     </dependencies>
 

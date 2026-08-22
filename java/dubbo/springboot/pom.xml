@@ -10,7 +10,7 @@
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>cn.ivfzhou.java.dubbo</groupId>
+    <groupId>cn.ivfzhou.java</groupId>
     <artifactId>dubbo-springboot</artifactId>
     <name>dubbo-springboot</name>
     <packaging>pom</packaging>
@@ -25,18 +25,22 @@
         <dependency>
             <groupId>org.apache.dubbo</groupId>
             <artifactId>dubbo-spring-boot-starter</artifactId>
+            <version>3.3.5</version>
         </dependency>
         <dependency>
             <groupId>org.apache.curator</groupId>
             <artifactId>curator-framework</artifactId>
+            <version>5.8.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.curator</groupId>
             <artifactId>curator-recipes</artifactId>
+            <version>5.8.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.curator</groupId>
             <artifactId>curator-x-discovery</artifactId>
+            <version>5.8.0</version>
         </dependency>
     </dependencies>
 
