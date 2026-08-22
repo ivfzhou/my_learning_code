@@ -1,77 +1,605 @@
 # 一、笔记
 
 1. /etc/shells 系统支持的 shell。
-2. `#!/bin/bash -v`
-3. 内建命令不需要创建子进程。
-4. `<<EOF 内容... EOF`。标准输入内容。
-5. 变量名只能以数字、字母、下划线组合，且不以数字开头。
-6. 变量赋值：`` a=1、let a=1+1、 lsl=$(ls -l)、'ls l'=$(ls -l)、"ls l"=$(ls -l) lsl=`ls -l` ``
-7. `$$` 返回进程 PID。`$?` 返回数字，非零表示前一个进程的错误码。位置参数 `$0 $1 $2 ...`。
-8. `$*` 所有参数当一个参数看。`$@` 表示所有参数。`$#` 表示参数个数。
-9. `echo ${1-_}` 如果参数一没有传入，则显示下划线。
-10. 数组：`var=(e1 e2...)`。 `echo ${var[@]}` 显示数组元素。`echo ${#var[@]}` 显示数组个数。`echo ${var[index]}` 显示数组元素。
-11. 运算写法 `` `expr x op y` ``、`$((x op y))`、`$[ x op y ]`。
-12. 单引号字符串中不识别变量，不能转义。双引号字符串中可解析变量可转义。
-13. 获取字符串长度 `${#string}`。字符串拼接 `""$string""`。
-14. `command -v bash > /dev/null 2>&1 && echo yes || echo no`：检测系统中是否安装了 bash，并根据检测结果输出 yes 或 no。
 
-# 二、特殊字符
+2. 脚本文件第一行注释 `#!/bin/bash`，指明脚本的解释器。
 
-1. `|` 管道符。
-2. `* ?` 通配符。
-3. `>` 标准输出重定向。
-4. `>>` 标准输出重定向，追加内容。
-5. `2>` 错误输出重定向。
-6. `&>` 标准和错误输出重定向。
-7. `<` 标准输入重定向。
-8. `&` 转入后台。
-9. `&& || !` 逻辑判断符号。
-10. `;` 结束命令。
-11. `;;` case 语句结束符。
-12. `\` 转义符。
-13. `+ - \* / % ** == != =` 运算符。
-14. `-eq -ne -lt -gt -ge -le ! -o或运算 -a与运算 && ||` 逻辑运算符。
-15. `-z长度是否为0 -n长度是否不为0` 字符串运算符。
-16. `-b是否是块文件 -c是否是字符设备文件 -d是否是目录 -f是否是普通文件 -g是否设置了SGID -k是否设置了粘着位 -p是否是有名管道 -u是否设置SUID -r是否可读 -w是否可写 -x是否执行 -s是否为空 -e是否存在` 文件测试运算符。
-17. `{}` 范围输出。`{0..9}` 0 到 9。
-18. `[[]]` 测试表达式。
-19. `()` 运行子 Shell。
-20. `(())` 变量申明，let 的简写。
-21. `.` 运行位 Shell。
-22. `,` 目录分割。
-23. `++ --` 自增自减。
-24. `=` 赋值。
-25. `#` 注释。
+3. 标准输入内容：
 
-# 三、内建命令
+   ```bash
+   <<EOF
+   内容...
+   EOF
+   ```
 
-1. cd
-2. test
-3. source
-4. pwd
-5. shift 将输入的参数减少一个，最左边那个。
-6. export 让变量在其他线程也可见。
-7. unset 删除变量函数。
-8. return 用在函数内部返回函数。
-9. alias 设置别名。
-10. trap 捕获信号。
+4. 变量名只能以数字、字母、下划线组合，且不以数字开头。
 
-# 四、流程控制
+5. 单引号字符串中不识别变量，不能转义。双引号字符串中可解析变量可转义。
 
-1. if [ 测试条件成立或命令返回0 ]; then 执行命令; elif [ 测试条件成立或命令返回0 ] then 执行命令; else 执行命令; fi
-2. case "$变量" in; "情况" | 情况2) 执行命令;; "情况" ) 执行命令;;  *) 默认 esac
-3. for 参数 in 列表; do 执行列表; done
-4. for ((变量初始化;循环判断条件;变量变化)); do 执行命令; done
-5. while ((条件)); do 执行命令; done
-6. until ((条件)); do 执行命令; done
+6. 检测系统中是否安装了 bash，并根据检测结果输出 yes 或 no：`command -v bash > /dev/null 2>&1 && echo yes || echo no`。
 
-# 五、函数
+7. 运行脚本：
 
-1. `function name(){}`：function 可省略。
-2. `local 变量名`：声明函数内部变量。
-    – `${filename%.c}.o`：替换文件后缀。
+   ```shell
+   bash -x script.sh # 逐行显示执行过程
+   bash -n script.sh # 仅检查语法不执行
+   bash -v script.sh # 显示读取的每一行
+   ```
 
-# 六、命令
+8. 算术扩展，可以使用：变量（可省略 `$`，如 `a` 直接代表变量值）、整数常量、算术运算符、比较、逻辑、位运算等：
+
+   ```bash
+   a=5
+   b=3
+   echo $((1 + 1))
+   echo $((a + b)) # 8
+   echo $((a * b)) # 15
+   echo $((a > b ? a : b)) # 5（三元运算）
+   
+   result=$((x=3, y=5, x+y)))
+   echo $result # 8
+   ```
+
+9. 命令替换，执行命令，将其标准输出作为字符串插入到当前位置：`var=$(date +%F)`。
+
+10. 大括号扩展：
+
+    ```bash
+    # 生成一个从 1 到 8 的整数序列
+    echo {1..8}
+    # 输出：1 2 3 4 5 6 7 8
+    
+    # 指定步长
+    echo {1..8..2}
+    # 生成 1 3 5 7
+    
+    # 字母序列
+    echo {a..z}
+    # 生成 a 到 z 的字母
+    
+    # 逆序
+    echo {8..1}
+    # 生成 8 7 6 5 4 3 2 1
+    
+    echo {a,b,c} # 输出：a b c
+    echo file{1,2,3}.txt # 输出：file1.txt file2.txt file3.txt
+    ```
+
+11. 字面量单词列表：
+
+    ```bash
+    echo 1 2 3 4
+    
+    for i in 1 2 3 4; do
+        echo $i
+    done
+    ```
+
+# 二、Bash
+
+1. 是一个 Shell 解释器，负责读取用户输入或脚本文件，解释命令并执行。
+
+2. 内置命令，不需要启动子进程即可执行命令。外部命令，由 Bash 通过 PATH 环境变量查找并调用独立可执行文件。
+
+   - 内置命令：
+
+   - help：列出所有内置命令及其简要说明。`help cd` 查看内置命令的详细帮助。
+
+   - compgen -b：列出所有内置命令名（不含说明）。
+
+   - type *命令*：查看某个命令是内置命令还是外部命令。
+
+   - cd [*目录*]：切换当前工作目录。无参数时切换到 $HOME。
+
+   - pwd：打印当前工作目录（等价于 `echo $PWD`）。
+
+   - dirs：显示目录栈内容。
+
+   - pushd [*目录*]：将当前目录压入目录栈并切换到指定目录。
+
+   - popd：从目录栈弹出栈顶目录并切换到该目录。
+
+   - export [*变量*=*值*]：将变量设为环境变量，使其可传递给子进程。
+
+   - readonly [*变量*=*值*]：定义只读变量，不可修改或删除。
+
+   - declare [*选项*] *变量*：声明变量并设置属性（如整数、数组、只读等），例如 `declare -i num=10` 声明为整数。
+
+   - typeset：declare 的别名（部分系统）。
+
+   - local *变量*=*值*：在函数内部定义局部变量。
+
+   - unset *变量*：删除变量或函数。
+
+   - set：显示或设置 Shell 变量和选项。
+
+     ```bash
+     set -e          # 任何命令失败立即退出
+     set -u          # 使用未定义变量时退出
+     set -x          # 打印每条执行的命令
+     set -o pipefail # 管道中任一命令失败则整体失败
+     ```
+
+   - shift [*n*]：将位置参数左移 *n* 位（默认 1）。
+
+   - getopts *optstring* *var* [*args*]：解析命令行选项（用于脚本参数解析）。args 默认为 $@（所有位置参数）。如果遇到非法选项或缺少参数，则设置 var 为 ?（或 :，若处于静默模式）并设置 OPTARG 为错误信息。
+
+     - *optstring* 的语法：
+
+     - 普通字母：表示一个无参数选项，如 "a" 表示接受 -a。
+
+     - 字母后跟冒号 :：表示该选项需要一个参数，如 "b:" 表示 -b value。
+
+     - 开头的冒号 :（可选）：如果 *optstring* 以 : 开头，则 getopts 进入静默错误模式，不自动打印错误信息，由用户自行处理。
+
+     - 变量：
+
+     - OPTARG：保存当前选项的参数值（如果该选项需要参数）。
+
+     - OPTIND：保存下一个要处理的参数在位置参数中的索引。初始值为 1，每次调用 getopts 后更新。
+
+     - 示例 1：
+
+       ```bash
+       # ./script.sh -a -b hello
+       
+       while getopts "ab:" opt; do
+           case $opt in
+               a)
+                   echo "选项 -a 被指定"
+                   ;;
+               b)
+                   echo "选项 -b 被指定，参数为：$OPTARG"
+                   ;;
+               ?)
+                   echo "无效选项或缺少参数"
+                   exit 1
+                   ;;
+           esac
+       done
+       ```
+
+     - 示例 2：
+
+       ```bash 
+       # ./script.sh -a
+       
+       while getopts ":a:b:" opt; do
+           case $opt in
+               a)
+                   echo "-a 参数：$OPTARG"
+                   ;;
+               b)
+                   echo "-b 参数：$OPTARG"
+                   ;;
+               :)
+                   echo "选项 -$OPTARG 缺少参数"
+                   exit 1
+                   ;;
+               ?)
+                   echo "未知选项：-$OPTARG"
+                   exit 1
+                   ;;
+           esac
+       done
+       ```
+
+     - 示例 3：
+
+       ```bash
+       # ./script.sh -v -n Alice file1 file2
+       
+       while getopts "vn:" opt; do
+           case $opt in
+               v) verbose=1 ;;
+               n) name="$OPTARG" ;;
+           esac
+       done
+       
+       shift $((OPTIND - 1))   # 移除已解析的选项，剩余位置参数作为普通参数
+       
+       echo "verbose = $verbose"
+       echo "name = $name"
+       echo "剩余参数：$@"
+       ```
+
+   - echo [*字符串*]：输出文本到标准输出。支持 -n（不换行）、-e（解释转义字符）。`eval "ls -l"`。
+
+   - printf *格式* [*参数*...]：按格式输出，功能比 echo 更强大，类似 C 语言 printf。
+
+   - read [*变量*]：从标准输入读取一行并赋值给变量。常用 -p（提示）、-a（读入数组）。
+
+   - readarray、mapfile：将文本行读入数组。例如 `readarray lines < file.txt`。
+
+   - eval [*参数*]：将参数作为 Shell 命令重新解析执行。常用于动态构建命令。
+
+   - exec [*命令*]：用指定命令替换当前 Shell 进程（不创建子进程）。若不含命令则用于重定向。
+
+   - source *文件* 或 . *文件*：在当前 Shell 中读取并执行脚本，不启动子进程。
+
+   - command *命令*：执行命令，并绕过函数或别名。常用 `command -v` 检查命令是否存在。`command -v ls` 输出 ls 的路径。
+
+   - builtin *内置命令*：强制执行 Bash 内置命令，即使有同名函数或别名。
+
+   - hash：管理命令哈希表，加速外部命令查找。
+
+   - enable：启用或禁用内置命令。
+
+   - times：显示当前 Shell 及子进程的用户/系统 CPU 时间。
+
+   - jobs	列出当前 Shell 的后台作业。
+
+   - fg [*作业号*]：将后台作业切换到前台运行。
+
+   - bg [*作业号*]：将暂停的后台作业继续在后台运行。
+
+   - kill [*信号*] 作业号/进程号：向作业或进程发送信号。内置 kill 支持作业号（如 %1）。
+
+   - wait [*进程号、作业号*]：等待指定进程或作业结束，并返回其退出状态。
+
+   - disown [*作业号*]：将作业从作业表中移除，使其不受 Shell 退出影响。
+
+   - suspend：挂起当前 Shell（类似 Ctrl+Z）。
+
+   - test *表达式*：条件测试，返回 0（真）或 1（假）。
+
+   - [ *表达式* ]：test 的等价形式，注意方括号两侧必须有空格。
+
+   - [[ *表达式* ]]：Bash 扩展测试，支持正则、模式匹配，更安全灵活。
+
+   - history：显示命令历史列表。常用 -c 清空历史。
+
+   - fc：编辑并重新执行历史命令。
+
+   - alias [*别名*=*命令*]：创建或显示别名。
+
+   - unalias *别名*：删除别名。
+
+   - ulimit：设置或显示资源限制（如文件大小、内存等）。
+
+   - umask：设置或显示文件创建时的默认权限掩码。
+
+   - trap *命令列表* *信号列表*：捕获信号并执行指定命令。`trap 'echo "收到 SIGINT"; exit' INT`。
+
+   - let：执行算术运算（类似 $(( ))）。
+
+   - :：空命令，永远返回 0。常用于占位或无限循环。`: > file.txt` 清空文件。
+
+   - true：返回 0。
+
+   - false：返回 1。
+
+   - logout：退出登录 Shell。
+
+   - caller：返回当前子程序调用的上下文信息。
+
+3. 关键字：
+
+   - if、then、elif、else、fi：条件分支结构。
+   - for、while、until、do、done：循环结构。
+   - case、esac：多分支选择结构。
+   - break：跳出当前循环。
+   - continue：跳过本次循环剩余部分，进入下一次循环。
+   - return [*n*]：从函数中返回，可带退出状态码。
+   - exit [*n*]：退出当前 Shell 或脚本，可带退出状态码。
+   - function：定义函数（也可省略）。
+
+4. 变量与环境：
+
+   - 普通 Shell 变量：只在当前 Shell 中有效。
+     - 定义变量：*变量名*=*值*。
+     - 引用变量：$变量名、${变量名}。
+   - 环境变量：可传递给子进程。
+   - 常见环境变量：
+     - PATH：命令搜索路径。
+     - HOME：当前用户主目录。
+     - USER：当前用户名。
+     - PWD：当前工作目录。
+     - OLDPWD：上一个工作目录。
+     - PS1：主提示符。
+     - PS2：续行提示符。
+     - IFS：内部分隔符。
+     - RANDOM：随机数。
+     - LINENO：当前脚本行号。
+     - BASH_VERSION：Bash 版本号。
+   - 特殊变量：
+     - !!：代表上一条命令。
+     - !$：表示上一条命令的最后一个参数。
+     - $0：脚本名。
+     - $1~$9：位置参数。
+     - $#：参数个数。
+     - $?：上一条命令的退出状态。
+     - $$：当前 Shell 的 PID。
+     - $!：最后一个后台进程的 PID。
+     - $@：所有位置参数（每个独立）。
+     - $*：所有位置参数（作为单个字符串）。
+
+5. 配置文件：
+
+   - /etc/profile：全局登录 Shell 配置。
+
+   - /etc/bash.bashrc：全局交互式 Shell 配置。
+
+   - ~/.bash_profile：用户登录 Shell 配置。
+
+   - ~/.bash_login：用户登录 Shell 配置（备用）。
+
+   - ~/.profile：用户登录 Shell 配置（备用）。
+
+   - ~/.bashrc：用户交互式 Shell 配置。
+
+   - ~/.bash_logout：用户退出登录 Shell 时执行。
+
+   - 配置文件读取顺序：
+
+     - 登录 Shell，例如通过 TTY、SSH 或 `bash --login`：
+
+       1. /etc/profile
+
+       2. ~/.bash_profile、~/.bash_login、~/.profile（三选一）
+
+     - 交互式 Shell，在已登录的图形界面中打开终端模拟器（如 GNOME Terminal、Konsole 等）或执行 bash 命令启动的子 Shell：
+
+       1. /etc/bash.bashrc（如果存在）
+
+       2. ~/.bashrc
+
+     - 非交互式 Shell，当 Bash 用于执行脚本（如 `bash script.sh` 或直接运行 ./script.sh）时：
+
+       1. 仅当设置了 BASH_ENV 时读取该变量指定的文件。
+
+     - 以 sh 调用（POSIX）登录：
+
+       1. ./etc/profile
+
+       2. ~/.profile
+
+     - 以 sh 调用（POSIX）交互式：
+
+       1. 若设置了 ENV，则读取该变量指定的文件。
+
+6. 索引数组与关联数组：
+
+   - 索引数组：
+
+      ```bash
+      arr=(apple banana cherry)
+      echo ${arr[0]}          # apple
+      echo ${#arr[@]}         # 数组长度
+      ```
+
+   - 关联数组：
+
+      ```bash
+      declare -A person
+      person[name]="小明"
+      person[age]=20
+      echo ${person[name]}
+      ```
+
+7. 运算符：
+
+   - 算术运算符：+  -  *  /  %  ** ++ -- ?:。
+
+      ```bash
+      a=10
+      b=3
+      echo $((a + b)) # 13
+      echo $((a ** b)) # 1000
+      
+      let "a = 5 + 3"
+      echo $a
+      
+      b=$(expr 5 + 3)
+      echo $b
+      ```
+
+   - 字符串比较运算符：
+
+      - =、==：字符串相等。
+      - !=：字符串不相等。
+      - -z：字符串为空。
+      - -n：字符串非空。
+      - <：按字典序小于（需转义或在 [[ ]] 中使用）。
+      - \>：字典序大于。
+      - =~：正则比较，例如 `[[ "abc123" =~ ^[a-z]+[0-9]+$ ]]`。
+   - 整数比较运算符：
+   
+      - -eq：等于。
+      - -ne：不等于。
+      - -gt：大于。
+      - -ge：大于等于。
+      - -lt：小于。
+      - -le：小于等于。
+   
+   - 文件测试运算符：
+   
+      - -e：文件存在。
+      - -f：是普通文件。
+      - -d：是目录。
+      - -r：可读。
+      - -w：可写。
+      - -x：可执行。
+      - -s：文件非空。
+      - -L：是符号链接。
+   
+   - 逻辑运算符：
+   
+      - &&：逻辑与。
+      - ||：逻辑或。
+      - !：逻辑非。
+   
+8. 条件判断与循环：
+
+   ```bash
+   if 条件; then
+       命令
+   elif 条件; then
+       命令
+   else
+       命令
+   fi
+   
+   if test -f /etc/passwd; then
+       echo "存在"
+   fi
+   
+   # 等价写法
+   if [ -f /etc/passwd ]; then
+       echo "存在"
+   fi
+   
+   if [[ $str == *.txt ]]; then
+       echo "是 txt 文件"
+   fi
+   ```
+
+   ```bash
+   case 变量 in
+       模式1)
+           命令 ;;
+       模式2)
+           命令 ;;
+       *)
+           默认命令 ;;
+   esac
+   
+   read -p "输入 yes/no: " answer
+   case $answer in
+       yes|y)
+           echo "你选择了是" ;;
+       no|n)
+           echo "你选择了否" ;;
+       *)
+           echo "无效输入" ;;
+   esac
+   ```
+
+   ```bash
+   for 变量 in 列表; do
+       命令
+   done
+   
+   for i in 1 2 3 4 5; do
+       echo $i
+   done
+   
+   # 使用范围
+   for i in {1..10}; do
+       echo $i
+   done
+   
+   # C 风格
+   for ((i=0; i<5; i++)); do
+       echo $i
+   done
+   
+   for i in {1..10}; do
+       if [ $i -eq 5 ]; then
+           break      # 跳出循环
+       fi
+       if [ $i -eq 3 ]; then
+           continue   # 跳过本次循环
+       fi
+       echo $i
+   done
+   ```
+
+   ```bash
+   while 条件; do
+       命令
+   done
+   
+   count=1
+   while [ $count -le 5 ]; do
+       echo "count = $count"
+       ((count++))
+   done
+   ```
+
+   ```bash
+   # 条件为假时执行，直到条件为真时退出
+   until 条件; do
+       命令
+   done
+   ```
+
+9. 函数：
+
+   ```bash
+   函数名() {
+       命令
+       return 返回值
+   }
+   
+   # 或
+   function 函数名 {
+       命令
+   }
+   
+   # 函数内部使用 $1、$2 等获取参数
+   greet() {
+       local name="$1"
+       echo "你好，$name"
+   }
+   
+   # 输出结果供调用者捕获
+   add() {
+       echo $(( $1 + $2 ))
+   }
+   result=$(add 3 5)
+   echo "3 + 5 = $result"
+   ```
+
+10. 重定向：
+
+    ```bash
+    command > file       # 标准输出覆盖写入
+    command >> file      # 标准输出追加写入
+    command 2> file      # 错误输出覆盖写入
+    command 2>&1         # 错误输出合并到标准输出
+    command < file       # 从文件读取输入
+    ```
+
+11. 管道，将一个命令的标准输出直接作为另一个命令的标准输入：
+
+    ```bash
+    ls -l | grep ".txt"
+    ps aux | awk '{print $2}'
+    cat file.txt | sort | uniq
+    ```
+
+12. 参数扩展：
+
+    ```bash
+    var="Hello World"
+    
+    echo ${#var}            # 长度：11
+    echo ${var:0:5}         # 截取：Hello
+    echo ${var/World/Bash}  # 替换：Hello Bash
+    echo ${var,,}           # 转小写：hello world
+    echo ${var^^}           # 转大写：HELLO WORLD
+    
+    # 默认值
+    echo ${unset_var:-默认值}   # 若变量未设置则使用默认值
+    echo ${unset_var:=默认值}   # 若变量未设置则赋值并使用
+    
+    # 字符串拼接
+    var2="abc"$var"123"
+    ```
+
+13. 通配符与 Globbing：
+
+    ```bash
+    *.txt          # 匹配所有 .txt 文件
+    ?              # 匹配单个字符
+    [abc]          # 匹配 a、b 或 c
+    [0-9]          # 匹配数字
+    [!0-9]         # 匹配非数字
+    ```
+
+
+# 三、命令
 
 ## 1. 常用命令
 
@@ -208,7 +736,7 @@
 
 ## 5. sed
 
-- sed *选项* *脚本* *文件*... ：对文本查找、替换和删除处理。逐行读取输入，对于每一行，依次执行脚本中所有地址条件满足的命令，然后输出结果。省略文件时，从标准输入读取。如果斜线 `/ `匹配冲突可以换成别的符号作分割符。脚本由地址、命令和参数组成。
+- sed [*选项*] [*脚本*] [*文件*...] ：对文本查找、替换和删除处理。逐行读取输入，对于每一行，依次执行脚本中所有地址条件满足的命令，然后输出结果。省略文件时，从标准输入读取。如果斜线 `/ `匹配冲突可以换成别的符号作分割符。脚本由地址、命令和参数组成。
 
   - 地址：
 
@@ -295,7 +823,7 @@
     - -n：取消默认输出，只输出显式打印的内容。
     - -e *脚本*：添加一个脚本（可多次使用）。
     - -f *脚本文件*：从文件读取脚本。
-    - -i*后缀*：直接修改文件（可备份为后缀）。
+    - -i[*后缀*]：直接修改文件（可备份为后缀）。
     - -E 或 -r：使用扩展正则表达式（ERE）。
     - -u：无缓冲输出（GNU sed）。
 

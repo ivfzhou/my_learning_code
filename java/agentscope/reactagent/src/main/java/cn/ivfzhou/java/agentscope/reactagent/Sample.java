@@ -27,6 +27,7 @@ public class Sample {
         System.out.println("GenerateReason：" + msg.getGenerateReason());
         System.out.println("Content：");
         msg.getContent().forEach(v -> System.out.println("    " + v));
+        agent.close();
     }
 
 }

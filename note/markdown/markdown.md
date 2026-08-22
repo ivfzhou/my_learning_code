@@ -99,7 +99,7 @@
 
 ##### 7.3.1. 流程图
 
-```markdown
+````markdown
 ```mermaid
 graph TD;
     A[开始] --> B{判断};
@@ -107,8 +107,8 @@ graph TD;
     B -->|否| D[执行B];
     C --> E[结束];
     D --> E;
-​```
 ```
+````
 
 ```mermaid
 graph TD;
@@ -121,13 +121,13 @@ graph TD;
 
 ##### 7.3.2. 序列图
 
-```markdown
+````markdown
 ```mermaid
 sequenceDiagram;
     Alice->>John: 你好 John, 你好吗？
     John-->>Alice: 我很好，谢谢！
-​```
 ```
+````
 
 ```mermaid
 sequenceDiagram;
@@ -137,7 +137,7 @@ sequenceDiagram;
 
 ##### 7.3.4. 甘特图
 
-```markdown
+````markdown
 ```mermaid
 gantt
     title 项目进度
@@ -146,8 +146,8 @@ gantt
     设计阶段 :a1, 2023-01-01, 30d
     section 开发
     开发阶段 :after a1, 60d
-​```
 ```
+````
 
 ```mermaid
 gantt
@@ -161,14 +161,14 @@ gantt
 
 ##### 7.3.5. 类图
 
-```markdown
+````markdown
 ```mermaid
 classDiagram
     Class01 <|-- AveryLongClass : Cool
     Class03 *-- Class04
     Class05 o-- Class06
-​```
 ```
+````
 
 ```mermaid
 classDiagram
@@ -215,23 +215,19 @@ pie
 
 ## 9. 链接
 
-语法：`[超链接显示名](超链接地址 "超链接 title")`。  
-可将网址和电子邮箱号使用尖括号包围，变成可点击链接：`<ivfzhou@126.com>`。
+语法：`[超链接显示名](超链接地址 "超链接 title")`。可将网址和电子邮箱号使用尖括号包围，变成可点击链接：`<ivfzhou@126.com>`。
 
 ### 9.1. 引用型链接
 
-由两部分组成，第一部分有两个中括号，第一个中括号包围应显示为链接的文本，第二个中括号指向链接：`[超链接显示名][1]`。  
-第二部分由中括号，后跟冒号和空格，再后面是链接和双引号括起来的标题：`[1]: http://ivfzhou.cn "title"`。
+由两部分组成，第一部分有两个中括号，第一个中括号包围应显示为链接的文本，第二个中括号指向链接：`[超链接显示名][1]`。第二部分由中括号，后跟冒号和空格，再后面是链接和双引号括起来的标题：`[1]: http://ivfzhou.cn "title"`。
 
 ### 9.2. 图片
 
-语法：`![图片 alt](图片链接 "图片 title")`。  
-图片形式的链接：`[![图片 alt](图片链接 "图片 title")](链接)`。
+语法：`![图片 alt](图片链接 "图片 title")`。图片形式的链接：`[![图片 alt](图片链接 "图片 title")](链接)`。
 
 ## 10. 表格
 
-三个中划线生成列，一个管道符生成行，使用冒号表示对齐方式。表格中的 `|` 符号需要转义。  
-语法：
+三个中划线生成列，一个管道符生成行，使用冒号表示对齐方式。表格中的 | 符号需要转义。
 
 ```markdown
 |  |  |
