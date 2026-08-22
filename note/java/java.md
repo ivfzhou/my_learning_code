@@ -2,11 +2,8 @@
 
 1. 将源码转成 HTML 格式文档：
    ```shell
-   unzip lib/src.zip -d src
-   mv src ../
-   mkdir docs
-   LANG=en_US javadoc --module-source-path src -d docs -charset utf8 -docencoding utf8 --module $(ls src | sed ':a;N;$!ba;s/\n/,/g')
-   docs
+   unzip lib/src.zip -d ../src
+   LANG=en_US javadoc --module-source-path ./src -d .docs -charset utf8 -docencoding utf8 --module $(ls src | sed ':a;N;$!ba;s/\n/,/g')
    ```
 1. switch 作用对象为 byte、short、int、char、enum、String。
 1. 方法重载：同一个类中，方法名字相同，参数列表不同。参数个数、参数数据类型、参数顺序。
