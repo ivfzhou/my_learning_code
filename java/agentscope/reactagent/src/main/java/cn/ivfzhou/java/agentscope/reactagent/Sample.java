@@ -11,6 +11,7 @@ import io.agentscope.core.event.ConfirmResult;
 import io.agentscope.core.event.ModelCallEndEvent;
 import io.agentscope.core.event.ModelCallStartEvent;
 import io.agentscope.core.event.RequestStopEvent;
+import io.agentscope.core.event.RequireExternalExecutionEvent;
 import io.agentscope.core.event.RequireUserConfirmEvent;
 import io.agentscope.core.event.TextBlockDeltaEvent;
 import io.agentscope.core.event.TextBlockEndEvent;
@@ -24,7 +25,11 @@ import io.agentscope.core.event.ToolCallStartEvent;
 import io.agentscope.core.event.ToolResultEndEvent;
 import io.agentscope.core.event.ToolResultStartEvent;
 import io.agentscope.core.event.ToolResultTextDeltaEvent;
+import io.agentscope.core.event.UserConfirmResultEvent;
 import io.agentscope.core.message.Msg;
+import io.agentscope.core.message.TextBlock;
+import io.agentscope.core.message.ToolResultBlock;
+import io.agentscope.core.message.ToolResultState;
 import io.agentscope.core.message.UserMessage;
 import io.agentscope.core.permission.PermissionContextState;
 import io.agentscope.core.permission.PermissionMode;
@@ -57,7 +62,7 @@ public class Sample {
 
         var agent = ReActAgent.builder()
                 .name("answer-helper")
-                .sysPrompt("你是一个全知助手，解决回答各类问题。")
+                .sysPrompt("你是一个全知助手，能回答各类问题。")
                 // .model("dashscope:qwen-plus")
                 .model(DashScopeChatModel.builder()
                         .apiKey(System.getenv("DASHSCOPE_API_KEY"))
@@ -68,23 +73,27 @@ public class Sample {
                 )
                 .toolkit(toolkit)
                 .permissionContext(PermissionContextState.builder()
-                        .mode(PermissionMode.ACCEPT_EDITS)
+                        .mode(PermissionMode.DEFAULT)
                         .build()
                 )
                 .stateStore(new JsonFileAgentStateStore(getWorkspace()))
                 .build();
         try (agent) {
-            chat(agent, "ivfzhou", "session-1");
+            chatWithStructure(agent, "ivfzhou", "session-1", "明天长沙岳麓区天气情况？");
         }
     }
 
-    private static Path getWorkspace() throws URISyntaxException {
-        var path = Paths.get(Sample.class.getProtectionDomain().getCodeSource().getLocation().toURI());
-        if (!path.toFile().isDirectory()) {
-            path = path.getParent();
-        }
-        System.out.println("workspace is " + path.toString());
-        return path;
+    public record WeatherResponse(String location, String temperature, String condition) {
+    }
+
+    private static void chatWithStructure(ReActAgent agent, String userId, String sessionId, String ask) {
+        var ctx = RuntimeContext.builder()
+                .userId(userId)
+                .sessionId(sessionId)
+                .build();
+        var msg = agent.call(List.of(new UserMessage(ask)), WeatherResponse.class, ctx).block();
+        var data = msg.getStructuredData(WeatherResponse.class);
+        System.out.println(data);
     }
 
     private static void chatOnce(ReActAgent agent, String userId, String sessionId, String ask) {
@@ -125,8 +134,10 @@ public class Sample {
         var reader = new BufferedReader(new InputStreamReader(System.in, StandardCharsets.UTF_8));
         var msg = reader.readLine();
         try (reader) {
-            List<ConfirmResult> confirmResults = new ArrayList<>();
+            final List<ConfirmResult> confirmResults = new ArrayList<>();
+            final List<ToolResultBlock> toolResultBlocks = new ArrayList<>();
             while (msg != null) {
+
                 if (msg.equalsIgnoreCase("quit")) {
                     break;
                 }
@@ -143,23 +154,48 @@ public class Sample {
                 }
 
                 UserMessage userMessage;
-                if (msg.equalsIgnoreCase("confirm")) {
+                if (msg.equalsIgnoreCase("confirm") && !confirmResults.isEmpty()) {
                     userMessage = UserMessage.builder()
-                            .metadata(Map.of(Msg.METADATA_CONFIRM_RESULTS, confirmResults))
+                            .metadata(Map.of(Msg.METADATA_CONFIRM_RESULTS, List.copyOf(confirmResults)))
                             .build();
+                    confirmResults.clear();
+                } else if (msg.equalsIgnoreCase("execute")) {
+                    userMessage = UserMessage.builder()
+                            .metadata(Map.of(Msg.METADATA_CONFIRM_RESULTS, List.copyOf(toolResultBlocks)))
+                            .build();
+                    toolResultBlocks.clear();
                 } else {
                     userMessage = new UserMessage(msg);
                 }
 
                 agent.streamEvents(userMessage, ctx).doOnNext(event -> {
-                    var crs = handleEvent(event);
-                    if (crs != null && !crs.isEmpty()) {
-                        confirmResults.addAll(crs);
+                    var result = handleEvent(event);
+                    if (result instanceof List<?> list && !list.isEmpty() && list.getFirst() instanceof ConfirmResult) {
+                        confirmResults.addAll(
+                                list.stream()
+                                        .map(ConfirmResult.class::cast)
+                                        .toList()
+                        );
+                    } else if (result instanceof List<?> list && !list.isEmpty() && list.getFirst() instanceof ToolResultBlock) {
+                        toolResultBlocks.addAll(
+                                list.stream()
+                                        .map(ToolResultBlock.class::cast)
+                                        .toList()
+                        );
                     }
                 }).blockLast();
                 msg = reader.readLine();
             }
         }
+    }
+
+    private static Path getWorkspace() throws URISyntaxException {
+        var path = Paths.get(Sample.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+        if (!path.toFile().isDirectory()) {
+            path = path.getParent();
+        }
+        System.out.println("workspace is " + path.toString());
+        return path;
     }
 
     private static void printMsg(Msg msg) {
@@ -172,8 +208,7 @@ public class Sample {
         System.out.println("[agent result end]");
     }
 
-    private static List<ConfirmResult> handleEvent(AgentEvent event) {
-        var confirmResults = new ArrayList<ConfirmResult>();
+    private static Object handleEvent(AgentEvent event) {
         switch (event.getType()) {
             case AgentEventType.AGENT_START:
                 var agentStartEvent = (AgentStartEvent) event;
@@ -285,10 +320,18 @@ public class Sample {
                         + " stateValue=" + state.getValue()
                 );
                 break;
+            case AgentEventType.USER_CONFIRM_RESULT:
+                var userConfirmResultEvent = (UserConfirmResultEvent) event;
+                System.out.println("[user confirm result] "
+                        + " replyId=" + userConfirmResultEvent.getReplyId()
+                        + " confirmResults=" + userConfirmResultEvent.getConfirmResults()
+                );
+                break;
             case AgentEventType.REQUIRE_USER_CONFIRM:
                 var requireUserConfirmEvent = (RequireUserConfirmEvent) event;
                 System.out.println("[require user confirm]" + " replyId=" + requireUserConfirmEvent.getReplyId());
                 var toolCalls = requireUserConfirmEvent.getToolCalls();
+                var confirmResults = new ArrayList<ConfirmResult>();
                 for (int i = 0; i < toolCalls.size(); i++) {
                     var toolUseBlock = toolCalls.get(i);
                     System.out.print(i + "."
@@ -306,7 +349,7 @@ public class Sample {
                     System.out.println();
                     confirmResults.add(new ConfirmResult(true, toolUseBlock));
                 }
-                break;
+                return confirmResults;
             case AgentEventType.REQUEST_STOP:
                 var requestStopEvent = (RequestStopEvent) event;
                 System.out.println("[request stop]"
@@ -315,12 +358,30 @@ public class Sample {
                 );
 
                 break;
+            case AgentEventType.REQUIRE_EXTERNAL_EXECUTION:
+                var requireExternalExecutionEvent = (RequireExternalExecutionEvent) event;
+                System.out.println("[require external execution]"
+                        + " replyId=" + requireExternalExecutionEvent.getReplyId()
+                        + " toolCalls=" + requireExternalExecutionEvent.getToolCalls()
+                );
+                var toolResultBlocks = new ArrayList<ToolResultBlock>();
+                for (var toolCall : requireExternalExecutionEvent.getToolCalls()) {
+                    toolResultBlocks.add(
+                            ToolResultBlock.builder()
+                                    .id(toolCall.getId())
+                                    .name(toolCall.getName())
+                                    .state(ToolResultState.SUCCESS)
+                                    .output(List.of(TextBlock.builder().text("output").build()))
+                                    .build()
+                    );
+                }
+                return toolResultBlocks;
             default:
                 System.out.println("skip event type is " + event.getType().getValue());
                 break;
         }
 
-        return confirmResults;
+        return null;
     }
 
 }

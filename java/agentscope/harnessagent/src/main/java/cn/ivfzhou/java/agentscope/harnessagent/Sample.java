@@ -6,6 +6,7 @@ import io.agentscope.core.event.AgentEvent;
 import io.agentscope.core.event.AgentEventType;
 import io.agentscope.core.event.AgentResultEvent;
 import io.agentscope.core.event.AgentStartEvent;
+import io.agentscope.core.event.ConfirmResult;
 import io.agentscope.core.event.ModelCallEndEvent;
 import io.agentscope.core.event.ModelCallStartEvent;
 import io.agentscope.core.event.RequestStopEvent;
@@ -22,6 +23,7 @@ import io.agentscope.core.event.ToolCallStartEvent;
 import io.agentscope.core.event.ToolResultEndEvent;
 import io.agentscope.core.event.ToolResultStartEvent;
 import io.agentscope.core.event.ToolResultTextDeltaEvent;
+import io.agentscope.core.event.UserConfirmResultEvent;
 import io.agentscope.core.message.Msg;
 import io.agentscope.core.message.UserMessage;
 import io.agentscope.extensions.model.dashscope.DashScopeChatModel;
@@ -35,6 +37,9 @@ import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class Sample {
 
@@ -61,15 +66,6 @@ public class Sample {
         }
     }
 
-    private static Path getWorkspace() throws URISyntaxException {
-        var path = Paths.get(Sample.class.getProtectionDomain().getCodeSource().getLocation().toURI());
-        if (!path.toFile().isDirectory()) {
-            path = path.getParent();
-        }
-        System.out.println("workspace is " + path.toString());
-        return path;
-    }
-
     private static void chat(HarnessAgent agent, String userId, String sessionId) throws IOException {
         var ctx = RuntimeContext.builder()
                 .sessionId(sessionId)
@@ -80,15 +76,52 @@ public class Sample {
         var reader = new BufferedReader(new InputStreamReader(System.in, StandardCharsets.UTF_8));
         var msg = reader.readLine();
         try (reader) {
+            final List<ConfirmResult> confirmResults = new ArrayList<>();
             while (msg != null) {
+
                 if (msg.equalsIgnoreCase("quit")) {
                     break;
                 }
 
-                agent.streamEvents(new UserMessage(msg), ctx).doOnNext(Sample::handleEvent).blockLast();
+                if (msg.equalsIgnoreCase("interrupt")) {
+                    // 中断该 session 正在进行的 call。
+                    agent.interrupt();
+                    continue;
+                }
+
+                if (msg.equalsIgnoreCase("interrupt with recovery message")) {
+                    // 带消息中断——中断消息会被 LLM 在恢复时看到。
+                    agent.interrupt();
+                }
+
+                UserMessage userMessage;
+                if (msg.equalsIgnoreCase("confirm") && !confirmResults.isEmpty()) {
+                    userMessage = UserMessage.builder()
+                            .metadata(Map.of(Msg.METADATA_CONFIRM_RESULTS, List.copyOf(confirmResults)))
+                            .build();
+                    confirmResults.clear();
+                } else {
+                    userMessage = new UserMessage(msg);
+                }
+
+                agent.streamEvents(userMessage, ctx).doOnNext(event -> {
+                    var crs = handleEvent(event);
+                    if (crs != null && !crs.isEmpty()) {
+                        confirmResults.addAll(crs);
+                    }
+                }).blockLast();
                 msg = reader.readLine();
             }
         }
+    }
+
+    private static Path getWorkspace() throws URISyntaxException {
+        var path = Paths.get(Sample.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+        if (!path.toFile().isDirectory()) {
+            path = path.getParent();
+        }
+        System.out.println("workspace is " + path.toString());
+        return path;
     }
 
     private static void printMsg(Msg msg) {
@@ -101,7 +134,8 @@ public class Sample {
         System.out.println("[agent result end]");
     }
 
-    private static void handleEvent(AgentEvent event) {
+    private static List<ConfirmResult> handleEvent(AgentEvent event) {
+        var confirmResults = new ArrayList<ConfirmResult>();
         switch (event.getType()) {
             case AgentEventType.AGENT_START:
                 var agentStartEvent = (AgentStartEvent) event;
@@ -213,6 +247,13 @@ public class Sample {
                         + " stateValue=" + state.getValue()
                 );
                 break;
+            case AgentEventType.USER_CONFIRM_RESULT:
+                var userConfirmResultEvent = (UserConfirmResultEvent) event;
+                System.out.println("[user confirm result] "
+                        + " replyId=" + userConfirmResultEvent.getReplyId()
+                        + " confirmResults=" + userConfirmResultEvent.getConfirmResults()
+                );
+                break;
             case AgentEventType.REQUIRE_USER_CONFIRM:
                 var requireUserConfirmEvent = (RequireUserConfirmEvent) event;
                 System.out.println("[require user confirm]" + " replyId=" + requireUserConfirmEvent.getReplyId());
@@ -232,6 +273,7 @@ public class Sample {
                     var input = toolUseBlock.getInput();
                     input.forEach((k, v) -> System.out.print(k + "=" + v));
                     System.out.println();
+                    confirmResults.add(new ConfirmResult(true, toolUseBlock));
                 }
                 break;
             case AgentEventType.REQUEST_STOP:
@@ -246,6 +288,8 @@ public class Sample {
                 System.out.println("skip event type is " + event.getType().getValue());
                 break;
         }
+
+        return confirmResults;
     }
 
 }
