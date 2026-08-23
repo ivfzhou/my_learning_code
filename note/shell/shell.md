@@ -81,6 +81,14 @@
     LANG=zh_CN 外部命令 ...
     ```
 
+13. 短路求值：
+
+    - `CmdA && CmdB`：CmdA 返回码为 0 时才运行 CmdB。
+    - `CmdA || CmdB`：CmdA 返回码为非 0 时才运行 CmdB。
+    - `CmdA && CmdB || CmdC`：CmdA 返回码为非 0 时，不运行 CmdB，`CmdA && CmdB` 整体是失败的，运行 CmdC；CmdA 返回码为 0 时，运行 CmdB，若 CmdB失败则运行 CmdC，否则 CmdC 不运行。
+
+14. 查询当前是登陆 Shell 还是交互式 Shell，`echo $0`，输出 bash 是交互式 Shell，输出 -bash 是登陆 Shell。
+
 # 二、Bash
 
 是一个 Shell 解释器，负责读取用户输入或脚本文件，解释命令并执行。
@@ -209,7 +217,7 @@
     echo "剩余参数：$@"
     ```
 
-- echo [*字符串*]：输出文本到标准输出。支持 -n（不换行）、-e（解释转义字符）。`eval "ls -l"`。
+- echo [*字符串*]：输出文本到标准输出。支持 -n（不换行）、-e（解释转义字符）。
 
 - printf *格式* [*参数*...]：按格式输出，功能比 echo 更强大，类似 C 语言 printf。
 
@@ -217,7 +225,7 @@
 
 - readarray、mapfile：将文本行读入数组。例如 `readarray lines < file.txt`。
 
-- eval [*参数*]：将参数作为 Shell 命令重新解析执行。常用于动态构建命令。
+- eval [*参数*]：将参数作为 Shell 命令重新解析执行。常用于动态构建命令。`eval "ls -l"`。
 
 - exec [*命令*]：用指定命令替换当前 Shell 进程（不创建子进程）。若不含命令则用于重定向。
 

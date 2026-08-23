@@ -18,6 +18,7 @@
 
     <modules>
         <module>reactagent</module>
+        <module>harnessagent</module>
     </modules>
 
 </project>

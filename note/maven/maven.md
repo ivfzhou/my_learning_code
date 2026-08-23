@@ -215,7 +215,9 @@
 
 1. **mvn help:describe -Dplugin=*groupId*:*artifactId*:*version***：打印插件帮助信息。
 
-1. **mvn dependency:resolve dependency:resolve-sources -Dclassifier=javaDoc**：下载 jar 和 source 和 doc。
+1. **mvn dependency:resolve dependency:resolve-sources**：下载依赖二进制包和源码包。
+
+1. **mvn dependency:resolve-sources -Dclassifier=javadoc**：下载依赖文档包。
 
 1. **mvn tree**：打印依赖信息。
 

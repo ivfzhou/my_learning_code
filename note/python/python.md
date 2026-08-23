@@ -61,6 +61,6 @@
 # 四、Debian 编译安装
 
 1. 下载源码：https://github.com/python/cpython
-2. 运行：./configure --enable-optimizations --with-ensurepip=install --prefix=/home/ivfzhou/programs/python
-3. 运行：make -j $(nproc)
+2. 运行：`./configure --enable-optimizations --with-ensurepip=install --prefix=/home/ivfzhou/programs/python`。
+3. 运行：`make -j $(nproc)`。
 4. 运行：make install
