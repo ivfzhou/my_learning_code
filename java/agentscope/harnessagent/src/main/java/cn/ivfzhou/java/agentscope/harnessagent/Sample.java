@@ -8,6 +8,8 @@ import io.agentscope.core.event.AgentResultEvent;
 import io.agentscope.core.event.AgentStartEvent;
 import io.agentscope.core.event.ModelCallEndEvent;
 import io.agentscope.core.event.ModelCallStartEvent;
+import io.agentscope.core.event.RequestStopEvent;
+import io.agentscope.core.event.RequireUserConfirmEvent;
 import io.agentscope.core.event.TextBlockDeltaEvent;
 import io.agentscope.core.event.TextBlockEndEvent;
 import io.agentscope.core.event.TextBlockStartEvent;
@@ -31,17 +33,12 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class Sample {
 
     static void main() throws URISyntaxException, IOException {
-        var path = Paths.get(Sample.class.getProtectionDomain().getCodeSource().getLocation().toURI());
-        if (!path.toFile().isDirectory()) {
-            path = path.getParent();
-        }
-        System.out.println("workspace is " + path.toString());
-
         var agent = HarnessAgent.builder()
                 .name("note-taker")
                 .sysPrompt("你是一个帮助用户做笔记的助手。")
@@ -52,7 +49,7 @@ public class Sample {
                         .modelName("qwen-plus")
                         .apiKey(System.getenv("DASHSCOPE_API_KEY"))
                         .build())
-                .workspace(path)
+                .workspace(getWorkspace())
                 .compaction(CompactionConfig.builder()
                         .triggerMessages(30)
                         .keepMessages(10)
@@ -60,23 +57,36 @@ public class Sample {
                 .build();
 
         try (agent) {
-            var ctx = RuntimeContext.builder()
-                    .sessionId("session1")
-                    .userId("zhangsan")
-                    .build();
+            chat(agent, "ivfzhou", "session-1");
+        }
+    }
 
-            System.out.println("enter message to chat");
-            var reader = new BufferedReader(new InputStreamReader(System.in, StandardCharsets.UTF_8));
-            var msg = reader.readLine();
-            try (reader) {
-                while (msg != null) {
-                    if (msg.equalsIgnoreCase("quit")) {
-                        break;
-                    }
+    private static Path getWorkspace() throws URISyntaxException {
+        var path = Paths.get(Sample.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+        if (!path.toFile().isDirectory()) {
+            path = path.getParent();
+        }
+        System.out.println("workspace is " + path.toString());
+        return path;
+    }
 
-                    agent.streamEvents(new UserMessage(msg), ctx).doOnNext(Sample::handleEvent).blockLast();
-                    msg = reader.readLine();
+    private static void chat(HarnessAgent agent, String userId, String sessionId) throws IOException {
+        var ctx = RuntimeContext.builder()
+                .sessionId(sessionId)
+                .userId(userId)
+                .build();
+
+        System.out.println("enter message to chat");
+        var reader = new BufferedReader(new InputStreamReader(System.in, StandardCharsets.UTF_8));
+        var msg = reader.readLine();
+        try (reader) {
+            while (msg != null) {
+                if (msg.equalsIgnoreCase("quit")) {
+                    break;
                 }
+
+                agent.streamEvents(new UserMessage(msg), ctx).doOnNext(Sample::handleEvent).blockLast();
+                msg = reader.readLine();
             }
         }
     }
@@ -165,8 +175,7 @@ public class Sample {
                 break;
             case AgentEventType.TOOL_CALL_START:
                 var toolCallStartEvent = (ToolCallStartEvent) event;
-                System.out.println(System.lineSeparator()
-                        + "[start tool] " + toolCallStartEvent.getToolCallName()
+                System.out.println("[start tool] " + toolCallStartEvent.getToolCallName()
                         + " replyId=" + toolCallStartEvent.getReplyId()
                         + " callId=" + toolCallStartEvent.getToolCallId()
                 );
@@ -185,8 +194,7 @@ public class Sample {
                 break;
             case AgentEventType.TOOL_RESULT_START:
                 var toolResultStartEvent = (ToolResultStartEvent) event;
-                System.out.println(System.lineSeparator()
-                        + "[start tool result] " + toolResultStartEvent.getToolCallName()
+                System.out.println("[start tool result] " + toolResultStartEvent.getToolCallName()
                         + " replyId=" + toolResultStartEvent.getReplyId()
                         + " callId=" + toolResultStartEvent.getToolCallId()
                 );
@@ -204,6 +212,35 @@ public class Sample {
                         + " callId=" + toolResultEndEvent.getToolCallId()
                         + " stateValue=" + state.getValue()
                 );
+                break;
+            case AgentEventType.REQUIRE_USER_CONFIRM:
+                var requireUserConfirmEvent = (RequireUserConfirmEvent) event;
+                System.out.println("[require user confirm]" + " replyId=" + requireUserConfirmEvent.getReplyId());
+                var toolCalls = requireUserConfirmEvent.getToolCalls();
+                for (int i = 0; i < toolCalls.size(); i++) {
+                    var toolUseBlock = toolCalls.get(i);
+                    System.out.print(i + "."
+                            + " id=" + toolUseBlock.getId()
+                            + " name=" + toolUseBlock.getName()
+                            + " stateValue=" + toolUseBlock.getState().getValue()
+                            + " content=" + toolUseBlock.getContent()
+                    );
+                    System.out.print(" metadata=");
+                    var metadata = toolUseBlock.getMetadata();
+                    metadata.forEach((k, v) -> System.out.print(k + "=" + v));
+                    System.out.print(" input=");
+                    var input = toolUseBlock.getInput();
+                    input.forEach((k, v) -> System.out.print(k + "=" + v));
+                    System.out.println();
+                }
+                break;
+            case AgentEventType.REQUEST_STOP:
+                var requestStopEvent = (RequestStopEvent) event;
+                System.out.println("[request stop]"
+                        + " getGenerateReason=" + requestStopEvent.getGenerateReason()
+                        + " Reason=" + requestStopEvent.getReason()
+                );
+
                 break;
             default:
                 System.out.println("skip event type is " + event.getType().getValue());
