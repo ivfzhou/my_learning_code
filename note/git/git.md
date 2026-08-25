@@ -303,6 +303,7 @@ git am /path/to/patches/*.patch
 - `git reflog show master`：查看 master 分支引用的变更历史记录。
 - `git reflog show refs/stash`：查看 stash（暂存栈）引用的变更历史记录。
 - `git reflog expire --expire=now --all`：立即过期清空所有 reflog 日志条目（`.git/logs/` 下文件将被清空）。
+- `git log -n 5`：查看最近 5 条提交记录。
 
 ## 12. 暂存
 

@@ -29,7 +29,9 @@ import io.agentscope.core.event.UserConfirmResultEvent;
 import io.agentscope.core.message.Msg;
 import io.agentscope.core.message.TextBlock;
 import io.agentscope.core.message.ToolResultBlock;
+import io.agentscope.core.message.ToolResultMessage;
 import io.agentscope.core.message.ToolResultState;
+import io.agentscope.core.message.ToolUseBlock;
 import io.agentscope.core.message.UserMessage;
 import io.agentscope.core.permission.PermissionContextState;
 import io.agentscope.core.permission.PermissionMode;
@@ -55,6 +57,7 @@ public class Sample {
     static void main() throws IOException, URISyntaxException {
         var toolkit = new Toolkit();
         toolkit.registerTool(new WriteFileTool());
+        toolkit.registerTool(new ShellCommandTool());
         toolkit.registerMcpClient(McpClientBuilder.create("amap")
                 .streamableHttpTransport("https://mcp.amap.com/mcp?key=" + System.getenv("AMAP_API_KEY"))
                 .buildSync()
@@ -66,7 +69,7 @@ public class Sample {
                 // .model("dashscope:qwen-plus")
                 .model(DashScopeChatModel.builder()
                         .apiKey(System.getenv("DASHSCOPE_API_KEY"))
-                        .modelName("qwen-plus")
+                        .modelName("qwen3-max")
                         .stream(true)
                         .formatter(new DashScopeChatFormatter())
                         .build()
@@ -79,7 +82,7 @@ public class Sample {
                 .stateStore(new JsonFileAgentStateStore(getWorkspace()))
                 .build();
         try (agent) {
-            chatWithStructure(agent, "ivfzhou", "session-1", "明天长沙岳麓区天气情况？");
+            chat(agent, "ivfzhou", "session-1");
         }
     }
 
@@ -130,61 +133,64 @@ public class Sample {
                 .userId(userId)
                 .build();
 
-        System.out.println("enter message to chat");
+        System.out.println("enter message to chat:");
         var reader = new BufferedReader(new InputStreamReader(System.in, StandardCharsets.UTF_8));
-        var msg = reader.readLine();
+        var ask = reader.readLine();
         try (reader) {
-            final List<ConfirmResult> confirmResults = new ArrayList<>();
-            final List<ToolResultBlock> toolResultBlocks = new ArrayList<>();
-            while (msg != null) {
+            final List<ToolUseBlock> toolUseBlocks = new ArrayList<>();
+            while (ask != null) {
 
-                if (msg.equalsIgnoreCase("quit")) {
+                if (ask.equalsIgnoreCase("quit")) {
                     break;
                 }
 
-                if (msg.equalsIgnoreCase("interrupt")) {
+                if (ask.equalsIgnoreCase("interrupt")) {
                     // 中断该 session 正在进行的 call。
                     agent.interrupt(ctx);
                     continue;
                 }
 
-                if (msg.equalsIgnoreCase("interrupt with recovery message")) {
+                if (ask.equalsIgnoreCase("interrupt with recovery message")) {
                     // 带消息中断——中断消息会被 LLM 在恢复时看到。
                     agent.interrupt(ctx, new UserMessage("用户已取消操作"));
                 }
 
-                UserMessage userMessage;
-                if (msg.equalsIgnoreCase("confirm") && !confirmResults.isEmpty()) {
-                    userMessage = UserMessage.builder()
-                            .metadata(Map.of(Msg.METADATA_CONFIRM_RESULTS, List.copyOf(confirmResults)))
+                Msg msg;
+                if (ask.equalsIgnoreCase("confirm") && !toolUseBlocks.isEmpty()) {
+                    var confirmResults = new ArrayList<ConfirmResult>();
+                    for (var toolUseBlock : toolUseBlocks) confirmResults.add(new ConfirmResult(true, toolUseBlock));
+                    msg = UserMessage.builder()
+                            .metadata(Map.of(Msg.METADATA_CONFIRM_RESULTS, confirmResults))
                             .build();
-                    confirmResults.clear();
-                } else if (msg.equalsIgnoreCase("execute")) {
-                    userMessage = UserMessage.builder()
-                            .metadata(Map.of(Msg.METADATA_CONFIRM_RESULTS, List.copyOf(toolResultBlocks)))
-                            .build();
-                    toolResultBlocks.clear();
-                } else {
-                    userMessage = new UserMessage(msg);
-                }
-
-                agent.streamEvents(userMessage, ctx).doOnNext(event -> {
-                    var result = handleEvent(event);
-                    if (result instanceof List<?> list && !list.isEmpty() && list.getFirst() instanceof ConfirmResult) {
-                        confirmResults.addAll(
-                                list.stream()
-                                        .map(ConfirmResult.class::cast)
-                                        .toList()
-                        );
-                    } else if (result instanceof List<?> list && !list.isEmpty() && list.getFirst() instanceof ToolResultBlock) {
-                        toolResultBlocks.addAll(
-                                list.stream()
-                                        .map(ToolResultBlock.class::cast)
-                                        .toList()
+                    toolUseBlocks.clear();
+                } else if (ask.equalsIgnoreCase("execute") && !toolUseBlocks.isEmpty()) {
+                    var toolResultBlocks = new ArrayList<ToolResultBlock>();
+                    for (int i = 0; i < toolUseBlocks.size(); i++) {
+                        System.out.println("enter external tool result [" + (i + 1) + "]:");
+                        toolResultBlocks.add(
+                                ToolResultBlock.builder()
+                                        .id(toolUseBlocks.get(i).getId())
+                                        .name(toolUseBlocks.get(i).getName())
+                                        .state(ToolResultState.SUCCESS)
+                                        .output(List.of(TextBlock.builder().text(reader.readLine()).build()))
+                                        .build()
                         );
                     }
+                    msg = ToolResultMessage.builder()
+                            .results(toolResultBlocks)
+                            .build();
+                    toolUseBlocks.clear();
+                } else {
+                    msg = new UserMessage(ask);
+                }
+
+                agent.streamEvents(msg, ctx).doOnNext(event -> {
+                    var list = handleEvent(event);
+                    if (list != null && !list.isEmpty()) toolUseBlocks.addAll(list);
                 }).blockLast();
-                msg = reader.readLine();
+
+                System.out.println("[ToolUseBlocks] size=" + toolUseBlocks.size());
+                ask = reader.readLine();
             }
         }
     }
@@ -198,44 +204,44 @@ public class Sample {
         return path;
     }
 
-    private static void printMsg(Msg msg) {
-        System.out.println("[agent result begin]");
-        System.out.println("id=" + msg.getId());
-        System.out.println("name=" + msg.getName());
-        System.out.println("timestamp=" + msg.getTimestamp());
-        System.out.println("generateReason=" + msg.getGenerateReason());
-        System.out.println("role=" + msg.getRole().name());
-        System.out.println("[agent result end]");
-    }
-
-    private static Object handleEvent(AgentEvent event) {
+    private static List<ToolUseBlock> handleEvent(AgentEvent event) {
         switch (event.getType()) {
             case AgentEventType.AGENT_START:
                 var agentStartEvent = (AgentStartEvent) event;
-                System.out.println("[start agent]"
+                System.out.println("[AGENT_START]"
                         + " replyId=" + agentStartEvent.getReplyId()
                         + " name=" + agentStartEvent.getName()
                         + " role=" + agentStartEvent.getRole()
                         + " sessionId=" + agentStartEvent.getSessionId()
                 );
                 break;
+            case AgentEventType.AGENT_END:
+                var agentEndEvent = (AgentEndEvent) event;
+                System.out.println("[AGENT_END]"
+                        + " replyId=" + agentEndEvent.getReplyId()
+                );
+                break;
             case AgentEventType.AGENT_RESULT:
                 var agentResultEvent = (AgentResultEvent) event;
                 var result = agentResultEvent.getResult();
-                printMsg(result);
-                break;
-            case AgentEventType.AGENT_END:
-                var agentEndEvent = (AgentEndEvent) event;
-                System.out.println("[end agent]" + " replyId=" + agentEndEvent.getReplyId());
+                System.out.println("[AGENT_RESULT]"
+                        + " resultId=" + result.getId()
+                        + " resultName=" + result.getName()
+                        + " resultTimestamp=" + result.getTimestamp()
+                        + " resultGenerateReason=" + result.getGenerateReason()
+                        + " resultRole=" + result.getRole().name()
+                );
                 break;
             case AgentEventType.MODEL_CALL_START:
                 var modelCallStartEvent = (ModelCallStartEvent) event;
-                System.out.println("[start model] " + "replyId=" + modelCallStartEvent.getReplyId());
+                System.out.println("[MODEL_CALL_START] "
+                        + "replyId=" + modelCallStartEvent.getReplyId()
+                );
                 break;
             case AgentEventType.MODEL_CALL_END:
                 var modelCallEndEvent = (ModelCallEndEvent) event;
                 var usage = modelCallEndEvent.getUsage();
-                System.out.println("[end model]"
+                System.out.println("[MODEL_CALL_END]"
                         + " replyId=" + modelCallEndEvent.getReplyId()
                         + " inputTokens=" + usage.getInputTokens()
                         + " outputTokens=" + usage.getOutputTokens()
@@ -246,7 +252,7 @@ public class Sample {
                 break;
             case AgentEventType.THINKING_BLOCK_START:
                 var thinkingBlockStartEvent = (ThinkingBlockStartEvent) event;
-                System.out.println("[start thinking]"
+                System.out.println("[THINKING_BLOCK_START]"
                         + " replyId=" + thinkingBlockStartEvent.getReplyId()
                         + " blockId=" + thinkingBlockStartEvent.getBlockId()
                 );
@@ -257,14 +263,14 @@ public class Sample {
                 break;
             case AgentEventType.THINKING_BLOCK_END:
                 var thinkingBlockEndEvent = (ThinkingBlockEndEvent) event;
-                System.out.println(System.lineSeparator() + "[end thinking]"
+                System.out.println(System.lineSeparator() + "[THINKING_BLOCK_END]"
                         + " replyId=" + thinkingBlockEndEvent.getReplyId()
                         + " blockId=" + thinkingBlockEndEvent.getBlockId()
                 );
                 break;
             case AgentEventType.TEXT_BLOCK_START:
                 var textBlockStartEvent = (TextBlockStartEvent) event;
-                System.out.println("[start text]"
+                System.out.println("[TEXT_BLOCK_START]"
                         + " replyId=" + textBlockStartEvent.getReplyId()
                         + " blockId=" + textBlockStartEvent.getBlockId()
                 );
@@ -275,14 +281,15 @@ public class Sample {
                 break;
             case AgentEventType.TEXT_BLOCK_END:
                 var textBlockEndEvent = (TextBlockEndEvent) event;
-                System.out.println(System.lineSeparator() + "[end text]"
+                System.out.println(System.lineSeparator() + "[TEXT_BLOCK_END]"
                         + " replyId=" + textBlockEndEvent.getReplyId()
                         + " blockId=" + textBlockEndEvent.getBlockId()
                 );
                 break;
             case AgentEventType.TOOL_CALL_START:
                 var toolCallStartEvent = (ToolCallStartEvent) event;
-                System.out.println("[start tool] " + toolCallStartEvent.getToolCallName()
+                System.out.println("[TOOL_CALL_START]"
+                        + " toolCallName=" + toolCallStartEvent.getToolCallName()
                         + " replyId=" + toolCallStartEvent.getReplyId()
                         + " callId=" + toolCallStartEvent.getToolCallId()
                 );
@@ -293,15 +300,16 @@ public class Sample {
                 break;
             case AgentEventType.TOOL_CALL_END:
                 var toolCallEndEvent = (ToolCallEndEvent) event;
-                System.out.println(System.lineSeparator()
-                        + "[end tool] " + toolCallEndEvent.getToolCallName()
+                System.out.println(System.lineSeparator() + "[TOOL_CALL_END]"
+                        + " toolCallName=" + toolCallEndEvent.getToolCallName()
                         + " replyId=" + toolCallEndEvent.getReplyId()
                         + " callId=" + toolCallEndEvent.getToolCallId()
                 );
                 break;
             case AgentEventType.TOOL_RESULT_START:
                 var toolResultStartEvent = (ToolResultStartEvent) event;
-                System.out.println("[start tool result] " + toolResultStartEvent.getToolCallName()
+                System.out.println("[TOOL_RESULT_START]"
+                        + " toolCallName=" + toolResultStartEvent.getToolCallName()
                         + " replyId=" + toolResultStartEvent.getReplyId()
                         + " callId=" + toolResultStartEvent.getToolCallId()
                 );
@@ -314,27 +322,30 @@ public class Sample {
                 var toolResultEndEvent = (ToolResultEndEvent) event;
                 var state = toolResultEndEvent.getState();
                 System.out.println(System.lineSeparator()
-                        + "[end tool result] " + toolResultEndEvent.getToolCallName()
+                        + "[TOOL_RESULT_END]"
+                        + " toolCallName=" + toolResultEndEvent.getToolCallName()
                         + " replyId=" + toolResultEndEvent.getReplyId()
                         + " callId=" + toolResultEndEvent.getToolCallId()
                         + " stateValue=" + state.getValue()
                 );
-                break;
-            case AgentEventType.USER_CONFIRM_RESULT:
-                var userConfirmResultEvent = (UserConfirmResultEvent) event;
-                System.out.println("[user confirm result] "
-                        + " replyId=" + userConfirmResultEvent.getReplyId()
-                        + " confirmResults=" + userConfirmResultEvent.getConfirmResults()
-                );
+
+                // 外部工具被挂起（state=running）：记录待处理调用，供下次 execute 回填真实结果
+                if (state == ToolResultState.RUNNING) {
+                    return List.of(ToolUseBlock.builder()
+                            .id(toolResultEndEvent.getToolCallId())
+                            .name(toolResultEndEvent.getToolCallName())
+                            .input(Map.of())
+                            .build());
+                }
+
                 break;
             case AgentEventType.REQUIRE_USER_CONFIRM:
                 var requireUserConfirmEvent = (RequireUserConfirmEvent) event;
-                System.out.println("[require user confirm]" + " replyId=" + requireUserConfirmEvent.getReplyId());
+                System.out.println("[REQUIRE_USER_CONFIRM]" + " replyId=" + requireUserConfirmEvent.getReplyId());
                 var toolCalls = requireUserConfirmEvent.getToolCalls();
-                var confirmResults = new ArrayList<ConfirmResult>();
                 for (int i = 0; i < toolCalls.size(); i++) {
                     var toolUseBlock = toolCalls.get(i);
-                    System.out.print(i + "."
+                    System.out.print("    " + (i + 1) + "."
                             + " id=" + toolUseBlock.getId()
                             + " name=" + toolUseBlock.getName()
                             + " stateValue=" + toolUseBlock.getState().getValue()
@@ -347,12 +358,18 @@ public class Sample {
                     var input = toolUseBlock.getInput();
                     input.forEach((k, v) -> System.out.print(k + "=" + v));
                     System.out.println();
-                    confirmResults.add(new ConfirmResult(true, toolUseBlock));
                 }
-                return confirmResults;
+                return toolCalls;
+            case AgentEventType.USER_CONFIRM_RESULT:
+                var userConfirmResultEvent = (UserConfirmResultEvent) event;
+                System.out.println("[USER_CONFIRM_RESULT] "
+                        + " replyId=" + userConfirmResultEvent.getReplyId()
+                        + " confirmResults=" + userConfirmResultEvent.getConfirmResults()
+                );
+                break;
             case AgentEventType.REQUEST_STOP:
                 var requestStopEvent = (RequestStopEvent) event;
-                System.out.println("[request stop]"
+                System.out.println("[REQUEST_STOP]"
                         + " getGenerateReason=" + requestStopEvent.getGenerateReason()
                         + " Reason=" + requestStopEvent.getReason()
                 );
@@ -360,24 +377,20 @@ public class Sample {
                 break;
             case AgentEventType.REQUIRE_EXTERNAL_EXECUTION:
                 var requireExternalExecutionEvent = (RequireExternalExecutionEvent) event;
-                System.out.println("[require external execution]"
+                var toolCalls2 = requireExternalExecutionEvent.getToolCalls();
+                System.out.print("[REQUIRE_EXTERNAL_EXECUTION]"
                         + " replyId=" + requireExternalExecutionEvent.getReplyId()
-                        + " toolCalls=" + requireExternalExecutionEvent.getToolCalls()
                 );
-                var toolResultBlocks = new ArrayList<ToolResultBlock>();
-                for (var toolCall : requireExternalExecutionEvent.getToolCalls()) {
-                    toolResultBlocks.add(
-                            ToolResultBlock.builder()
-                                    .id(toolCall.getId())
-                                    .name(toolCall.getName())
-                                    .state(ToolResultState.SUCCESS)
-                                    .output(List.of(TextBlock.builder().text("output").build()))
-                                    .build()
+                for (int i = 0; i < toolCalls2.size(); i++) {
+                    System.out.println("    " + (i + 1) + "."
+                            + " name=" + toolCalls2.get(i).getName()
+                            + " id=" + toolCalls2.get(i).getId()
+                            + " stateValue=" + toolCalls2.get(i).getState().getValue()
                     );
                 }
-                return toolResultBlocks;
+                return toolCalls2;
             default:
-                System.out.println("skip event type is " + event.getType().getValue());
+                System.out.println("!!! SKIP EVENT TYPE IS " + event.getType().getValue());
                 break;
         }
 
