@@ -28,7 +28,7 @@
     
 1. 类之间关系：依赖、关联、聚合、组合、泛化、实现。
 
-1. 添加信任证书 keytool -importcert -trustcacerts -alias ivfzhou -file ~/ivfzhou.pub -keystore lib/security/cacerts -cacerts。
+1. 添加信任证书 `keytool -importcert -trustcacerts -alias ivfzhou -file ~/ivfzhou.pub -keystore lib/security/cacerts -cacerts`。
 
 1. synchronied 锁升级：
     - 偏向锁 -> 自旋锁 -> 重量级锁。
@@ -41,7 +41,7 @@
 1. CGLib（ASM）Enhancer 无法代理 final 类，因为无法被继承。
 
 1. [Java9 模块化](./module_example)：
-    
+   
     ```shell
     cd module_example
     mkdir mods
