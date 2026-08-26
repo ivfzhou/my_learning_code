@@ -19,7 +19,8 @@ public class ShellCommandTool extends ToolBase {
                         "properties", Map.of(
                                 "command", Map.of(
                                         "type", "string",
-                                        "description", "要执行的命令")
+                                        "description", "要执行的命令"
+                                )
                         ),
                         "required", List.of("command")))
                 .externalTool(true) // 关键：标记为外部工具。

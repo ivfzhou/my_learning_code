@@ -2,6 +2,7 @@ package cn.ivfzhou.java.agentscope.reactagent;
 
 import io.agentscope.core.ReActAgent;
 import io.agentscope.core.agent.RuntimeContext;
+import io.agentscope.core.credential.CredentialBase;
 import io.agentscope.core.event.AgentEndEvent;
 import io.agentscope.core.event.AgentEvent;
 import io.agentscope.core.event.AgentEventType;
@@ -28,16 +29,22 @@ import io.agentscope.core.event.ToolResultTextDeltaEvent;
 import io.agentscope.core.event.UserConfirmResultEvent;
 import io.agentscope.core.message.Msg;
 import io.agentscope.core.message.TextBlock;
+import io.agentscope.core.message.ToolCallState;
 import io.agentscope.core.message.ToolResultBlock;
 import io.agentscope.core.message.ToolResultMessage;
 import io.agentscope.core.message.ToolResultState;
 import io.agentscope.core.message.ToolUseBlock;
 import io.agentscope.core.message.UserMessage;
+import io.agentscope.core.permission.AdditionalWorkingDirectory;
+import io.agentscope.core.permission.PermissionBehavior;
 import io.agentscope.core.permission.PermissionContextState;
 import io.agentscope.core.permission.PermissionMode;
+import io.agentscope.core.permission.PermissionRule;
 import io.agentscope.core.state.JsonFileAgentStateStore;
 import io.agentscope.core.tool.Toolkit;
+import io.agentscope.core.tool.builtin.TodoTools;
 import io.agentscope.core.tool.mcp.McpClientBuilder;
+import io.agentscope.core.tracing.OtelTracingMiddleware;
 import io.agentscope.extensions.model.dashscope.DashScopeChatModel;
 import io.agentscope.extensions.model.dashscope.formatter.DashScopeChatFormatter;
 
@@ -48,6 +55,7 @@ import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -62,40 +70,61 @@ public class Sample {
                 .streamableHttpTransport("https://mcp.amap.com/mcp?key=" + System.getenv("AMAP_API_KEY"))
                 .buildSync()
         ).block();
-
+        toolkit.registerTool(new TodoTools());
+        var model = DashScopeChatModel.builder()
+                .apiKey(System.getenv("DASHSCOPE_API_KEY"))
+                .modelName("qwen3-max")
+                .stream(true)
+                .formatter(new DashScopeChatFormatter()) // 负责把 AgentScope 的 Msg 对象转换为各提供商 API 期望的请求载荷。
+                .nativeStructuredOutput(true) // 需要 LLM 支持结构化输出。
+                .nativeStructuredOutputWithTools(false) // 不要优先遵循 response_format 约束而跳过工具调用。
+                .build();
+        // printModelCards(DashScopeCredential.builder().apiKey(System.getenv("DASHSCOPE_API_KEY")).build());
+        var workspace = getWorkspace();
         var agent = ReActAgent.builder()
                 .name("answer-helper")
                 .sysPrompt("你是一个全知助手，能回答各类问题。")
                 // .model("dashscope:qwen-plus")
-                .model(DashScopeChatModel.builder()
-                        .apiKey(System.getenv("DASHSCOPE_API_KEY"))
-                        .modelName("qwen3-max")
-                        .stream(true)
-                        .formatter(new DashScopeChatFormatter())
-                        .build()
-                )
+                .model(model)
                 .toolkit(toolkit)
-                .permissionContext(PermissionContextState.builder()
-                        .mode(PermissionMode.DEFAULT)
-                        .build()
+                .permissionContext(
+                        PermissionContextState.builder()
+                                .mode(PermissionMode.DEFAULT)
+                                .addWorkingDirectory(workspace.toAbsolutePath().toString(), new AdditionalWorkingDirectory(workspace.toAbsolutePath().toString(), "userSettings"))
+                                .addAllowRule("safe_read", new PermissionRule("safe_read", null, PermissionBehavior.ALLOW, "userSettings"))
+                                .addAskRule("dangerous_delete", new PermissionRule("dangerous_delete", null, PermissionBehavior.ASK, "userSettings"))
+                                .addDenyRule("drop_table", new PermissionRule("drop_table", null, PermissionBehavior.DENY, "userSettings"))
+                                .build()
                 )
-                .stateStore(new JsonFileAgentStateStore(getWorkspace()))
+                .stateStore(new JsonFileAgentStateStore(workspace))
+                .middlewares(List.of(new OtelTracingMiddleware())) // 为 agent 全生命周期接入 OpenTelemetry 追踪。需要配置 OpenTelemetry SDK。
+                .enableTaskList(true)
+                .middleware(new FullObservabilityMiddleware())
+                .middleware(new TimingMiddleware())
+                .middleware(new RateLimitMiddleware(Duration.ofSeconds(3)))
+                .middleware(new StopOnAllDeniedMiddleware())
                 .build();
         try (agent) {
             chat(agent, "ivfzhou", "session-1");
         }
     }
 
-    public record WeatherResponse(String location, String temperature, String condition) {
+    private static void printModelCards(CredentialBase credentialBase) {
+        System.out.println("[MODEL_CARDS]");
+        var cards = credentialBase.listModels().block();
+        for (int i = 0; i < cards.size(); i++) {
+            var card = cards.get(i);
+            System.out.print("    " + (i + 1) + ". modelName=" + card.modelName() + " context=" + card.contextSize() + " displayName=" + card.displayName());
+        }
     }
 
-    private static void chatWithStructure(ReActAgent agent, String userId, String sessionId, String ask) {
+    private static void chatWithStructure(ReActAgent agent, String userId, String sessionId) {
         var ctx = RuntimeContext.builder()
                 .userId(userId)
                 .sessionId(sessionId)
                 .build();
-        var msg = agent.call(List.of(new UserMessage(ask)), WeatherResponse.class, ctx).block();
-        var data = msg.getStructuredData(WeatherResponse.class);
+        var msg = agent.call(List.of(new UserMessage("今天天气如何？")), WeatherInfo.class, ctx).block();
+        var data = msg.getStructuredData(WeatherInfo.class);
         System.out.println(data);
     }
 
@@ -158,7 +187,17 @@ public class Sample {
                 Msg msg;
                 if (ask.equalsIgnoreCase("confirm") && !toolUseBlocks.isEmpty()) {
                     var confirmResults = new ArrayList<ConfirmResult>();
-                    for (var toolUseBlock : toolUseBlocks) confirmResults.add(new ConfirmResult(true, toolUseBlock));
+                    for (int i = 0; i < toolUseBlocks.size(); i++) {
+                        var toolUseBlock = toolUseBlocks.get(i);
+                        System.out.print("enter tool " + toolUseBlock.getName() + " result [" + (i + 1) + "]: (y/n)");
+                        var ret = reader.readLine();
+                        if (ret.equalsIgnoreCase("y")) {
+                            confirmResults.add(new ConfirmResult(true, toolUseBlock,
+                                    List.of(new PermissionRule(toolUseBlock.getName(), null, PermissionBehavior.ALLOW, "userSettings"))));
+                        } else {
+                            confirmResults.add(new ConfirmResult(false, toolUseBlock));
+                        }
+                    }
                     msg = UserMessage.builder()
                             .metadata(Map.of(Msg.METADATA_CONFIRM_RESULTS, confirmResults))
                             .build();
@@ -166,11 +205,12 @@ public class Sample {
                 } else if (ask.equalsIgnoreCase("execute") && !toolUseBlocks.isEmpty()) {
                     var toolResultBlocks = new ArrayList<ToolResultBlock>();
                     for (int i = 0; i < toolUseBlocks.size(); i++) {
-                        System.out.println("enter external tool result [" + (i + 1) + "]:");
+                        var toolUseBlock = toolUseBlocks.get(i);
+                        System.out.print("enter external tool " + toolUseBlock.getName() + " result [" + (i + 1) + "]:");
                         toolResultBlocks.add(
                                 ToolResultBlock.builder()
-                                        .id(toolUseBlocks.get(i).getId())
-                                        .name(toolUseBlocks.get(i).getName())
+                                        .id(toolUseBlock.getId())
+                                        .name(toolUseBlock.getName())
                                         .state(ToolResultState.SUCCESS)
                                         .output(List.of(TextBlock.builder().text(reader.readLine()).build()))
                                         .build()
@@ -329,13 +369,16 @@ public class Sample {
                         + " stateValue=" + state.getValue()
                 );
 
-                // 外部工具被挂起（state=running）：记录待处理调用，供下次 execute 回填真实结果
+                // 外部工具被挂起（state=running）：记录待处理调用，供下次 execute 回填真实结果。
                 if (state == ToolResultState.RUNNING) {
-                    return List.of(ToolUseBlock.builder()
-                            .id(toolResultEndEvent.getToolCallId())
-                            .name(toolResultEndEvent.getToolCallName())
-                            .input(Map.of())
-                            .build());
+                    System.out.println("[NEED_EXECUTE]");
+                    return List.of(
+                            ToolUseBlock.builder()
+                                    .id(toolResultEndEvent.getToolCallId())
+                                    .name(toolResultEndEvent.getToolCallName())
+                                    .input(Map.of())
+                                    .build()
+                    );
                 }
 
                 break;
@@ -359,7 +402,8 @@ public class Sample {
                     input.forEach((k, v) -> System.out.print(k + "=" + v));
                     System.out.println();
                 }
-                return toolCalls;
+                if (!toolCalls.isEmpty()) System.out.println("[NEED_CONFIRM]");
+                return toolCalls.stream().filter(v -> v.getState() == ToolCallState.ASKING || v.getState() == ToolCallState.PENDING).toList();
             case AgentEventType.USER_CONFIRM_RESULT:
                 var userConfirmResultEvent = (UserConfirmResultEvent) event;
                 System.out.println("[USER_CONFIRM_RESULT] "
@@ -388,6 +432,7 @@ public class Sample {
                             + " stateValue=" + toolCalls2.get(i).getState().getValue()
                     );
                 }
+                if (!toolCalls2.isEmpty()) System.out.println("[NEED_EXECUTE]");
                 return toolCalls2;
             default:
                 System.out.println("!!! SKIP EVENT TYPE IS " + event.getType().getValue());
