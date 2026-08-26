@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>SSE Sample</title>
+</head>
+<body>
+
+<p id="status"></p>
+<p id="price"></p>
+<p id="announcement"></p>
+<button onclick="closeSSE()">关闭</button>
+<button onclick="restartSSE('/events')">重启</button>
+
+<script>
+    function setStatus(text) {
+        document.getElementById('status').textContent = text
+    }
+
+    function setPrice(text) {
+        document.getElementById('price').textContent = text
+    }
+
+    function setAnnouncement(text) {
+        document.getElementById('announcement').textContent = text
+    }
+
+    function startSSE(path) {
+        const es = new EventSource(path)
+        es.onopen = function (eventSource, event) {
+            console.log('onopen')
+            console.log('eventSource', eventSource)
+            console.log('event', event)
+            setStatus('已连接')
+        }
+        es.onerror = function (eventSource, event) {
+            console.log('onerror')
+            console.log('eventSource', eventSource)
+            console.log('event', event)
+            setStatus('连接中断，正在自动重连…')
+        }
+        es.onmessage = function (eventSource, event) {
+            console.log('onmessage')
+            console.log('eventSource', eventSource)
+            console.log('event', event)
+            const {price, time} = JSON.parse(eventSource.data)
+            setPrice(`最新价：${price}（${time}）`)
+        }
+        es.addEventListener('announcement', (eventSource, messageEvent) => {
+            console.log('announcement')
+            console.log('eventSource', eventSource)
+            console.log('messageEvent', messageEvent)
+            setAnnouncement(eventSource.data)
+        });
+
+        function closeSSE() {
+            es.close()
+            setStatus('已关闭')
+        }
+
+        return closeSSE
+    }
+
+    let closeSSE = startSSE('/events')
+
+    function restartSSE(path) {
+        closeSSE()
+        closeSSE = startSSE(path)
+    }
+</script>
+
+</body>
+</html>

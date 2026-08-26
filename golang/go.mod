@@ -1,6 +1,6 @@
 module gitee.com/ivfzhou/my_learning_code/study_golang
 
-go 1.23
+go 1.27
 
 require (
 	github.com/gin-gonic/autotls v1.1.1
