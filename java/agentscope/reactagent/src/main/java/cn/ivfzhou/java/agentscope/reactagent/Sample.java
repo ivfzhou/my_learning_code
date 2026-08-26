@@ -40,7 +40,9 @@ import io.agentscope.core.permission.PermissionBehavior;
 import io.agentscope.core.permission.PermissionContextState;
 import io.agentscope.core.permission.PermissionMode;
 import io.agentscope.core.permission.PermissionRule;
+import io.agentscope.core.skill.repository.FileSystemSkillRepository;
 import io.agentscope.core.state.JsonFileAgentStateStore;
+import io.agentscope.core.tool.ToolGroup;
 import io.agentscope.core.tool.Toolkit;
 import io.agentscope.core.tool.builtin.TodoTools;
 import io.agentscope.core.tool.mcp.McpClientBuilder;
@@ -60,17 +62,22 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class Sample {
+public final class Sample {
 
     static void main() throws IOException, URISyntaxException {
         var toolkit = new Toolkit();
         toolkit.registerTool(new WriteFileTool());
         toolkit.registerTool(new ShellCommandTool());
-        toolkit.registerMcpClient(McpClientBuilder.create("amap")
-                .streamableHttpTransport("https://mcp.amap.com/mcp?key=" + System.getenv("AMAP_API_KEY"))
-                .buildSync()
+        toolkit.registerMcpClient(
+                McpClientBuilder.create("amap")
+                        .streamableHttpTransport("https://mcp.amap.com/mcp?key=" + System.getenv("AMAP_API_KEY"))
+                        .buildSync()
         ).block();
         toolkit.registerTool(new TodoTools());
+
+        toolkit.createSkillToolGroup("shell-tools-group", "执行 Shell 命令", false, "mojibake-fixer"); // 当 agent 通过 load_skill_through_path 加载名为 mojibake-fixer 的 skill 时，shell-tools-group group 自动激活，其中的 tool 立即可用。
+        toolkit.registration().tool(new ShellCommandTool()).group("shell-tools-group").apply(); //  把 tool 注册到该 group。
+
         var model = DashScopeChatModel.builder()
                 .apiKey(System.getenv("DASHSCOPE_API_KEY"))
                 .modelName("qwen3-max")
@@ -80,6 +87,7 @@ public class Sample {
                 .nativeStructuredOutputWithTools(false) // 不要优先遵循 response_format 约束而跳过工具调用。
                 .build();
         // printModelCards(DashScopeCredential.builder().apiKey(System.getenv("DASHSCOPE_API_KEY")).build());
+
         var workspace = getWorkspace();
         var agent = ReActAgent.builder()
                 .name("answer-helper")
@@ -103,6 +111,8 @@ public class Sample {
                 .middleware(new TimingMiddleware())
                 .middleware(new RateLimitMiddleware(Duration.ofSeconds(3)))
                 .middleware(new StopOnAllDeniedMiddleware())
+                .skillRepository(new FileSystemSkillRepository(Path.of(System.getProperty("user.home"), ".codebuddy", "skills"), true))
+                .enableMetaTool(true) // 启用 meta tool 支持模型主动切换 group。
                 .build();
         try (agent) {
             chat(agent, "ivfzhou", "session-1");

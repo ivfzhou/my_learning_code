@@ -2,6 +2,7 @@
 
 1. [CommonMark](https://commonmark.org/) 标准文档。
 2. [GitHub Flavored Markdown (GFM)](https://github.github.com/gfm/) 标准文档。
+3. GFM 是 CommonMark 的严格超集。CommonMark 不支持表格、任务列表和删除线。
 
 # 二、语法
 
@@ -90,17 +91,17 @@
 - 使用三个反引号包围也可以形成代码块，并可在前反引号后指定一种语言。
 
     ````markdown
-    ```golang
+    ​```golang
     文本
+    ​```
     ```
-    ````
 
 #### 7.3. Mermaid 图
 
 ##### 7.3.1. 流程图
 
 ````markdown
-```mermaid
+​```mermaid
 graph TD;
     A[开始] --> B{判断};
     B -->|是| C[执行A];
@@ -110,7 +111,7 @@ graph TD;
 ```
 ````
 
-```mermaid
+​```mermaid
 graph TD;
     A[开始] --> B{判断};
     B -->|是| C[执行A];
@@ -122,14 +123,14 @@ graph TD;
 ##### 7.3.2. 序列图
 
 ````markdown
-```mermaid
+​```mermaid
 sequenceDiagram;
     Alice->>John: 你好 John, 你好吗？
     John-->>Alice: 我很好，谢谢！
 ```
 ````
 
-```mermaid
+​```mermaid
 sequenceDiagram;
     Alice->>John: 你好 John, 你好吗？
     John-->>Alice: 我很好，谢谢！
@@ -138,7 +139,7 @@ sequenceDiagram;
 ##### 7.3.4. 甘特图
 
 ````markdown
-```mermaid
+​```mermaid
 gantt
     title 项目进度
     dateFormat  YYYY-MM-DD
@@ -149,7 +150,7 @@ gantt
 ```
 ````
 
-```mermaid
+​```mermaid
 gantt
     title 项目进度
     dateFormat  YYYY-MM-DD
@@ -162,7 +163,7 @@ gantt
 ##### 7.3.5. 类图
 
 ````markdown
-```mermaid
+​```mermaid
 classDiagram
     Class01 <|-- AveryLongClass : Cool
     Class03 *-- Class04
@@ -170,7 +171,7 @@ classDiagram
 ```
 ````
 
-```mermaid
+​```mermaid
 classDiagram
     Class01 <|-- AveryLongClass : Cool
     Class03 *-- Class04
@@ -238,3 +239,19 @@ pie
 ## 11. HTML
 
 文本中编写 HTML 代码将被解释。
+
+## 12. 任务列表
+
+待办语法：`- [ ]`；已完成待办语法：`- [x]`。
+
+# 三、**YAML Frontmatter**（元数据配置块）
+
+YAML Frontmatter 不是 CommonMark 或 GFM 的标准语法，且它必须位于文件的最顶部才生效。
+
+语法：  
+
+```markdown
+---
+conent
+---
+```
