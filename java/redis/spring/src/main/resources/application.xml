@@ -1,24 +1,60 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:p="http://www.springframework.org/schema/p"
-       xmlns:c="http://www.springframework.org/schema/c"
        xmlns="http://www.springframework.org/schema/beans"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <bean name="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig" p:maxIdle="100" p:maxTotal="1000"
-          p:minIdle="1" p:maxWaitMillis="2000"/>
+    <bean id="genericObjectPoolConfig" class="org.apache.commons.pool2.impl.GenericObjectPoolConfig">
+        <property name="maxTotal" value="1000"/>
+        <property name="maxIdle" value="100"/>
+        <property name="minIdle" value="1"/>
+        <property name="maxWaitMillis" value="2000"/>
+    </bean>
+    <bean id="jedisClientConfigurationBuilder"
+          class="org.springframework.data.redis.connection.jedis.JedisClientConfiguration"
+          factory-method="builder"/>
+    <bean id="jedisPoolingBuilder"
+          factory-bean="jedisClientConfigurationBuilder"
+          factory-method="usePooling"/>
+    <bean id="jedisPoolingBuilderConfigured"
+          factory-bean="jedisPoolingBuilder"
+          factory-method="poolConfig">
+        <constructor-arg ref="genericObjectPoolConfig"/>
+    </bean>
+    <bean id="jedisClientConfigurationBuilderConfigured"
+          factory-bean="jedisPoolingBuilderConfigured"
+          factory-method="and"/>
+    <bean id="jedisClientConfiguration"
+          factory-bean="jedisClientConfigurationBuilderConfigured"
+          factory-method="build"/>
+    <bean id="standaloneConfig"
+          class="org.springframework.data.redis.connection.RedisStandaloneConfiguration">
+        <constructor-arg index="0" value="127.0.0.1"/>
+        <constructor-arg index="1" value="6379"/>
+    </bean>
+    <bean id="jedisConnectionFactory"
+          class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory">
+        <constructor-arg index="0" ref="standaloneConfig"/>
+        <constructor-arg index="1" ref="jedisClientConfiguration"/>
+    </bean>
 
-    <bean name="jedisConnectionFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory"
-          p:hostName="ivfzhoudockerredis" p:port="6379" p:poolConfig-ref="jedisPoolConfig"/>
+    <bean id="ptvBuilder" class="tools.jackson.databind.jsontype.BasicPolymorphicTypeValidator"
+          factory-method="builder"/>
+    <bean id="ptvBuilder1" factory-bean="ptvBuilder" factory-method="allowIfSubType">
+        <constructor-arg value="cn.ivfzhou.java.redis.spring.bean"/>
+    </bean>
+    <bean id="ptvBuilder2" factory-bean="ptvBuilder1" factory-method="allowIfSubType">
+        <constructor-arg value="java.util."/>
+    </bean>
+    <bean id="ptv" factory-bean="ptvBuilder2" factory-method="build"/>
+    <bean id="serializerBuilder" class="org.springframework.data.redis.serializer.GenericJacksonJsonRedisSerializer"
+          factory-method="builder"/>
+    <bean id="serializerBuilderTyped" factory-bean="serializerBuilder" factory-method="enableDefaultTyping">
+        <constructor-arg ref="ptv"/>
+    </bean>
+    <bean id="genericJacksonJsonRedisSerializer" factory-bean="serializerBuilderTyped" factory-method="build"/>
 
     <bean name="stringRedisSerializer" class="org.springframework.data.redis.serializer.StringRedisSerializer"/>
-
-    <bean name="genericJackson2JsonRedisSerializer"
-          class="org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer"/>
-
-    <bean name="jackson2JsonRedisSerializer"
-          class="org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer"
-          c:type="cn.ivfzhou.java.redis.spring.bean.User"/>
 
     <bean name="jdkSerializationRedisSerializer"
           class="org.springframework.data.redis.serializer.JdkSerializationRedisSerializer"/>
@@ -32,26 +68,32 @@
     </bean>
 
     <bean name="oxmSerializer" class="org.springframework.data.redis.serializer.OxmSerializer"
-          p:marshaller-ref="jaxb2Marshaller" p:unmarshaller-ref="jaxb2Marshaller"/>
+          p:marshaller-ref="jaxb2Marshaller"
+          p:unmarshaller-ref="jaxb2Marshaller"
+    />
 
-    <bean name="redisTemplate" class="org.springframework.data.redis.core.RedisTemplate"
-          p:connectionFactory-ref="jedisConnectionFactory" p:keySerializer-ref="stringRedisSerializer"
-          p:valueSerializer-ref="jackson2JsonRedisSerializer"/>
+    <bean name="redisStringTemplate" class="org.springframework.data.redis.core.RedisTemplate"
+          p:connectionFactory-ref="jedisConnectionFactory"
+          p:keySerializer-ref="stringRedisSerializer"
+          p:valueSerializer-ref="stringRedisSerializer"
+    />
 
-    <bean name="redisTemplate2" class="org.springframework.data.redis.core.RedisTemplate"
-          p:connectionFactory-ref="jedisConnectionFactory" p:keySerializer-ref="stringRedisSerializer"
-          p:valueSerializer-ref="stringRedisSerializer"/>
+    <bean name="redisJdkTemplate" class="org.springframework.data.redis.core.RedisTemplate"
+          p:connectionFactory-ref="jedisConnectionFactory"
+          p:keySerializer-ref="jdkSerializationRedisSerializer"
+          p:valueSerializer-ref="jdkSerializationRedisSerializer"
+    />
 
-    <bean name="redisTemplate3" class="org.springframework.data.redis.core.RedisTemplate"
-          p:connectionFactory-ref="jedisConnectionFactory" p:keySerializer-ref="jdkSerializationRedisSerializer"
-          p:valueSerializer-ref="jdkSerializationRedisSerializer"/>
+    <bean name="redisJsonTemplate" class="org.springframework.data.redis.core.RedisTemplate"
+          p:connectionFactory-ref="jedisConnectionFactory"
+          p:keySerializer-ref="stringRedisSerializer"
+          p:valueSerializer-ref="genericJacksonJsonRedisSerializer"
+    />
 
-    <bean name="redisTemplate4" class="org.springframework.data.redis.core.RedisTemplate"
-          p:connectionFactory-ref="jedisConnectionFactory" p:keySerializer-ref="stringRedisSerializer"
-          p:valueSerializer-ref="genericJackson2JsonRedisSerializer"/>
-
-    <bean name="redisTemplate5" class="org.springframework.data.redis.core.RedisTemplate"
-          p:connectionFactory-ref="jedisConnectionFactory" p:keySerializer-ref="stringRedisSerializer"
-          p:valueSerializer-ref="oxmSerializer"/>
+    <bean name="redisXmlTemplate" class="org.springframework.data.redis.core.RedisTemplate"
+          p:connectionFactory-ref="jedisConnectionFactory"
+          p:keySerializer-ref="stringRedisSerializer"
+          p:valueSerializer-ref="oxmSerializer"
+    />
 
 </beans>

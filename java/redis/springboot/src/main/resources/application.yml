@@ -1,25 +1,39 @@
 spring:
+  application:
+    name: redis-springboot
   data:
     redis:
-      cluster:
-        max-redirects: 5 # 连接失败最大重连次数。
-        nodes:
-          - ivfzhoudockerredis1:6380
-          - ivfzhoudockerredis2:6381
-          - ivfzhoudockerredis3:6382
-          - ivfzhoudockerredis4:6383
-          - ivfzhoudockerredis5:6384
-          - ivfzhoudockerredis6:6385
-      ## 连接超时时间（毫秒）。
-      timeout: 3000
-      ## Redis 数据库索引（默认为 0）。
-      database: 0
+      host: 127.0.0.1
+      port: 6379
+      username: ivfzhou
       password: 123456
+      database: 0
+      # 建立 TCP 连接超时。
+      connect-timeout: 3s
+      # 命令执行超时。
+      timeout: 2s
       lettuce:
         pool:
-          max-idle: 16
-          max-active: 32
+          # 最大连接数(0 表示不限制)。
+          max-active: 16
+          # 最大空闲连接数。
+          max-idle: 8
+          # 最小空闲连接数。
           min-idle: 1
-          max-wait: -1ms # 连接池最大阻塞等待时间，负值表示没有限制。
+          # 获取连接最大等待时间（超时抛异常），负值表示没有限制。
+          max-wait: 3s
+          # 空闲连接检测间隔。
+          time-between-eviction-runs: 30s
+
+      # cluster:
+      #   # 连接失败最大重连次数。
+      #   max-redirects: 5
+      #   nodes:
+      #     - ivfzhoudockerredis1:6380
+      #     - ivfzhoudockerredis2:6381
+      #     - ivfzhoudockerredis3:6382
+      #     - ivfzhoudockerredis4:6383
+      #     - ivfzhoudockerredis5:6384
+      #     - ivfzhoudockerredis6:6385
 server:
   port: 8080

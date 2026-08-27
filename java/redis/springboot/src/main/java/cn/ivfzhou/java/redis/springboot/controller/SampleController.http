@@ -1,0 +1,34 @@
+###
+GET http://127.0.0.1:8080/redis/ping
+
+
+###
+POST http://127.0.0.1:8080/redis/json/1
+
+
+###
+GET http://127.0.0.1:8080/redis/json/1
+
+
+###
+POST http://127.0.0.1:8080/redis/xml/2
+
+
+###
+GET http://127.0.0.1:8080/redis/xml/2
+
+
+###
+GET http://127.0.0.1:8080/redis/raw/2
+
+
+###
+POST http://127.0.0.1:8080/redis/string/3?value=value
+
+
+###
+POST http://127.0.0.1:8080/redis/hash/4/field?value=value
+
+
+###
+DELETE http://127.0.0.1:8080/redis/4

@@ -10,7 +10,7 @@
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>cn.ivfzhou.java.agentscope</groupId>
+    <groupId>cn.ivfzhou.java</groupId>
     <artifactId>agentscope-reactagent</artifactId>
     <version>1.0.0</version>
     <name>agentscope-reactagent</name>
