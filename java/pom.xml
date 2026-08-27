@@ -36,7 +36,9 @@
     </modules>
 
     <properties>
+        <!-- 源码文件的编码。被 maven-compiler-plugin 使用。 -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <!-- 报告输出内容的编码。指定 Maven 生成项目报告、站点文档时输出文件的字符编码。 -->
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>25</java.version>
 
