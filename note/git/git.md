@@ -102,7 +102,7 @@ git hash-object -t commit -w -- tmpfile
 
 ```shell
 # 提取从 <起始提交> 之后（不含它）到 <结束提交> 的所有提交
-git format-patch <起始提交>..<结束提交> -o /path/to/patches/
+git format-patch -o /path/to/patches/ <起始提交>..<结束提交>
 
 # 在目标仓库中
 git am /path/to/patches/*.patch

@@ -755,7 +755,7 @@ var2="abc"$var"123"
 
 ## 5. sed
 
-sed [*选项*] [*脚本*] [*文件*...] ：对文本查找、替换和删除处理。逐行读取输入，对于每一行，依次执行脚本中所有地址条件满足的命令，然后输出结果。省略文件时，从标准输入读取。如果斜线 / 匹配冲突可以换成别的符号作分割符。脚本由地址、命令和参数组成。
+sed *选项* *脚本* *文件*... ：对文本查找、替换和删除处理。逐行读取输入，对于每一行，依次执行脚本中所有地址条件满足的命令，然后输出结果。省略文件时，从标准输入读取。如果斜线 / 匹配冲突可以换成别的符号作分割符。脚本由地址、命令和参数组成。
 
 - 地址：
 
@@ -963,3 +963,32 @@ unzip *选项* *archive.zip*
   - -q：安静模式。
   - -P *密码*：解压带密码的压缩包。
   - -O *字符集*：指定编码。例如 `unzip -O GBK archive.zip`。
+
+## 17. curl
+
+curl *选项*... *URL*：支持多种协议，HTTP、HTTPS、FTP、SFTP、SMTP 等。
+
+- 选项：
+  - -o *文件*：将内容保存为指定文件名。
+  - -O：使用 URL 中的文件名保存。
+  - -L：跟随重定向。
+  - -X、--request：指定请求方法。
+  - -d、--data *内容*：发送数据（自动使用 POST 方法）。
+  - --data-urlencode *内容*：对数据进行 URL 编码后发送。
+  - -F、--form *内容、文件*：模拟表单提交（multipart/form-data）。例如 `-F "file=@/path/to/file.txt"`。
+  - -H、--header *键值对*：添加自定义请求头。例如 `-H "Content-Type: application/json"`。
+  - -i：在输出中包含响应头。
+  - -u、--user：基本认证。例如 `-u username:password`。
+  - -x、--proxy *地址*：通过代理服务器访问。支持 SOCKS 代理。
+  - -c *文件*：将服务器返回的 Cookie 保存到文件。
+  - -b *文件*：发送本地保存的 Cookie。
+  - -k、--insecure：跳过证书验证。
+  - --limit-rate *大小*：限制下载、上传速度，单位可为 K、M、G。例如 `--limit-rate 200K`。
+  - -v、--verbose：显示完整的请求、响应过程，包括握手信息。
+  - --connect-timeout *秒数*：连接超时时。
+  - --max-time *秒数*：整个操作的最大耗时。
+  - --retry *次数*：失败后自动重试次数。
+  - -T *文件*：上传文件到远程服务器。例如 `curl -T localfile.txt ftp://ftp.example.com/ --user user:pass`。
+  - -#：显示简单进度条。
+  - -s：静默模式。
+  - -w *模式*：输出自定义格式的变量。例如 `curl -o /dev/null -s -w "HTTP Code: %{http_code}\nTime: %{time_total}s\n" https://example.com`。
