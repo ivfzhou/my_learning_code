@@ -39,13 +39,16 @@ import io.agentscope.core.permission.PermissionContextState;
 import io.agentscope.core.permission.PermissionMode;
 import io.agentscope.core.permission.PermissionRule;
 import io.agentscope.core.skill.repository.FileSystemSkillRepository;
-import io.agentscope.core.state.JsonFileAgentStateStore;
 import io.agentscope.core.tool.Toolkit;
 import io.agentscope.core.tool.builtin.TodoTools;
 import io.agentscope.core.tool.mcp.McpClientBuilder;
 import io.agentscope.extensions.model.dashscope.DashScopeChatModel;
 import io.agentscope.extensions.model.dashscope.formatter.DashScopeChatFormatter;
+import io.agentscope.extensions.redis.RedisDistributedStore;
+import io.agentscope.extensions.redis.state.RedisAgentStateStore;
 import io.agentscope.harness.agent.HarnessAgent;
+import redis.clients.jedis.DefaultJedisClientConfig;
+import redis.clients.jedis.RedisClient;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -58,7 +61,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class Sample {
+public final class Sample {
 
     static void main() throws IOException, URISyntaxException {
         var toolkit = new Toolkit();
@@ -79,6 +82,8 @@ public class Sample {
                 .build();
 
         var workspace = getWorkspace();
+        var config = DefaultJedisClientConfig.builder().user("ivfzhou").password("123456").database(0).build();
+        var redisClient = RedisClient.builder().hostAndPort("127.0.0.1", 6379).clientConfig(config).build();
         var agent = HarnessAgent.builder()
                 .name("answer-helper")
                 .sysPrompt("你是一个全知助手，能回答各类问题。")
@@ -90,7 +95,8 @@ public class Sample {
                                 .addWorkingDirectory(workspace.toAbsolutePath().toString(), new AdditionalWorkingDirectory(workspace.toAbsolutePath().toString(), "userSettings"))
                                 .build()
                 )
-                .stateStore(new JsonFileAgentStateStore(workspace))
+                .stateStore(new RedisAgentStateStore.Builder().jedisClient(redisClient).build())
+                .distributedStore(RedisDistributedStore.fromJedis(redisClient))
                 .enableTaskList(true)
                 .skillRepository(new FileSystemSkillRepository(Path.of(System.getProperty("user.home"), ".codebuddy", "skills"), true))
                 .build();
