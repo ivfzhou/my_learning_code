@@ -1,16 +1,22 @@
-package cn.ivfzhou.java.basic.concurrent;
+package cn.ivfzhou.java.javase;
 
 import java.util.concurrent.Phaser;
 
-public final class TestPhaser {
+public final class PhaserSample {
+
+    static void main(String[] args) {
+        test();
+    }
 
     public static void test() {
-        var p = new Phaser(2);
+        final var phaser = new Phaser(2);
+
         new Thread(() -> {
             System.out.println("1");
-            p.arriveAndAwaitAdvance();
+            phaser.arriveAndAwaitAdvance();
             System.out.println("1 done");
         }).start();
+
         new Thread(() -> {
             System.out.println("2");
             try {
@@ -18,15 +24,12 @@ public final class TestPhaser {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            p.arriveAndAwaitAdvance();
+            phaser.arriveAndAwaitAdvance();
             System.out.println("2 done");
         }).start();
-        System.out.println("wait");
-        p.awaitAdvance(2);
-    }
 
-    public static void main(String[] args) {
-        test();
+        System.out.println("wait");
+        phaser.awaitAdvance(2);
     }
 
 }

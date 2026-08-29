@@ -1,11 +1,17 @@
-package cn.ivfzhou.java.basic.concurrent;
+package cn.ivfzhou.java.javase;
 
 import java.util.concurrent.Exchanger;
 
-public final class TestExchanger {
+public final class ExchangerSample {
+
+    static void main(String[] args) throws InterruptedException {
+        test();
+        Thread.sleep(3000);
+    }
 
     public static void test() {
         var e = new Exchanger<String>();
+
         new Thread(() -> {
             try {
                 System.out.println("1: " + e.exchange("1"));
@@ -13,6 +19,7 @@ public final class TestExchanger {
                 ex.printStackTrace();
             }
         }).start();
+
         new Thread(() -> {
             try {
                 System.out.println("2: " + e.exchange("2"));
@@ -20,11 +27,6 @@ public final class TestExchanger {
                 ex.printStackTrace();
             }
         }).start();
-    }
-
-    public static void main(String[] args) throws InterruptedException {
-        test();
-        Thread.sleep(1000);
     }
 
 }

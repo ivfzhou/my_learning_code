@@ -17,7 +17,7 @@
         <module>mybatis</module>
         <module>log4j</module>
         <module>spring</module>
-        <module>basic</module>
+        <module>javase</module>
         <module>aop</module>
         <module>logback</module>
         <module>springmvc</module>

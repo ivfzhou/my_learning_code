@@ -1,7 +1,6 @@
-package cn.ivfzhou.java.basic;
+package cn.ivfzhou.java.javase;
 
 import module java.sql; // Java25 模块导入声明，导入 java.sql 模块导出的所有包。
-import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -67,10 +66,10 @@ public class LanguageFeature {
         // 允许在 Lambda 参数上使用 var，结合注解
         @FunctionalInterface
         interface Matcher {
-            boolean test(@NotNull String s);
+            boolean test(String s);
         }
 
-        Matcher m = (@NotNull var s) -> s.length() > 3;
+        Matcher m = (var s) -> s.length() > 3;
     }
 
     // Java14 switch 表达式。

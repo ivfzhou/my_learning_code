@@ -1,6 +1,6 @@
-package cn.ivfzhou.java.basic;
+package cn.ivfzhou.java.javase;
 
-public final class TestMethodReference {
+public final class MethodReferenceSample {
 
     // 静态方法引用。
     // Zoo:compareZoo

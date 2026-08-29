@@ -1,11 +1,11 @@
-package cn.ivfzhou.java.basic;
+package cn.ivfzhou.java.javase;
 
 import java.util.Arrays;
 import java.util.Comparator;
 
-public final class TestLambda {
+public final class LambdaSample {
 
-    public static void main(String[] args) {
+    static void main(String[] args) {
         var list = Arrays.asList("1", "2");
 
         list.sort(new Comparator<String>() {

@@ -1,9 +1,17 @@
-package cn.ivfzhou.java.basic.lock;
+package cn.ivfzhou.java.javase;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
-public final class TestReentrantLock {
+public final class ReentrantLockSample {
+
+    static void main(String[] args) throws InterruptedException {
+        ReentrantLockSample.test();
+        ReentrantLockSample.test2();
+        ReentrantLockSample.test3();
+        ReentrantLockSample.test4();
+        Thread.sleep(3000L);
+    }
 
     public static void test() {
         var lock = new ReentrantLock();
@@ -101,14 +109,6 @@ public final class TestReentrantLock {
             System.out.println("3 out");
             lock.unlock();
         }).start();
-    }
-
-    public static void main(String[] args) throws InterruptedException {
-        TestReentrantLock.test();
-        TestReentrantLock.test2();
-        TestReentrantLock.test3();
-        TestReentrantLock.test4();
-        Thread.sleep(3000L);
     }
 
 }

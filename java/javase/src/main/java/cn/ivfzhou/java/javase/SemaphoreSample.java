@@ -1,47 +1,51 @@
-package cn.ivfzhou.java.basic.lock;
+package cn.ivfzhou.java.javase;
 
 import java.util.concurrent.Semaphore;
 
-public final class TestSemaphore {
+public final class SemaphoreSample {
+
+    static void main(String[] args) throws InterruptedException {
+        test();
+    }
 
     public static void test() throws InterruptedException {
-        var s = new Semaphore(2);
+        var semaphore = new Semaphore(2);
+
         new Thread(() -> {
             try {
                 System.out.println("1");
-                s.acquire();
+                semaphore.acquire();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
             System.out.println(1);
-            s.release();
+            semaphore.release();
         }).start();
+
         new Thread(() -> {
             try {
                 System.out.println("2");
-                s.acquire();
+                semaphore.acquire();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
             System.out.println(2);
-            s.release();
+            semaphore.release();
         }).start();
+
         new Thread(() -> {
             try {
                 System.out.println("3");
-                s.acquire();
+                semaphore.acquire();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
             System.out.println(3);
-            s.release();
+            semaphore.release();
         }).start();
-        s.acquire();
-        s.release();
-    }
 
-    public static void main(String[] args) throws InterruptedException {
-        test();
+        semaphore.acquire();
+        semaphore.release();
     }
 
 }

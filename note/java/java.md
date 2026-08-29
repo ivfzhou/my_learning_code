@@ -5,8 +5,8 @@
 1. 将源码转成 HTML 格式文档：
    
    ```shell
-   unzip lib/src.zip -d ../src
-   LANG=en_US javadoc --module-source-path ./src -d .docs -charset utf8 -docencoding utf8 --module $(ls src | sed ':a;N;$!ba;s/\n/,/g')
+   unzip lib/src.zip -d ./src
+   LANG=en_US javadoc --module-source-path ./src -d ./docs -charset utf8 -docencoding utf8 --module $(ls src | sed ':a;N;$!ba;s/\n/,/g')
    ```
    
 1. switch 作用对象为 byte、short、int、char、enum、String。

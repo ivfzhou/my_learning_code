@@ -11,15 +11,8 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>cn.ivfzhou.java</groupId>
-    <artifactId>basic</artifactId>
+    <artifactId>javase</artifactId>
     <version>1.0.0</version>
-    <name>basic</name>
+    <name>javase</name>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.jetbrains</groupId>
-            <artifactId>annotations</artifactId>
-            <version>26.0.2</version>
-        </dependency>
-    </dependencies>
 </project>
