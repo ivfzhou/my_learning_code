@@ -18,27 +18,14 @@
 # 二、使用
 
 1. gdb ./main
-
 1. break main：在 main 函数处设置断点。
-
 1. break *filename.c*:*line_number*：设置断点。
-
 1. run：开始运行。
-
 1. run *arg1* *arg2*：给 main 添加启动参数。
-
 1. next：下一行代码。
-
 1. continue：到下一个断点。
-
 1. step：进入函数。
-
 1. print *variable*：打印变量。
-
 1. backtrace：打印堆栈。
-
 1. list：显示源码。
-
 1. quit：退出。
-
-   

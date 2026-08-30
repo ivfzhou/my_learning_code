@@ -1,63 +1,48 @@
 # 一、笔记
 
 1. [Java25 语言官网文档](https://docs.oracle.com/en/java/javase/25/index.html)。
-   
 1. 将源码转成 HTML 格式文档：
-   
    ```shell
    unzip lib/src.zip -d ./src
    LANG=en_US javadoc --module-source-path ./src -d ./docs -charset utf8 -docencoding utf8 --module $(ls src | sed ':a;N;$!ba;s/\n/,/g')
    ```
-   
 1. switch 作用对象为 byte、short、int、char、enum、String。
-
 1. 方法重载：同一个类中，方法名字相同，参数列表不同。参数个数、参数数据类型、参数顺序。
-
 1. 方法重写：方法名、参数列表、返回值类型（兼容）和父类相同。
-
 1. this()、super() 只能在构造方法中第一行语句。
-
 1. 面向对象编程的七个原则：
-    - 开闭原则：软件实体应当对扩展开放，对修改关闭。
-    - 单一职责：一个类应该有且仅有一个引起它变化的原因，否则类应该被拆分。
-    - 最少知道：如果两个软件实体无须直接通信，那么就不应当发生直接的相互调用，可以通过第三方转发该调用。
-    - 里氏替换：继承必须确保超类所拥有的性质在子类中仍然成立。
-    - 接口隔离：客户端不应该被迫依赖于它不使用的方法，一个类对另一个类的依赖应该建立在最小的接口上。
-    - 依赖倒置：高层模块不应该依赖低层模块，两者都应该依赖其抽象。抽象不应该依赖细节，细节应该依赖抽象。
-    - 合成复用：尽量先使用组合或者聚合等关联关系来实现，其次才考虑使用继承关系来实现。
-    
+   - 开闭原则：软件实体应当对扩展开放，对修改关闭。
+   - 单一职责：一个类应该有且仅有一个引起它变化的原因，否则类应该被拆分。
+   - 最少知道：如果两个软件实体无须直接通信，那么就不应当发生直接的相互调用，可以通过第三方转发该调用。
+   - 里氏替换：继承必须确保超类所拥有的性质在子类中仍然成立。
+   - 接口隔离：客户端不应该被迫依赖于它不使用的方法，一个类对另一个类的依赖应该建立在最小的接口上。
+   - 依赖倒置：高层模块不应该依赖低层模块，两者都应该依赖其抽象。抽象不应该依赖细节，细节应该依赖抽象。
+   - 合成复用：尽量先使用组合或者聚合等关联关系来实现，其次才考虑使用继承关系来实现。
 1. 类之间关系：依赖、关联、聚合、组合、泛化、实现。
-
 1. 添加信任证书 `keytool -importcert -trustcacerts -alias ivfzhou -file ~/ivfzhou.pub -keystore lib/security/cacerts -cacerts`。
-
 1. synchronied 锁升级：
-    - 偏向锁 -> 自旋锁 -> 重量级锁。
-    - 如果异常，synchronied 会自动释放锁。
-    
+   - 偏向锁 -> 自旋锁 -> 重量级锁。
+   - 如果异常，synchronied 会自动释放锁。
 1. volatile 保证变量在线程间的可见性。
-
 1. SpringFrame IoC/DI、AOP：解耦。
-
 1. CGLib（ASM）Enhancer 无法代理 final 类，因为无法被继承。
-
 1. [Java9 模块化](./module_example)：
+   ```shell
+   cd module_example
+   mkdir mods
    
-    ```shell
-    cd module_example
-    mkdir mods
-    
-    # 编译模块 A：
-    javac -d mods/cn.ivfzhou.moduleA --module-path mods $(find src/cn.ivfzhou.moduleA -name *.java)
-    
-    # 编译模块 B：
-    javac -d mods/cn.ivfzhou.moduleB --module-path mods $(find src/cn.ivfzhou.moduleB -name *.java)
-    
-    # 运行模块 B：
-    java --module-path mods -m cn.ivfzhou.moduleB/cn.ivfzhou.moduleB.MainB
-    
-    # 一次性编译所有模块，避免模块循环依赖：
-    javac --module-source-path src -d mods --module cn.ivfzhou.moduleA,cn.ivfzhou.moduleB
-    ```
+   # 编译模块 A：
+   javac -d mods/cn.ivfzhou.moduleA --module-path mods $(find src/cn.ivfzhou.moduleA -name *.java)
+   
+   # 编译模块 B：
+   javac -d mods/cn.ivfzhou.moduleB --module-path mods $(find src/cn.ivfzhou.moduleB -name *.java)
+   
+   # 运行模块 B：
+   java --module-path mods -m cn.ivfzhou.moduleB/cn.ivfzhou.moduleB.MainB
+   
+   # 一次性编译所有模块，避免模块循环依赖：
+   javac --module-source-path src -d mods --module cn.ivfzhou.moduleA,cn.ivfzhou.moduleB
+   ```
 
 # 二、注解
 
@@ -130,11 +115,11 @@ abstract、boolean、break、byte、case、catch、char、class、const、contin
 # 十、成员变量和局部变量的区别
 
 1. 定义的位置不同：
-    - 成员变量：定义于类中，作用于整个类。
-    - 局部变量：定义于方法或者语句中，作用于该方法或者该语句。
+   - 成员变量：定义于类中，作用于整个类。
+   - 局部变量：定义于方法或者语句中，作用于该方法或者该语句。
 1. 内存中出现的时间和位置不同：
-    - 成员变量：当对象被创建时，出现在堆内存当中。
-    - 局部变量：所属的区间被运算时，出现在栈内存当中。
+   - 成员变量：当对象被创建时，出现在堆内存当中。
+   - 局部变量：所属的区间被运算时，出现在栈内存当中。
 1. 生命周期不同：
     - 成员变量：随着对象的出现而出现，随着对象的消失而消失。
     - 局部变量：随着所属区间运算结束，它就被释放。

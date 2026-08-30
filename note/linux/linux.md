@@ -17,86 +17,70 @@
 # 二、文件类型
 
 1. \- 普通文件
-
-2. d 目录
-
-3.  l 链接文件
-
-4.  p 管理文件
-
-5. b 设备文件
-
-6. c 设备文件
-
-7. s 套接字文件
-
-8. f 命令管道
+. d 目录
+.  l 链接文件
+.  p 管理文件
+. b 设备文件
+. c 设备文件
+. s 套接字文件
+. f 命令管道
 
 # 三、文件权限
 
 1. 文件的权限含义：r 可以查看内容，w 可以修改内容，x 可以执行。
-
-2. 文件夹的权限含义：r 可以查看文件夹下文件名和目录名，w 可以删除增加文件夹下文件和目录，x 可以 cd 到该文件夹下，可以看到文件权限信息。
-
-3. 特殊权限 suid4：用于二进制可执行文件，执行命令时获得文件属主权限。例如 passwd。
-
-4. 特殊权限 sgid2：用于目录，在该目录下创建文件和目录，权限自动更改为该目录的属组。用于文件共享。
-
-5. 特殊权限 sbit1：用于目录，在该目录下创建文件和目录时，仅 root 和自己可以删除。
+1. 文件夹的权限含义：r 可以查看文件夹下文件名和目录名，w 可以删除增加文件夹下文件和目录，x 可以 cd 到该文件夹下，可以看到文件权限信息。
+1. 特殊权限 suid4：用于二进制可执行文件，执行命令时获得文件属主权限。例如 passwd。
+1. 特殊权限 sgid2：用于目录，在该目录下创建文件和目录，权限自动更改为该目录的属组。用于文件共享。
+1. 特殊权限 sbit1：用于目录，在该目录下创建文件和目录时，仅 root 和自己可以删除。
 
 # 四、Debian 软件源配置
 
 1. 配置所在路径：/etc/apt/sources.list。源配置例子。
-
-    ```
-    deb http://ftp.cn.debian.org/debian bookworm main non-free non-free-firmware contrib
-    deb-src http://ftp.cn.debian.org/debian bookworm main non-free non-free-firmware contrib
-    
-    deb http://ftp.cn.debian.org/debian-security bookworm-security main
-    deb-src http://ftp.cn.debian.org/debian-security bookworm-security main
-    
-    deb http://ftp.cn.debian.org/debian/ bookworm-updates main non-free non-free-firmware contrib
-    deb-src http://ftp.cn.debian.org/debian bookworm-updates main non-free non-free-firmware contrib
-    
-    deb http://ftp.cn.debian.org/debian/ bookworm-backports main non-free non-free-firmware contrib
-    deb-src http://ftp.cn.debian.org/debian bookworm-backports main non-free non-free-firmware contrib
-    ```
-
-2. Debian WSL 上的默认配置：
-
-    ```
-    deb http://deb.debian.org/debian bookworm main
-    deb http://deb.debian.org/debian bookworm-updates main
-    deb http://security.debian.org/debian-security bookworm-security main
-    deb http://ftp.debian.org/debian bookworm-backports main
-    ```
-
-3. Debian 官方配置：
-
-    ```
-    deb http://deb.debian.org/debian/ bookworm main contrib non-free-firmware non-free
-    deb-src http://deb.debian.org/debian/ bookworm main contrib non-free-firmware non-free
-    
-    deb http://security.debian.org/debian-security/ bookworm-security main contrib non-free-firmware non-free
-    deb-src http://security.debian.org/debian-security/ bookworm-security main contrib non-free-firmware non-free
-    
-    deb http://deb.debian.org/debian/ bookworm-updates main non-free non-free-firmware contrib
-    deb-src http://deb.debian.org/debian/ bookworm-updates main non-free non-free-firmware contrib
-    
-    deb http://ftp.debian.org/debian/ bookworm-backports main contrib non-free non-free-firmware
-    deb-src http://ftp.debian.org/debian/ bookworm-backports main contrib non-free non-free-firmware
-    ```
+   ```
+   deb http://ftp.cn.debian.org/debian bookworm main non-free non-free-firmware contrib
+   deb-src http://ftp.cn.debian.org/debian bookworm main non-free non-free-firmware contrib
+   
+   deb http://ftp.cn.debian.org/debian-security bookworm-security main
+   deb-src http://ftp.cn.debian.org/debian-security bookworm-security main
+   
+   deb http://ftp.cn.debian.org/debian/ bookworm-updates main non-free non-free-firmware contrib
+   deb-src http://ftp.cn.debian.org/debian bookworm-updates main non-free non-free-firmware contrib
+   
+   deb http://ftp.cn.debian.org/debian/ bookworm-backports main non-free non-free-firmware contrib
+   deb-src http://ftp.cn.debian.org/debian bookworm-backports main non-free non-free-firmware contrib
+   ```
+1. Debian WSL 上的默认配置：
+   ```
+   deb http://deb.debian.org/debian bookworm main
+   deb http://deb.debian.org/debian bookworm-updates main
+   deb http://security.debian.org/debian-security bookworm-security main
+   deb http://ftp.debian.org/debian bookworm-backports main
+   ```
+1. Debian 官方配置：
+   ```
+   deb http://deb.debian.org/debian/ bookworm main contrib non-free-firmware non-free
+   deb-src http://deb.debian.org/debian/ bookworm main contrib non-free-firmware non-free
+   
+   deb http://security.debian.org/debian-security/ bookworm-security main contrib non-free-firmware non-free
+   deb-src http://security.debian.org/debian-security/ bookworm-security main contrib non-free-firmware non-free
+   
+   deb http://deb.debian.org/debian/ bookworm-updates main non-free non-free-firmware contrib
+   deb-src http://deb.debian.org/debian/ bookworm-updates main non-free non-free-firmware contrib
+   
+   deb http://ftp.debian.org/debian/ bookworm-backports main contrib non-free non-free-firmware
+   deb-src http://ftp.debian.org/debian/ bookworm-backports main contrib non-free non-free-firmware
+   ```
 
 # 五、LVM 操作案例
 
-## 1. LV 扩容
+## 5.1 LV 扩容
 
 ```shell
 sudo lvresize -L +10GiB /dev/vg/var
 sudo resize2fs /dev/mapper/vg-var
 ```
 
-## 2. LV 缩容
+## 5.2 LV 缩容
 
 ```shell
 sudo lsof | grep '/dev/mapper/vg-var' # 查看文件占用进程
@@ -108,7 +92,7 @@ sudo lvreduce -L 50G /dev/vg/var
 mount /dev/mapper/vg-var /var
 ```
 
-## 3. PV 缩减
+## 5.3 PV 缩减
 
 ```shell
 sudo pvmove /dev/nvme0n1p7 # 将使用的PE转移到别的PV上去
@@ -116,7 +100,7 @@ pvmove -n /dev/vg01/lv01 /dev/sdb1 /dev/sdc1 # 将/dev/sdb1上的所有 PE 移�
 sudo vgreduce vg /dev/nvmeon1p7
 ```
 
-## 4. PV 缩容
+## 5.4 PV 缩容
 
 ```shell
 sudo fdisk -l
@@ -126,14 +110,14 @@ sudo pvresize --setphysicalvolumesize 40GiB /dev/xxx
 sudo pvresize /dev/xxx
 ```
 
-## 5. PV 增加
+## 5.5 PV 增加
 
 ```shell
 sudo pvcreate /dev/nvmeon1p7
 sudo vgextend vg /dev/nvmeon1p7
 ```
 
-## 6. 删除分区
+## 5.6 删除分区
 
 ```shell
 sudo parted -l
@@ -143,7 +127,7 @@ print
 rm 7
 ```
 
-## 7. 分区缩容
+## 5.7 分区缩容
 
 ```shell
 fdisk /dev/xxx
@@ -156,25 +140,17 @@ w
 # 六、openssl 操作案例
 
 1. 生成私钥：
-
    ```shell
    openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:2048 -aes256 -pass pass:123456 -out pkey_rsa_2048_aes256cbc_123456.p8.pem
    openssl genpkey -algorithm EC -pkeyopt ec_paramgen_curve:P-256 -aes256 -pass pass:123456 -out pkey_ecdsa_128_aes256cbc_123456.p8.pem
    openssl genpkey -algorithm ED25519 -aes256 -pass pass:123456 -out pkey_eddsa_25519_aes256cbc_123456.p8.pem
    ```
-
-2. RSA 私钥转成 PKCS#1 格式：`openssl pkey -traditional -in pkey_rsa_2048_aes256cbc_123456.p8.pem -passin pass:123456 -aes256 -out pkey_rsa_2048_aes256cbc_123456.p1.pem -passout pass:123456`
-
-3. 查看私钥的对称加密算法：`openssl asn1parse -in pkey_rsa_2048_aes256cbc_123456.p8.pem`
-
-4. 查看私钥位数信息：`openssl pkey -in pkey_rsa_2048_aes256cbc_123456.p8.pem -passin pass:123456 -text -noout`
-
-5. 计算私钥的公钥：`openssl pkey -pubout -in pkey_rsa_2048_aes256cbc_123456.p8.pem -passin pass:123456 -out pubkey_rsa_2048.spki.pem`
-
-6. 查看公钥算法：`openssl asn1parse -in pubkey_rsa_2048.spki.pem`
-
-7. 生成证书签名请求: 
-
+1. RSA 私钥转成 PKCS#1 格式：`openssl pkey -traditional -in pkey_rsa_2048_aes256cbc_123456.p8.pem -passin pass:123456 -aes256 -out pkey_rsa_2048_aes256cbc_123456.p1.pem -passout pass:123456`
+1. 查看私钥的对称加密算法：`openssl asn1parse -in pkey_rsa_2048_aes256cbc_123456.p8.pem`
+1. 查看私钥位数信息：`openssl pkey -in pkey_rsa_2048_aes256cbc_123456.p8.pem -passin pass:123456 -text -noout`
+1. 计算私钥的公钥：`openssl pkey -pubout -in pkey_rsa_2048_aes256cbc_123456.p8.pem -passin pass:123456 -out pubkey_rsa_2048.spki.pem`
+1. 查看公钥算法：`openssl asn1parse -in pubkey_rsa_2048.spki.pem`
+1. 生成证书签名请求: 
    ```shell
    C=Country 国家代码
    CN=CommonName 通用名称
@@ -187,149 +163,123 @@ w
    DC=DomainComponent 域名组件
    openssl req -new -key pkey_rsa_2048_aes256cbc_123456.p8.pem -passin pass:123456 -subj "/C=CN/ST=Hunan/L=Changsha/O=ivfzhou test/CN=rsa_ca_cert" -out csr_rsa_ca.p10.pem
    ```
-
-8. 用私钥自签名证书：`openssl x509 -req -in csr_rsa_ca.p10.pem -signkey pkey_rsa_2048_aes256cbc_123456.p8.pem -passin pass:123456 -days 3650 -sha256 -extfile ca_ext.cnf -out cert_rsa_ca.x509.pem`
-
-9. 查看证书内容：`openssl x509 -in cert_rsa_ca.x509.pem -text -noout -fingerprint`
-
-10. 从证书中提取公钥：`openssl x509 -in cert_rsa_ca.x509.pem -pubkey -noout -out pubkey_rsa_2048.spki.pem`
-
-11. 签发证书：`openssl x509 -req -in csr_rsa_sign.p10.pem -CAkey pkey_rsa_2048_aes256cbc_123456.p8.pem -passin pass:123456 -CA cert_rsa_ca.x509.pem -CAcreateserial -sha256 -days 365 -out cert_rsa_sign.x509.pem`
-
-12. PEM 与 DER 编码互转：
-
-    ```shell
-    openssl pkey -in pkey_rsa_2048_aes256cbc_123456.p8.pem -inform pem -passin pass:123456 -out pkey_rsa_2048.p8.der -outform der
-    openssl pkey -pubin -in pubkey_rsa_2048.spki.pem -inform pem -out pubkey_rsa_2048.spki.der -outform der
-    openssl x509 -in cert_rsa_ca.x509.pem -inform pem -out cert_rsa_ca.x509.der -outform der
-    openssl req -in csr_rsa_ca.p10.pem -inform pem -out csr_rsa_ca.p10.der -outform der
-    openssl pkey -in pkey_rsa_2048.p8.der -inform der -out pkey_rsa_2048_aes256cbc_123456.p8.pem -outform pem -aes256 -passout pass:123456
-    ```
-
-13. 私钥与证书合并成 PKCS#12 格式：`openssl pkcs12 -export -inkey pkey_rsa_2048_aes256cbc_123456.p8.pem -passin pass:123456 -in cert_rsa_ca.x509.pem -certfile csr_rsa_ca.p10.pem -out cert_rsa_sign_123456.p12.der -passout pass:123456`
-
-14. 查看 PKCS#12 里证书信息：`openssl pkcs12 -in cert_rsa_sign_123456.p12.der -passin pass:123456 -nokeys -info`
-
-15. PKCS#12 中导出私钥：`openssl pkcs12 -in cert_rsa_sign_123456.p12.der -passin pass:123456 -out pkey_rsa_2048_aes256cbc_123456.p8.pem -passout pass:123456 -nocerts`
-
-16. PKCS#12 中导出证书：`openssl pkcs12 -in cert_rsa_sign_123456.p12.der -passin pass:123456 -out cert_rsa_sign.x509.pem -nokeys`
-
-17. 验证签名：`openssl verify -CAfile cert_rsa_ca.x509.pem -untrusted cert_rsa_middle_ca.x509.pem cert_rsa_sign.pem`
-
-18. 对证书请求签名：`openssl sha1 -sign ivfzhou1.pem.key ivfzhou1.der.csr > sha1.sign`
-
-19. 判断证书和私钥模数：`openssl [rsa | x509] -noout -modulus -in <file>`
-
-20. 校验私钥签名：`openssl dgst -sha1 -verify <pub> -signature <sign> <origin>`
-
-21. 从签名数据中获取散列值：`openssl rsautl -verify -pubin -inkey <pub> -in <sign> -out <hash>`
-
-22. 例子，[ca_ext.cnf](./ca_ext.cnf)、[server_ext.cnf](./server_ext.cnf)、[code_ext.cnf](./code_ext.cnf)、[client_ext.cnf](./client_ext.cnf)、[email_ext.cnf](./email_ext.cnf)、[time_ext.cnf](./time_ext.cnf)、[ocsp_ext.cnf](./ocsp_ext.cnf)：
-
-    ```shell
-    # 生成根 CA。
-    openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:2048 -aes256 -pass pass:123456 -out pkey_rsa_2048_aes256cbc_123456.p8.pem
-    openssl req -new -key pkey_rsa_2048_aes256cbc_123456.p8.pem -passin pass:123456 -subj "/C=CN/ST=Hunan/L=Changsha/O=ivfzhou test/CN=rsa_ca_cert" -out csr_rsa_ca.p10.pem
-    openssl x509 -req -in csr_rsa_ca.p10.pem -signkey pkey_rsa_2048_aes256cbc_123456.p8.pem -passin pass:123456 -days 3650 -sha256 -extfile ./ca_ext.cnf -out cert_rsa_ca.x509.pem
-    
-    # 生成中间 CA。
-    openssl genpkey -algorithm EC -pkeyopt ec_paramgen_curve:P-256 -aes256 -pass pass:123456 -out pkey_ecdsa_128_aes256cbc_123456.p8.pem
-    openssl req -new -key pkey_ecdsa_128_aes256cbc_123456.p8.pem -passin pass:123456 -subj "/C=CN/ST=Hunan/L=Changsha/O=ivfzhou test/CN=ecdsa_middle_ca_cert" -out csr_ecdsa_middle_ca.p10.pem
-    openssl x509 -req -in csr_ecdsa_middle_ca.p10.pem -CAkey pkey_rsa_2048_aes256cbc_123456.p8.pem -passin pass:123456 -CA cert_rsa_ca.x509.pem -CAcreateserial -sha256 -days 1825 -extfile ./ca_ext.cnf -out cert_ecdsa_middle_ca.x509.pem
-    
-    # 生成服务器证书。
-    openssl genpkey -algorithm ED25519 -aes256 -pass pass:123456 -out pkey_server_eddsa_25519_aes256cbc_123456.p8.pem
-    openssl req -new -key pkey_server_eddsa_25519_aes256cbc_123456.p8.pem -passin pass:123456 -subj "/C=CN/ST=Hunan/L=Changsha/O=ivfzhou test/CN=eddsa_server_cert" -out csr_server_eddsa.p10.pem
-    openssl x509 -req -in csr_server_eddsa.p10.pem -CAkey pkey_ecdsa_128_aes256cbc_123456.p8.pem -passin pass:123456 -CA cert_ecdsa_middle_ca.x509.pem -CAcreateserial -sha256 -days 365 -extfile ./server_ext.cnf -out cert_server_eddsa.x509.pem
-    
-    # 将服务证书合成 PFX 格式，校验 CA 与证书的关联性。
-    openssl pkcs12 -export -inkey pkey_server_eddsa_25519_aes256cbc_123456.p8.pem -passin pass:123456 -in cert_server_eddsa.x509.pem -certfile cert_ecdsa_middle_ca.x509.pem -out cert_server_eddsa_123456.p12.der -passout pass:123456
-    openssl verify -CAfile cert_rsa_ca.x509.pem -untrusted cert_ecdsa_middle_ca.x509.pem cert_server_eddsa.x509.pem
-    
-    # 生成代码签名证书。
-    openssl genpkey -algorithm ED25519 -aes256 -pass pass:123456 -out pkey_code_eddsa_25519_aes256cbc_123456.p8.pem
-    openssl req -new -key pkey_code_eddsa_25519_aes256cbc_123456.p8.pem -passin pass:123456 -subj "/C=CN/ST=Hunan/L=Changsha/O=ivfzhou test/CN=eddsa_code_cert" -out csr_code_eddsa.p10.pem
-    openssl x509 -req -in csr_code_eddsa.p10.pem -CAkey pkey_ecdsa_128_aes256cbc_123456.p8.pem -passin pass:123456 -CA cert_ecdsa_middle_ca.x509.pem -CAcreateserial -sha256 -days 365 -extfile ./code_ext.cnf -out cert_code_eddsa.x509.pem
-    
-    # 将代码签名证书合成 PFX 格式，校验 CA 与证书的关联性。
-    openssl pkcs12 -export -inkey pkey_code_eddsa_25519_aes256cbc_123456.p8.pem -passin pass:123456 -in cert_code_eddsa.x509.pem -certfile cert_ecdsa_middle_ca.x509.pem -out cert_code_eddsa_123456.p12.der -passout pass:123456
-    openssl verify -CAfile cert_rsa_ca.x509.pem -untrusted cert_ecdsa_middle_ca.x509.pem cert_code_eddsa.x509.pem
-    ```
+1. 用私钥自签名证书：`openssl x509 -req -in csr_rsa_ca.p10.pem -signkey pkey_rsa_2048_aes256cbc_123456.p8.pem -passin pass:123456 -days 3650 -sha256 -extfile ca_ext.cnf -out cert_rsa_ca.x509.pem`
+1. 查看证书内容：`openssl x509 -in cert_rsa_ca.x509.pem -text -noout -fingerprint`
+1. 从证书中提取公钥：`openssl x509 -in cert_rsa_ca.x509.pem -pubkey -noout -out pubkey_rsa_2048.spki.pem`
+1. 签发证书：`openssl x509 -req -in csr_rsa_sign.p10.pem -CAkey pkey_rsa_2048_aes256cbc_123456.p8.pem -passin pass:123456 -CA cert_rsa_ca.x509.pem -CAcreateserial -sha256 -days 365 -out cert_rsa_sign.x509.pem`
+1. PEM 与 DER 编码互转：
+   ```shell
+   openssl pkey -in pkey_rsa_2048_aes256cbc_123456.p8.pem -inform pem -passin pass:123456 -out pkey_rsa_2048.p8.der -outform der
+   openssl pkey -pubin -in pubkey_rsa_2048.spki.pem -inform pem -out pubkey_rsa_2048.spki.der -outform der
+   openssl x509 -in cert_rsa_ca.x509.pem -inform pem -out cert_rsa_ca.x509.der -outform der
+   openssl req -in csr_rsa_ca.p10.pem -inform pem -out csr_rsa_ca.p10.der -outform der
+   openssl pkey -in pkey_rsa_2048.p8.der -inform der -out pkey_rsa_2048_aes256cbc_123456.p8.pem -outform pem -aes256 -passout pass:123456
+   ```
+1. 私钥与证书合并成 PKCS#12 格式：`openssl pkcs12 -export -inkey pkey_rsa_2048_aes256cbc_123456.p8.pem -passin pass:123456 -in cert_rsa_ca.x509.pem -certfile csr_rsa_ca.p10.pem -out cert_rsa_sign_123456.p12.der -passout pass:123456`
+1. 查看 PKCS#12 里证书信息：`openssl pkcs12 -in cert_rsa_sign_123456.p12.der -passin pass:123456 -nokeys -info`
+1. PKCS#12 中导出私钥：`openssl pkcs12 -in cert_rsa_sign_123456.p12.der -passin pass:123456 -out pkey_rsa_2048_aes256cbc_123456.p8.pem -passout pass:123456 -nocerts`
+1. PKCS#12 中导出证书：`openssl pkcs12 -in cert_rsa_sign_123456.p12.der -passin pass:123456 -out cert_rsa_sign.x509.pem -nokeys`
+1. 验证签名：`openssl verify -CAfile cert_rsa_ca.x509.pem -untrusted cert_rsa_middle_ca.x509.pem cert_rsa_sign.pem`
+1. 对证书请求签名：`openssl sha1 -sign ivfzhou1.pem.key ivfzhou1.der.csr > sha1.sign`
+1. 判断证书和私钥模数：`openssl [rsa | x509] -noout -modulus -in <file>`
+1. 校验私钥签名：`openssl dgst -sha1 -verify <pub> -signature <sign> <origin>`
+1. 从签名数据中获取散列值：`openssl rsautl -verify -pubin -inkey <pub> -in <sign> -out <hash>`
+1. 例子，[ca_ext.cnf](./ca_ext.cnf)、[server_ext.cnf](./server_ext.cnf)、[code_ext.cnf](./code_ext.cnf)、[client_ext.cnf](./client_ext.cnf)、[email_ext.cnf](./email_ext.cnf)、[time_ext.cnf](./time_ext.cnf)、[ocsp_ext.cnf](./ocsp_ext.cnf)：
+   ```shell
+   # 生成根 CA。
+   openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:2048 -aes256 -pass pass:123456 -out pkey_rsa_2048_aes256cbc_123456.p8.pem
+   openssl req -new -key pkey_rsa_2048_aes256cbc_123456.p8.pem -passin pass:123456 -subj "/C=CN/ST=Hunan/L=Changsha/O=ivfzhou test/CN=rsa_ca_cert" -out csr_rsa_ca.p10.pem
+   openssl x509 -req -in csr_rsa_ca.p10.pem -signkey pkey_rsa_2048_aes256cbc_123456.p8.pem -passin pass:123456 -days 3650 -sha256 -extfile ./ca_ext.cnf -out cert_rsa_ca.x509.pem
+   
+   # 生成中间 CA。
+   openssl genpkey -algorithm EC -pkeyopt ec_paramgen_curve:P-256 -aes256 -pass pass:123456 -out pkey_ecdsa_128_aes256cbc_123456.p8.pem
+   openssl req -new -key pkey_ecdsa_128_aes256cbc_123456.p8.pem -passin pass:123456 -subj "/C=CN/ST=Hunan/L=Changsha/O=ivfzhou test/CN=ecdsa_middle_ca_cert" -out csr_ecdsa_middle_ca.p10.pem
+   openssl x509 -req -in csr_ecdsa_middle_ca.p10.pem -CAkey pkey_rsa_2048_aes256cbc_123456.p8.pem -passin pass:123456 -CA cert_rsa_ca.x509.pem -CAcreateserial -sha256 -days 1825 -extfile ./ca_ext.cnf -out cert_ecdsa_middle_ca.x509.pem
+   
+   # 生成服务器证书。
+   openssl genpkey -algorithm ED25519 -aes256 -pass pass:123456 -out pkey_server_eddsa_25519_aes256cbc_123456.p8.pem
+   openssl req -new -key pkey_server_eddsa_25519_aes256cbc_123456.p8.pem -passin pass:123456 -subj "/C=CN/ST=Hunan/L=Changsha/O=ivfzhou test/CN=eddsa_server_cert" -out csr_server_eddsa.p10.pem
+   openssl x509 -req -in csr_server_eddsa.p10.pem -CAkey pkey_ecdsa_128_aes256cbc_123456.p8.pem -passin pass:123456 -CA cert_ecdsa_middle_ca.x509.pem -CAcreateserial -sha256 -days 365 -extfile ./server_ext.cnf -out cert_server_eddsa.x509.pem
+   
+   # 将服务证书合成 PFX 格式，校验 CA 与证书的关联性。
+   openssl pkcs12 -export -inkey pkey_server_eddsa_25519_aes256cbc_123456.p8.pem -passin pass:123456 -in cert_server_eddsa.x509.pem -certfile cert_ecdsa_middle_ca.x509.pem -out cert_server_eddsa_123456.p12.der -passout pass:123456
+   openssl verify -CAfile cert_rsa_ca.x509.pem -untrusted cert_ecdsa_middle_ca.x509.pem cert_server_eddsa.x509.pem
+   
+   # 生成代码签名证书。
+   openssl genpkey -algorithm ED25519 -aes256 -pass pass:123456 -out pkey_code_eddsa_25519_aes256cbc_123456.p8.pem
+   openssl req -new -key pkey_code_eddsa_25519_aes256cbc_123456.p8.pem -passin pass:123456 -subj "/C=CN/ST=Hunan/L=Changsha/O=ivfzhou test/CN=eddsa_code_cert" -out csr_code_eddsa.p10.pem
+   openssl x509 -req -in csr_code_eddsa.p10.pem -CAkey pkey_ecdsa_128_aes256cbc_123456.p8.pem -passin pass:123456 -CA cert_ecdsa_middle_ca.x509.pem -CAcreateserial -sha256 -days 365 -extfile ./code_ext.cnf -out cert_code_eddsa.x509.pem
+   
+   # 将代码签名证书合成 PFX 格式，校验 CA 与证书的关联性。
+   openssl pkcs12 -export -inkey pkey_code_eddsa_25519_aes256cbc_123456.p8.pem -passin pass:123456 -in cert_code_eddsa.x509.pem -certfile cert_ecdsa_middle_ca.x509.pem -out cert_code_eddsa_123456.p12.der -passout pass:123456
+   openssl verify -CAfile cert_rsa_ca.x509.pem -untrusted cert_ecdsa_middle_ca.x509.pem cert_code_eddsa.x509.pem
+   ```
 
 # 七、配置文件
 
-## 1. 启动配置
+## 7.1 启动配置
 
 - /usr/lib/systemd/system  
-
 - runlevelx.target
 
-## 2. sudo 配置
+## 7.2 sudo 配置
 
 - 文件所在位置：/etc/sudoers  
-
 - 使用 visudo 编辑  
-
 - 配置格式：user host=(asuser:asgroup) NOPASSWD: command，使用 ALL 表示所有，%sudo 表示 sudo 用户组成员。
 
-## 3. DNS
+## 7.3 DNS
 
 - 路径：/etc/resolv.conf  
-
 - 内容：nameserver 114.114.114.114
 
-## 4. gnome 桌面图标配置路径
+## 7.4 gnome 桌面图标配置路径
 
 - 全用户图标位置：/usr/share/applications/
-
 - 用户图标位置：$HOME/.local/share/applications
-
 - 图标配置例子 vscode.desktop：
+  ```desktop
+  [Desktop Entry]
+  Version=1.0
+  Type=Application
+  Name=VSCode
+  Icon=/home/ivfzhou/programs/vscode/resources/app/resources/linux/code.png
+  Exec=/home/ivfzhou/programs/vscode/code
+  Comment=VSCode
+  Categories=Development;IDE;
+  Terminal=false
+  StartupNotify=true
+  StartupWMClass=code
+  ```
 
-    ```desktop
-    [Desktop Entry]
-    Version=1.0
-    Type=Application
-    Name=VSCode
-    Icon=/home/ivfzhou/programs/vscode/resources/app/resources/linux/code.png
-    Exec=/home/ivfzhou/programs/vscode/code
-    Comment=VSCode
-    Categories=Development;IDE;
-    Terminal=false
-    StartupNotify=true
-    StartupWMClass=code
-    ```
-
-## 5. 启动脚本目录
+## 7.5 启动脚本目录
 
 - /etc/init.d/
 
-## 6. 启动挂载配置
+## 7.6 启动挂载配置
 
 - /etc/fstab  
-
 - FileSystem Dir Type Options Dump Pass
 
-## 7. 定义用户文件夹名配置文件位置
+## 7.7 定义用户文件夹名配置文件位置
 
 - /home/xxx/.config/user-dirs.dirs
 
-## 8. 内核配置文件路径
+## 7.8 内核配置文件路径
 
 - /boot/configxxx
 
-## 9. SELinux 配置文件路径
+## 7.9 SELinux 配置文件路径
 
 - /etc/selinux/config
 
-## 10. 用户配置文件
+## 7.10 用户配置文件
 
 - /etc/passwd 七段：名、是否需要密码、uid、gid、注释、家路径、命令解释器。  
   /etc/shadow 存贮密码。用户名、密码、最后一修改时间、最小修改时间间隔、密码有效期、密码需要更改前的警告天数、密码过期后的宽限天数、账号失效时间、保留字段。  
-
 - /etc/group 用户组名、组密码、gid、组内成员。
 
-## 11. 网卡配置路径
+## 7.11 网卡配置路径
 
 - /etc/sysconfig/network-scripts/
   - BOOTPROTO=dhcp 或者 static none，动态或者静态地址 IP。
@@ -338,34 +288,23 @@ w
   - DEVICE 网卡名。
   - ONBOOT=yes 或者 no 开机启动与否。
 
-## 12. 系统信息路径
+## 7.12 系统信息路径
 
 - /proc/cpuinfo 显示 cpu 信息。
-
 - /proc/interrupts 显示中断。
-
 - /proc/meminfo 校验内存使用。
-
 - /proc/swaps 显示 swap 使用。
-
 - /proc/version 显示内核版本。
-
 - /proc/net/dev 显示网络适配器及统计。
-
 - /proc/mounts 显示已加载的文件系统。
-
 - /proc/pid/fd 程序输入输出。
-
 - /proc/pid/cwd 运行目录。
 
-## 13. 进程日志信息
+## 7.13 进程日志信息
 
 - /var/log/cron 周期性的程序日志。
-
 - /var/log/secure 安全日志。
-
 - /var/log/message 异常信息。
-
 - /var/log/dmesg 内核日志。
 
 # 八、导入证书
@@ -440,59 +379,50 @@ sudo ln -s /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 # 十二、设置 apt 网络代理
 
 1. 配置 apt 网络代理，配置文件路径：/etc/apt/apt.conf.d/proxy.conf。配置内容：
+   ```conf
+   Acquire {
+     HTTP::proxy "http://127.0.0.1:8889";
+     HTTPS::proxy "http://127.0.0.1:8889";
+   }
+   ```
 
-    ```conf
-    Acquire {
-      HTTP::proxy "http://127.0.0.1:8889";
-      HTTPS::proxy "http://127.0.0.1:8889";
-    }
-    ```
-
-    ```conf
-    Acquire {
-      HTTP::proxy::download.docker.com "http://127.0.0.1:8889";
-      HTTPS::proxy::download.docker.com "http://127.0.0.1:8889;
-    }
+   ```conf
+   Acquire {
+     HTTP::proxy::download.docker.com "http://127.0.0.1:8889";
+     HTTPS::proxy::download.docker.com "http://127.0.0.1:8889;
+   }
     ```
 
 # 十三、配置 Debian 网络
 
 1. ip link show：查看网络。
+1. ip link set *eth0* up：启用网卡 *eth0*。
+1. ip addr add 192.168.137.128/24 dev eth0：配置网卡 ip。
+1. ip route add default via 192.168.137.1 dev eth0：配置网卡网关。
+1. echo "nameserver 114.114.114.114" > /etc/resolv.conf
+1. ping baidu.com
+1. sudo systemctl restart networking：重启网络。
+1. 编辑 /etc/network/interfaces 设置永久网卡配置。
+   ```
+   auto eth0
+   iface eth0 inet static
+       address 192.168.42.128
+       netmask 255.255.255.0
+       gateway 192.168.42.2
+       dns-nameservers 114.114.114.114 8.8.8.8 8.8.4.4
+   ```
 
-2. ip link set *eth0* up：启用网卡 *eth0*。
+   ```
+   auto eth0
+   iface eth0 inet dhcp
+   ```
 
-3. ip addr add 192.168.137.128/24 dev eth0：配置网卡 ip。
-
-4. ip route add default via 192.168.137.1 dev eth0：配置网卡网关。
-
-5. echo "nameserver 114.114.114.114" > /etc/resolv.conf
-
-6. ping baidu.com
-
-7. sudo systemctl restart networking：重启网络。
-
-8. 编辑 /etc/network/interfaces 设置永久网卡配置。
-
-    ```
-    auto eth0
-    iface eth0 inet static
-        address 192.168.42.128
-        netmask 255.255.255.0
-        gateway 192.168.42.2
-        dns-nameservers 114.114.114.114 8.8.8.8 8.8.4.4
-    ```
-
-    ```
-    auto eth0
-    iface eth0 inet dhcp
-    ```
-
-    ```
-    auto wlan0
-    iface wlan0 inet dhcp
-        wpa-ssid "your_SSID"
-        wpa-psk "your_password"
-    ```
+   ```
+   auto wlan0
+   iface wlan0 inet dhcp
+       wpa-ssid "your_SSID"
+       wpa-psk "your_password"
+   ```
 
 # 十四、设置系统语言
 
@@ -546,10 +476,10 @@ sudo grub-mkfont -o /boot/grub/DejaVuSansMono22.ttf -s 22 /usr/share/fonts/truet
 ```
 
 可能需要关闭安全启动。
-
 ```shell
 vim /etc/default/grub
 ```
+
 ```txt
 # 设置分辨率
 GRUB_GFXMODE=2880x1800
@@ -578,11 +508,8 @@ sudo update-grub
 # 十七、休眠
 
 - 交换内存大于运行内存。
-
 - 关闭 Secure Boot。
-
 - 编辑 grub：
-
   ```shell
   # 查看交换分区的 UUID。
   sudo blkid
@@ -592,15 +519,11 @@ sudo update-grub
   
   sudo update-grub
   ```
-
 - 配置 Initramfs：
-
   ```shell
   echo "RESUME=UUID=xxx" | sudo tee /etc/initramfs-tools/conf.d/resume
   sudo update-initramfs -u -k all
   ```
-
 - 重启电脑。
 - 休眠：`sudo systemctl hibernate`。
 - 检查内核配置，确认内核确实编译了休眠支持：`grep -E 'CONFIG_PM_SLEEP|CONFIG_HIBERNATION' /boot/config-$(uname -r)`。
-

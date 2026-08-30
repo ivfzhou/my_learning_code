@@ -140,7 +140,6 @@
       esac
   done
   ```
-
   示例 2：
   ```bash 
   # ./script.sh -a
@@ -164,7 +163,6 @@
       esac
   done
   ```
-
   示例 3：
   ```bash
   # ./script.sh -v -n Alice file1 file2

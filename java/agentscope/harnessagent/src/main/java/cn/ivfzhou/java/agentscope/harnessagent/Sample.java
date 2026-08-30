@@ -98,11 +98,22 @@ public final class Sample {
                 .stateStore(new RedisAgentStateStore.Builder().jedisClient(redisClient).build())
                 .distributedStore(RedisDistributedStore.fromJedis(redisClient))
                 .enableTaskList(true)
-                .skillRepository(new FileSystemSkillRepository(Path.of(System.getProperty("user.home"), ".codebuddy", "skills"), true))
+                .skillRepository(new FileSystemSkillRepository(Path.of(System.getProperty("user.home"), ".agentscope", "skills"), true))
                 .build();
         try (agent) {
-            chat(agent, "ivfzhou", "session-1");
+            // chat(agent, "ivfzhou", "session-1");
+            clearState(agent, "ivfzhou", "session-1");
         }
+    }
+
+    private static void clearState(HarnessAgent agent, String userId, String sessionId) {
+        agent.clearContext(userId, sessionId);
+    }
+
+    private static void getState(HarnessAgent agent, String userId, String sessionId) {
+        var agentState = agent.getDelegate().getAgentState(userId, sessionId);
+        // AgentState.fromJsonString("{}");
+        System.out.println(agentState.toJson());
     }
 
     private static void chat(HarnessAgent agent, String userId, String sessionId) throws IOException {
@@ -124,13 +135,13 @@ public final class Sample {
 
                 if (ask.equalsIgnoreCase("interrupt")) {
                     // 中断该 session 正在进行的 call。
-                    agent.interrupt();
+                    agent.getDelegate().interrupt(userId, sessionId);
                     continue;
                 }
 
                 if (ask.equalsIgnoreCase("interrupt with recovery message")) {
                     // 带消息中断——中断消息会被 LLM 在恢复时看到。
-                    agent.interrupt();
+                    agent.getDelegate().interrupt(userId, sessionId, Msg.builder().textContent(ask).build());
                 }
 
                 Msg msg;

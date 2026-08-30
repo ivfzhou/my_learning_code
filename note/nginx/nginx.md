@@ -1,9 +1,7 @@
 # 一、笔记
 
 1. [keepalived.conf](./keepalived.conf)、[nginx_check.sh](./nginx_check.sh)、[nginx_example.conf](./nginx.conf)。
-
 1. 匹配规则：
-
    ```nginx
    location = /path {
        # 只匹配 /path（完全一致）。
@@ -55,7 +53,6 @@ services:
       - /home/ivfzhou/volumes/nginx/ssl:/etc/nginx/ssl:rw
 ```
 运行：
-
 ```shell
 mkdir -p ~/volumes/nginx/config
 mkdir -p ~/volumes/nginx/logs

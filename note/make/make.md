@@ -20,50 +20,50 @@
 
 # 二、语法
 
-    ```Makefile
-    目标: 依赖
-        命令
-    
-    # 第一个目标为默认目标。
-    all: 
-    
-    # clean 变成伪目标，伪目标不会当作成文件。
-    .PHONY: clean all install
-    clean: 
-        rm -f *.o
-    
-    # 所有命令在一个环境下运行。
-    .ONESHELL:
-    your_target:
-    
-    # 命令开始不用 tab 而用 >。
-    .RECIPEPEFIX = >
-    your_target:
-    
-    # 编译所有 .c 文件，生成 .o 文件。
-    %.o: %.c
-        $(CC) $(CFLAGS) -c $< -o $@
-    
-    # 判断语句
-    ifeq ($(DEBUG), 1)
-        CFLAGS += -g
-    else ifeq ()
-        ...
-    else
-        ...
-    endif
-    
-    # 循环语句。
-    LIST = $(foreach i, $(list), $.ext)
-    
-    # 函数调用。
-    srcfiles := $(shell echo src/{00..99}.txt)
-    srcfiles := $(wildcard src/*.txt)
-    $(subst ee,EE,feet on the street)
-    $(patsubst %.c,%.o,x.c bar.c)
-    $(error Unsupported platform: $(PLATFORM))
-    $(basename $(f))
-    ```
+```Makefile
+目标: 依赖
+    命令
+
+# 第一个目标为默认目标。
+all: 
+
+# clean 变成伪目标，伪目标不会当作成文件。
+.PHONY: clean all install
+clean: 
+    rm -f *.o
+
+# 所有命令在一个环境下运行。
+.ONESHELL:
+your_target:
+
+# 命令开始不用 tab 而用 >。
+.RECIPEPEFIX = >
+your_target:
+
+# 编译所有 .c 文件，生成 .o 文件。
+%.o: %.c
+    $(CC) $(CFLAGS) -c $< -o $@
+
+# 判断语句
+ifeq ($(DEBUG), 1)
+    CFLAGS += -g
+else ifeq ()
+    ...
+else
+    ...
+endif
+
+# 循环语句。
+LIST = $(foreach i, $(list), $.ext)
+
+# 函数调用。
+srcfiles := $(shell echo src/{00..99}.txt)
+srcfiles := $(wildcard src/*.txt)
+$(subst ee,EE,feet on the street)
+$(patsubst %.c,%.o,x.c bar.c)
+$(error Unsupported platform: $(PLATFORM))
+$(basename $(f))
+```
 
 # 三、使用 PREFIX
 

@@ -49,12 +49,10 @@
 # 二、环境变量
 
 配置文件路径：
-
 - Windows10：`%USERPROFILE%\AppData\Roaming\go\env`
-
 - Debian12：`$HOME/.config/go/env`
 
-## 1. 说明
+## 1.1 说明
 
 - **GOPRIVATE**：设置私有模块名匹配模板前缀，匹配的模块将不会走代理拉取也不会检验模块检验和，模块名匹配模板由 path.Match 指定。多个模块名匹配模板逗号分割。为 GONOSUMDB、GONOPROXY 的默认值。
 - **GOPROXY**：设置拉取模块的代理服务，默认为 https 协议。file 协议设置成模块缓存目录可使用缓存文件。多个代理使用逗号或管道符分割，逗号意为前者失败为 410、404 时请求使用下个代理，管道符意为前者失败了就使用下个代理。例子：off、direct、user:passwd@proxy.golang.org、goproxy.cn、mirrors.aliyun.com/goproxy。
@@ -70,29 +68,29 @@
 - **GOROOT_BOOTSTART**：编译 Golang 时，使用工具链的位置。
 - **GOFALGS**：设置为 -modcacherw 表示拉取的模块缓存文件为可读写权限。
 - **GODEBUG**：
-    - gctrace=1：打印每次 GC 的信息。
-    - inittrace=1：打印每个包初始化信息。
-    - schedtrace=*X*：每 *X* 毫秒打印运行时信息。
-    - cpu.all=off：禁用所有的可选的指令扩展集。
-    - cpu.*EXT*=off：禁用 *EXT*（小写字母）指令扩展集。
-    - gocacheverify=1：每次构建不使用缓存。
-    - http2client=0：客户端不使用 http2 协议。
-    - http2server=0：服务器不使用 http2 协议。
-    - http2debug=1：开启 http2-debug 日志。
-    - http2debug=2：更多的 http2-debug 日志。
-    - netdns=go：使用 go 的 DNS 解析器。
-    - netdns=cgo：使用 C 库函数 DNS 解析器。
-    - netdns=1：打印日志。多个值加号分割。
+  - gctrace=1：打印每次 GC 的信息。
+  - inittrace=1：打印每个包初始化信息。
+  - schedtrace=*X*：每 *X* 毫秒打印运行时信息。
+  - cpu.all=off：禁用所有的可选的指令扩展集。
+  - cpu.*EXT*=off：禁用 *EXT*（小写字母）指令扩展集。
+  - gocacheverify=1：每次构建不使用缓存。
+  - http2client=0：客户端不使用 http2 协议。
+  - http2server=0：服务器不使用 http2 协议。
+  - http2debug=1：开启 http2-debug 日志。
+  - http2debug=2：更多的 http2-debug 日志。
+  - netdns=go：使用 go 的 DNS 解析器。
+  - netdns=cgo：使用 C 库函数 DNS 解析器。
+  - netdns=1：打印日志。多个值加号分割。
 - **GOINSECURE**：使用不安全的方式拉取模块。程序可以使用 http 协议拉取模块，不会检验模块校验和。
 - **GOTOOLDIR**：工具程序目录。
 
-## 2. 设置私有代码模块
+## 1.2 设置私有代码模块
 
 ```bash
 go env -w GOPRIVATE=gitee.com/ivfzhou,github.com/ivfzhou
 ```
 
-## 3. 设置国内模块下载代理
+## 1.3 设置国内模块下载代理
 
 ```bash
 go env -w GOPROXY=goproxy.cn,direct
@@ -105,10 +103,10 @@ go env -w GOSUMDB="sum.golang.org https://goproxy.cn/sumdb/sum.golang.org"
 - 并行请求每个可能的模块，如果能拉到多个模块包含这个包，取模块名最长的。
 - 代理服务器响应错误时，内容应为 text/palin charset=utf8 us-acsii。
 - 请求代理服务器的 URL：
-    - $proxy_url/$module_path/@v/$version_query_suffix：其中大写字母将转成感叹号加小写。
-    - $proxy_url/$module_path/@v/$version_query_suffix.mod：返回模块 go.mod 文件内容。
-    - $proxy_url/$module_path/@v/list：表示列出所有可用版本号。
-    - $proxy_url/$module_path/@v/$version_query_suffix.info：返回 JSON 格式信息，包含时间和版本号。
+  - $proxy_url/$module_path/@v/$version_query_suffix：其中大写字母将转成感叹号加小写。
+  - $proxy_url/$module_path/@v/$version_query_suffix.mod：返回模块 go.mod 文件内容。
+  - $proxy_url/$module_path/@v/list：表示列出所有可用版本号。
+  - $proxy_url/$module_path/@v/$version_query_suffix.info：返回 JSON 格式信息，包含时间和版本号。
 - 代理服务器会将没有 go.mod 的模块，生成的 go.mod 只带上 module_path 返回。如果是请求 VCS 则由 go command 生成该文件。
 - $proxy_url/$module_path/@v/$version_query_suffix.zip，返回打包的 zip 模块文件。该文件不包含 vendor 目录，也不包含子或父模块。如果是下载子模块，而且子模块没有 LICENSE 文件，go command 会从父模块拷贝一个过来，这样 sum 值会改变。
 - $proxy_url/$module_path/@latest，返回最新版本号信息。
@@ -147,7 +145,6 @@ print  println
 
 每行优先级依次递减，同行优先级相同，运行时表达式从左到右计算。  
 二元：
-
 ```
 * / % << >> & &^（按位至零，同为 0，不同取前者）
 + - | ^（按位异或，同 0 异 1）
@@ -155,9 +152,7 @@ print  println
 &&
 ||
 ```
-
 一元：
-
 ```
 -
 +
@@ -279,129 +274,129 @@ import (
 # 九、命令
 
 1. version_query_suffix
-    - module_path@latest：获取最新版依赖。
-    - module_path@upgrade：默认为该版本查询后缀。如果当前项目的依赖已是最新释放版，则不会更新。
-    - module_path@patch：go1.16 添加，必须要求当前依赖版本号。
-    - module_path@git_commit_id
-    - module_path@git_branch_name
-    - module_path@git_tag_prefix_max：比 revision banch 优先。
-    - module_path@\[>=<\]git_tag_comparison：比 revision banch 优先。
-    - module_path@none：移除依赖。
-2. **go**
-    - **bug**：弹出浏览器提交缺陷报告。
-    - **get** *参数* *build_flags* *packages_or_module_paths*：更新修改模块依赖，编译安装包。可用通配符：all ....。默认作用为当前运行目录。当需要改动某个依赖版本号但又与参数指定的版本号不一致时，会有报告错误提示。对于retracted、deprecated依赖会有警告提示。编译生成的程序将放置 $GOBIN 或者 $GOPATH/bin 或者 $HOME/go/bin 下。
-        - -d：不构建安装，仅更新修改依赖。go1.18 默认开启。
-        - -u：获取最新版本。-u=patch 表示获取最新的补丁版依赖。
-        - -t：编译对应的测试包，同 -u 使用将更新测试包的依赖。
-        - -insecure：允许使用 HTTP 等不安全的方式下载依赖源码。
-    - **install** *build_flags* *packages*：安装或者构建缓存包。在 $GOROOT 下的包安装到 $GOROOT/bin|$GOTOOLDIR 下。带有版本号查询后缀时将是安装项目，不带则意味着作用当前项目。版本查询后缀需要一致。<=go1.15 不支持版本查询后缀。
-    - **list** *参数* *list_flags* *modules*：打印包和模块信息。默认作用当前项目。默认打印 module_path version 回收过时 replacement 信息。
-        - -m：使用 module 模式。
-        - -u：获取可更新信息。
-        - -retracted：同时列出回收的版本号。go1.16 添加。
-        - -versions：列出所有版本号，但不包括回收的版本号。
-        - list_flags
-            - -f '{{.String}}'：默认打印行为。
-            - -json：JSON 格式打印。
-    - **mod**
-        - download *参数* *modules*：下载模块到 modulecache。默认作用当前项目。信息及错误信息输出到标准错误。
-            - -x：打印信息到标准错误。
-            - -json：JSON 格式打印下载的模块信息。
-        - edit *editing_flags* *go.mod*：供工具脚本使用编辑 go.mod。
-            - -fmt：格式化 go.mod。
-            - -print：仅打印结果。
-            - -json：仅打印 JSON 格式结果。
-            - editing_flafgs
-                - -module *xxx*
-                - -go=*ver*
-                - -retract=*xxx*
-                - -require=*xxx*
-                - -replace *xxx=xxx*
-                - -exclude=*xxx*
-                - -dropretract=*xxx*
-                - -droprequire *xxx*
-                - -dropreplace=*xxx*
-                - -dropexclude=*xxx*
-        - graph *参数*：打印依赖信息。
-            - -go=*ver*：指定解析依赖的语言版本。
-        - init *modulepath*：生成 go.mod 文件，module_path 默认参考导包信息、vendor目录。
-        - tidy *参数*：添加缺失依赖去除未使用的依赖，更新 go.sum。
-            - -v：去除的包信息输出到标准错误。
-            - -e：当出错时继续处理。go1.16 添加。
-            - -go=*ver*：修改 go 版本。
-            - -compat=*ver*：兼容版本号。
-        - vendor *参数*：生成依赖文件以及 modules.txt 到 vendor 目录下，每次运行都会重新生成覆盖，vendor 下依赖不含依赖的测试文件。
-            - -e：在 go1.16 中新增，加载包时出错不中断程序。
-            - -v：打印这些依赖和包到标准错误。
-        - verify：校验当前项目依赖的 hash，防被修改。
-        - why *参数* *packages*：打印出包的在当前项目中的依赖链。
-            - -m：使用为模块的依赖链。
-            - -vendor：忽略测试文件的导包。
-    - **version** *参数* *files*：打印版本信息。打印程序的 go 版本号。默认打印 sdk go 版本号。可以搜寻一个目录下的 go 程序一一打印编译其 go 版本号。
-        - -m：同时打印 go 程序自身信息。
-        - -v：打印目录下非 go 程序文件。
-    - **clean** *参数* *路径包*：删除对象和缓存文件。
-        - -i：删除 install 生成的文件。
-        - -n：打印执行命令过程，不会实际执行命令。
-        - -r：递归删除依赖文件。
-        - -x：打印执行命令过程。
-        - -cache：删除 go build 缓存。
-        - -testcache：删除测试文件缓存。
-        - -modcache：删除 module_cache，位置在 $HOME/go/mod。
-    - **fix**：更新包的 API。
-    - **run** *pkg*：编译并运行代码，使用 . 表示运行当前包。
-    - **test**：运行测试。
-    - **tool**：运行 go 工具。
-    - **vet** *pkg*：检查打印包中错误。
-    - **help** *命令*：打印该命令的帮助信息。
-    - **build** *参数* *包...*：编译包及其依赖。不会编译测试文件。编译对象可以是 .go 结尾的文件。编译生成文件默认名为第一个 go 文件名，或者是模块名，或者第一个文件夹名。
-        - -o *文件*：将编译结果导出到文件，或者文件夹下。
-        - -a：强制重新编译。
-        - -v：打印所有编译的包。
-        - -n：打印编译命令过程信息。并不会编译。
-        - -x：打印编译命令过程信息。
-        - -p：数量指定编译时线程数，默认是 CPU 数。
-        - -race：启用数据竞争分析。
-        - -msan：启用与内存清理程序的互操作。
-        - -work：打印所有临时创建的文件夹，并且编译后不删除。
-        - -buildmode *模式*：指定编译模式。
-        - -compiler *名称*：指定编译器。
-        - -asmflags pattern=*值*：设置每次调用 go tool asm 时的参数。
-        - -gccgoflags pattern=*值*：设置每次调用 gccgo compiler/linker 时的参数。
-        - -ldflags pattern=*值*：设置每次调用 go tool link 时的参数。
-        - -gcflags pattern=*值*：设置每次编译时的参数。
-        - -installsuffix *后缀*：指定安装包目录名称后缀，使用 -race 会自动加后缀，如果在指定后缀会再加上 _race 后缀，同 -msan 一样。
-        - -linkshared：构建之前将链接到共享库的代码。
-        - -mod=*xxx*：可选：readonly（不使用 vendor 目录，不改写 go.mod，go.mod 不合规就报错）、vendor（使用 vendor 目录，不使用网络和 modulecache）、mod。默认情况 go1.14+ 下有 vendor 目录则为 vendor，其他情况为 readonly。
-        - -modcacherw：将新创建的目录保留在模块缓存中可读写，而不是只读。
-        - -modfile *文件.mod*：指定使用的 go.mod 文件，同时生成的 go.sum 文件也在该文件目录下。必须 .mod 结尾。
-        - -pkgdir *文件夹*：指定加载和安装的包的位置。
-        - -tags *逗号分隔的标签*：指定编译时的标签。
-        - -trimpath：生成的可执行文件用绝对路径。
-        - -toolexec *命令及参数*：调用工具链命令。
-    - **doc** *参数* *目标*：打印文档注释信息。
-        - -all：显示所有文档。
-        - -c：区分目标大小写。
-        - -cmd：打印命令帮助文档。
-        - -short：一行显示。
-        - -src：显示代码信息。
-        - -u：显示所有信息。
-    - **env** *参数*：打印或设置环境设置信息。
-        - -json：格式化输出。
-        - -u *键...*：重置为默认值。
-        - -w *键=值*：设置值。
-    - **fmt** *参数* *路径包*：格式化代码。
-        - -n：显示会执行的命令，实际不执行。
-        - -x：打印执行命令过程。
-        - -mod *模式*：设置模式，readonly、vendor。
-    - **generate** *参数* *路径包*：生成运行命令。
-        - -x：打印命令执行过程。
-        - -n：打印命令执行过程。但未执行。
-        - -v：打印包和文件。
-3. 编译参数作用于：build、clean、get、install、list、run、test：
-    - -a：不使用缓存重新编译。
-    - -n：打印执行命令，不执行编译。
-    - -p *数字*：编译时使用线程球。默认为 GOMAXPROCS。
-    - -race：开启变量竞争检查。
-    - -msan：开启内存分析。
-    - -v：打印编译了的包。
+   - module_path@latest：获取最新版依赖。
+   - module_path@upgrade：默认为该版本查询后缀。如果当前项目的依赖已是最新释放版，则不会更新。
+   - module_path@patch：go1.16 添加，必须要求当前依赖版本号。
+   - module_path@git_commit_id
+   - module_path@git_branch_name
+   - module_path@git_tag_prefix_max：比 revision banch 优先。
+   - module_path@\[>=<\]git_tag_comparison：比 revision banch 优先。
+   - module_path@none：移除依赖。
+1. **go**
+   - **bug**：弹出浏览器提交缺陷报告。
+   - **get** *参数* *build_flags* *packages_or_module_paths*：更新修改模块依赖，编译安装包。可用通配符：all ....。默认作用为当前运行目录。当需要改动某个依赖版本号但又与参数指定的版本号不一致时，会有报告错误提示。对于retracted、deprecated依赖会有警告提示。编译生成的程序将放置 $GOBIN 或者 $GOPATH/bin 或者 $HOME/go/bin 下。
+     - -d：不构建安装，仅更新修改依赖。go1.18 默认开启。
+     - -u：获取最新版本。-u=patch 表示获取最新的补丁版依赖。
+     - -t：编译对应的测试包，同 -u 使用将更新测试包的依赖。
+     - -insecure：允许使用 HTTP 等不安全的方式下载依赖源码。
+   - **install** *build_flags* *packages*：安装或者构建缓存包。在 $GOROOT 下的包安装到 $GOROOT/bin|$GOTOOLDIR 下。带有版本号查询后缀时将是安装项目，不带则意味着作用当前项目。版本查询后缀需要一致。<=go1.15 不支持版本查询后缀。
+   - **list** *参数* *list_flags* *modules*：打印包和模块信息。默认作用当前项目。默认打印 module_path version 回收过时 replacement 信息。
+     - -m：使用 module 模式。
+     - -u：获取可更新信息。
+     - -retracted：同时列出回收的版本号。go1.16 添加。
+     - -versions：列出所有版本号，但不包括回收的版本号。
+     - list_flags
+       - -f '{{.String}}'：默认打印行为。
+       - -json：JSON 格式打印。
+   - **mod**
+     - download *参数* *modules*：下载模块到 modulecache。默认作用当前项目。信息及错误信息输出到标准错误。
+       - -x：打印信息到标准错误。
+       - -json：JSON 格式打印下载的模块信息。
+     - edit *editing_flags* *go.mod*：供工具脚本使用编辑 go.mod。
+       - -fmt：格式化 go.mod。
+       - -print：仅打印结果。
+       - -json：仅打印 JSON 格式结果。
+       - editing_flafgs
+         - -module *xxx*
+         - -go=*ver*
+         - -retract=*xxx*
+         - -require=*xxx*
+         - -replace *xxx=xxx*
+         - -exclude=*xxx*
+         - -dropretract=*xxx*
+         - -droprequire *xxx*
+         - -dropreplace=*xxx*
+         - -dropexclude=*xxx*
+     - graph *参数*：打印依赖信息。
+       - -go=*ver*：指定解析依赖的语言版本。
+     - init *modulepath*：生成 go.mod 文件，module_path 默认参考导包信息、vendor目录。
+     - tidy *参数*：添加缺失依赖去除未使用的依赖，更新 go.sum。
+       - -v：去除的包信息输出到标准错误。
+       - -e：当出错时继续处理。go1.16 添加。
+       - -go=*ver*：修改 go 版本。
+       - -compat=*ver*：兼容版本号。
+     - vendor *参数*：生成依赖文件以及 modules.txt 到 vendor 目录下，每次运行都会重新生成覆盖，vendor 下依赖不含依赖的测试文件。
+       - -e：在 go1.16 中新增，加载包时出错不中断程序。
+       - -v：打印这些依赖和包到标准错误。
+     - verify：校验当前项目依赖的 hash，防被修改。
+     - why *参数* *packages*：打印出包的在当前项目中的依赖链。
+       - -m：使用为模块的依赖链。
+       - -vendor：忽略测试文件的导包。
+   - **version** *参数* *files*：打印版本信息。打印程序的 go 版本号。默认打印 sdk go 版本号。可以搜寻一个目录下的 go 程序一一打印编译其 go 版本号。
+     - -m：同时打印 go 程序自身信息。
+     - -v：打印目录下非 go 程序文件。
+   - **clean** *参数* *路径包*：删除对象和缓存文件。
+     - -i：删除 install 生成的文件。
+     - -n：打印执行命令过程，不会实际执行命令。
+     - -r：递归删除依赖文件。
+     - -x：打印执行命令过程。
+     - -cache：删除 go build 缓存。
+     - -testcache：删除测试文件缓存。
+     - -modcache：删除 module_cache，位置在 $HOME/go/mod。
+   - **fix**：更新包的 API。
+   - **run** *pkg*：编译并运行代码，使用 . 表示运行当前包。
+   - **test**：运行测试。
+   - **tool**：运行 go 工具。
+   - **vet** *pkg*：检查打印包中错误。
+   - **help** *命令*：打印该命令的帮助信息。
+   - **build** *参数* *包...*：编译包及其依赖。不会编译测试文件。编译对象可以是 .go 结尾的文件。编译生成文件默认名为第一个 go 文件名，或者是模块名，或者第一个文件夹名。
+     - -o *文件*：将编译结果导出到文件，或者文件夹下。
+     - -a：强制重新编译。
+     - -v：打印所有编译的包。
+     - -n：打印编译命令过程信息。并不会编译。
+     - -x：打印编译命令过程信息。
+     - -p：数量指定编译时线程数，默认是 CPU 数。
+     - -race：启用数据竞争分析。
+     - -msan：启用与内存清理程序的互操作。
+     - -work：打印所有临时创建的文件夹，并且编译后不删除。
+     - -buildmode *模式*：指定编译模式。
+     - -compiler *名称*：指定编译器。
+     - -asmflags pattern=*值*：设置每次调用 go tool asm 时的参数。
+     - -gccgoflags pattern=*值*：设置每次调用 gccgo compiler/linker 时的参数。
+     - -ldflags pattern=*值*：设置每次调用 go tool link 时的参数。
+     - -gcflags pattern=*值*：设置每次编译时的参数。
+     - -installsuffix *后缀*：指定安装包目录名称后缀，使用 -race 会自动加后缀，如果在指定后缀会再加上 _race 后缀，同 -msan 一样。
+     - -linkshared：构建之前将链接到共享库的代码。
+     - -mod=*xxx*：可选：readonly（不使用 vendor 目录，不改写 go.mod，go.mod 不合规就报错）、vendor（使用 vendor 目录，不使用网络和 modulecache）、mod。默认情况 go1.14+ 下有 vendor 目录则为 vendor，其他情况为 readonly。
+     - -modcacherw：将新创建的目录保留在模块缓存中可读写，而不是只读。
+     - -modfile *文件.mod*：指定使用的 go.mod 文件，同时生成的 go.sum 文件也在该文件目录下。必须 .mod 结尾。
+     - -pkgdir *文件夹*：指定加载和安装的包的位置。
+     - -tags *逗号分隔的标签*：指定编译时的标签。
+     - -trimpath：生成的可执行文件用绝对路径。
+     - -toolexec *命令及参数*：调用工具链命令。
+   - **doc** *参数* *目标*：打印文档注释信息。
+     - -all：显示所有文档。
+     - -c：区分目标大小写。
+     - -cmd：打印命令帮助文档。
+     - -short：一行显示。
+     - -src：显示代码信息。
+     - -u：显示所有信息。
+   - **env** *参数*：打印或设置环境设置信息。
+     - -json：格式化输出。
+     - -u *键...*：重置为默认值。
+     - -w *键=值*：设置值。
+   - **fmt** *参数* *路径包*：格式化代码。
+     - -n：显示会执行的命令，实际不执行。
+     - -x：打印执行命令过程。
+     - -mod *模式*：设置模式，readonly、vendor。
+   - **generate** *参数* *路径包*：生成运行命令。
+     - -x：打印命令执行过程。
+     - -n：打印命令执行过程。但未执行。
+     - -v：打印包和文件。
+1. 编译参数作用于：build、clean、get、install、list、run、test：
+   - -a：不使用缓存重新编译。
+   - -n：打印执行命令，不执行编译。
+   - -p *数字*：编译时使用线程球。默认为 GOMAXPROCS。
+   - -race：开启变量竞争检查。
+   - -msan：开启内存分析。
+   - -v：打印编译了的包。

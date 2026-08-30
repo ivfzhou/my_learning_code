@@ -1,9 +1,9 @@
 # 一、笔记
 
 1. 配置 [zoo_sample.cfg](./zoo_sample.cfg)。
-2. 2181 端口对客户端提供服务。2888 端口集群通讯。3888 端口选举主节点端口。
-3. 节点类型：持久节点、临时节点、持久有序节点、临时有序节点。
-4. 时序锁：创建临时节点，获取节点最小值，监听最小值，没有比自己小的获取锁。
+1. 2181 端口对客户端提供服务。2888 端口集群通讯。3888 端口选举主节点端口。
+1. 节点类型：持久节点、临时节点、持久有序节点、临时有序节点。
+1. 时序锁：创建临时节点，获取节点最小值，监听最小值，没有比自己小的获取锁。
 
 # 二、命令
 
@@ -108,7 +108,7 @@ services:
       - /home/ivfzhou/volumes/zookeeper/2/conf/zoo.cfg:/conf/zoo.cfg:rw
 ```
 
-## 1. 单例部署
+## 3.1 单例部署
 
 - mkdir -p ~/volumes/zookeeper/data
 - mkdir -p ~/volumes/zookeeper/datalog
@@ -118,7 +118,7 @@ services:
 - sudo chown -R 1000:1000 ~/volumes/zookeeper
 - docker-compose -f ~/src/note/docker/docker-compose.yml up -d zookeeper
 
-## 2. 集群部署
+## 3.2 集群部署
 
 - mkdir -p ~/volumes/zookeeper/0/data ~/volumes/zookeeper/0/datalog ~/volumes/zookeeper/0/logs ~/volumes/zookeeper/0/conf
 - mkdir -p ~/volumes/zookeeper/1/data ~/volumes/zookeeper/1/datalog ~/volumes/zookeeper/1/logs ~/volumes/zookeeper/1/conf

@@ -125,9 +125,7 @@ services:
       - rocketmq_name_server_0
       - rocketmq_name_server_1
 ```
-
-启动脚本：  
-
+启动脚本：
 ```shell
 cd ~
 docker-compose -f ~/src/note/docker/docker-compose.yml stop rocketmq_name_server_0 rocketmq_name_server_1 rocketmq_broker_0 rocketmq_broker_1 rocketmq_broker_2 rocketmq_broker_3 rocketmq_dashboard
@@ -141,4 +139,3 @@ cp ~/src/note/rocketmq/broker-b-s.properties ~/volumes/rocketmq/broker3/config/b
 sudo chown -R 3000:3000 ~/volumes/rocketmq
 docker-compose -f ~/src/note/docker/docker-compose.yml up -d rocketmq_name_server_0 rocketmq_name_server_1 rocketmq_broker_0 rocketmq_broker_1 rocketmq_broker_2 rocketmq_broker_3 rocketmq_dashboard
 ```
-

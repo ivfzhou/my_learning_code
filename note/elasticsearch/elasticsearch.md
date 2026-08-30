@@ -17,10 +17,10 @@ WhitespaceAnalyzer（去除空格）、SimpleAnalyzer（字母小写）、StopAn
 # 五、用户资源控制
 
 1. vim /etc/security/limits.conf
-    - soft nofile 65536
-    - hard nofile 131072
-    - soft nproc 4096
-    - hard nproc 4096
+   - soft nofile 65536
+   - hard nofile 131072
+   - soft nproc 4096
+   - hard nproc 4096
 
 # 六、数据类型
 
@@ -36,47 +36,47 @@ WhitespaceAnalyzer（去除空格）、SimpleAnalyzer（字母小写）、StopAn
 # 七、命令
 
 1. elasticsearch
-    - -E *键值对*：配置设置。
-    - -V、--version：显示版本。
-    - -d、--daemonize：后台启动。
-    - -h、--help：显示帮助信息。
-    - -p、--pidfile *路径*：生成含 pid 的文件 path。
-    - -q、--quiet：关闭标准输出流和错误输出流。
-    - -s、--silent：较少的信息输出。
-    - -v、--verbose：较多信息输出。
+   - -E *键值对*：配置设置。
+   - -V、--version：显示版本。
+   - -d、--daemonize：后台启动。
+   - -h、--help：显示帮助信息。
+   - -p、--pidfile *路径*：生成含 pid 的文件 path。
+   - -q、--quiet：关闭标准输出流和错误输出流。
+   - -s、--silent：较少的信息输出。
+   - -v、--verbose：较多信息输出。
 1. elasticsearch-setup-passwords
-    - interactive：初始化密码。elastic,apm_system,kibana,logstash_system,beats_system,remote_monitoring_user。
+   - interactive：初始化密码。elastic,apm_system,kibana,logstash_system,beats_system,remote_monitoring_user。
 1. elasticsearch-keystore
-    - create：生成 keystore 文件。
-    - list：列出条目。
-    - passwd：修改 keystore 文件密码。
+   - create：生成 keystore 文件。
+   - list：列出条目。
+   - passwd：修改 keystore 文件密码。
 1. curl -H "Content-Type:application/json" -X POST -u elastic -d '{"password":"123456"}' 'http://127.0.0.1:9200/xpack/security/user/elastic/password'：修改密码。
 1. elasticsearch-users
-    - useradd  -p *密码* -r superuser *用户名*：创建用户。
+   - useradd  -p *密码* -r superuser *用户名*：创建用户。
 1. curl -H 'Content-Type:application/json' -u *超级用户* -d '{"password":"123456"}' -X PUT 'http://127.0.0.1:9200/xpack/security/user/elastic/_password'：通过超级用户修改 elastic 密码。
 1. elasticsearch-certutil
-    - -E *键值对*：配置设置。
-    - -h、--help：帮助。
-    - -s、--silent ：息少输出。
-    - -v、--verbose：信息多输出。
-    - csr：生成签名请求的证书。
-    - cert：生成 X.509 证书和 key。
-        - --pem 生成 instance 和 ca。
-    - ca：生成本地证书授权。
-    - http：生成 http 接口的证书。
+   - -E *键值对*：配置设置。
+   - -h、--help：帮助。
+   - -s、--silent ：息少输出。
+   - -v、--verbose：信息多输出。
+   - csr：生成签名请求的证书。
+   - cert：生成 X.509 证书和 key。
+     - --pem 生成 instance 和 ca。
+   - ca：生成本地证书授权。
+   - http：生成 http 接口的证书。
 1. kibana
-    - -e、--elasticsearch *url1*,*url2*...：设置 EL 的 URL。
-    - -c、--config *路径*：设置配置文件。
-    - -p、--port *端口号*：设置端口号。
-    - -q、--quiet：只打印 error 级别日至信息。
-    - -Q、--silent：不打印信息。
-    - --verbose：打印很多信息。
-    - -H、--host *主机名*：绑定指定 host。
-    - -l、--log-file *路径*：指定日志输出文件。
-    - --plugins、--plugin-dir *路径*：设置要扫描插件路径。
-    - --plugin-path *路径*：添加插件。
-    - --optimize：运行插件优化器，然后停止服务。
-    - -h、--help：显示帮助信息。
+   - -e、--elasticsearch *url1*,*url2*...：设置 EL 的 URL。
+   - -c、--config *路径*：设置配置文件。
+   - -p、--port *端口号*：设置端口号。
+   - -q、--quiet：只打印 error 级别日至信息。
+   - -Q、--silent：不打印信息。
+   - --verbose：打印很多信息。
+   - -H、--host *主机名*：绑定指定 host。
+   - -l、--log-file *路径*：指定日志输出文件。
+   - --plugins、--plugin-dir *路径*：设置要扫描插件路径。
+   - --plugin-path *路径*：添加插件。
+   - --optimize：运行插件优化器，然后停止服务。
+   - -h、--help：显示帮助信息。
 
 # 八、Docker-Compose 安装
 
@@ -141,7 +141,6 @@ networks:
         - subnet: 172.16.3.0/24
           gateway: 172.16.3.1
 ```
-
 1. sudo tee -a /etc/hosts <<EOF
    172.16.3.144 ivfzhoudockerelasticsearch
    172.16.3.145 ivfzhoudockerkibana
@@ -168,9 +167,9 @@ networks:
 1. docker run -v volumes/kibana/config:/usr/share/kibana/config --hostname ivfzhoudockerkibana -v 5601:5601 --name kibana kibana:9.0.2
 1. 复制配置文件到数据卷。
 1. kibana 控制台报错需添加配置
-    - xpack.encryptedSavedObjects.encryptionKey: "woyaocouqi32weizifu+++++++++++++"
-    - xpack.security.encryptionKey: "woyaocouqi32weizifu+++++++++++++"
-    - xpack.reporting.encryptionKey: "woyaocouqi32weizifu+++++++++++++"
+   - xpack.encryptedSavedObjects.encryptionKey: "woyaocouqi32weizifu+++++++++++++"
+   - xpack.security.encryptionKey: "woyaocouqi32weizifu+++++++++++++"
+   - xpack.reporting.encryptionKey: "woyaocouqi32weizifu+++++++++++++"
 
 # 十、集群搭建
 

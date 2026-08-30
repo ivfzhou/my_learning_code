@@ -15,9 +15,9 @@ services:
     extra_hosts:
       - "ivfzhoudebian:172.16.3.1"
 ```
-1. sudo tee -a /etc/hosts <<EOF
-   172.16.3.143 ivfzhoudockerzipkin
-   EOF
+sudo tee -a /etc/hosts <<EOF
+172.16.3.143 ivfzhoudockerzipkin
+EOF
 
 # 二、笔记
 

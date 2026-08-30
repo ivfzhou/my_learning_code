@@ -13,6 +13,7 @@
 1. [JQuery](./jquery/jquery.md)
 1. [JSP](./jsp/jsp.md)
 1. [Kotlin](./kotlin/kotlin.md)
+1. [LaTex](./latex/latex.md)
 1. [Markdown](./markdown/markdown.md)
 1. [Nodejs](./nodejs/nodejs.md)
 1. [PowerShell](./powershell/powershell.md)

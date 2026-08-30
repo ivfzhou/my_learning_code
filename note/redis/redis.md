@@ -5,10 +5,9 @@
 
 # 二、安装
 
-## 1. 通过 Docker-Compose
+## 2.1 通过 Docker-Compose
 
 docker compose yaml 配置：
-
 ```yaml
 services:
   redis:
@@ -32,7 +31,6 @@ services:
       - /config/redis.conf
 ```
 运行命令：
-
 ```shell
 mkdir -p ~/volumes/redis/config
 mkdir -p ~/volumes/redis/data
@@ -44,27 +42,27 @@ EOF
 docker-compose -f src/my_learning_code/note/docker/docker-compose.yml up -d redis
 ```
 
-## 2. Docker 安装
+## 2.2 Docker 安装
 
 docker run -v volumes/redis/config:/etc/redis -v volumes/redis/data:/data --name redis --hostname ivfzhoudockerredis -p 6379:6379 redis:8.0.2 redis-server /etc/redis/redis.conf
 
-## 3. Debian 二进制包安装
+## 2.3 Debian 二进制包安装
 
 - cd ~/programs/redis 目录下，执行 make。
 - 安装 tcl：
-    ```shell
-    wget http://downloads.sourceforge.net/tcl/tcl8.6.1-src.tar.gz
-    tar -xzvf tcl8.6.1-src.tar.gz  -C ~/programs/tcl/
-    cd  ~/programs/tcl/unix/
-    sudo ./configure
-    sudo make
-    sudo make install
-    ```
+  ```shell
+  wget http://downloads.sourceforge.net/tcl/tcl8.6.1-src.tar.gz
+  tar -xzvf tcl8.6.1-src.tar.gz  -C ~/programs/tcl/
+  cd  ~/programs/tcl/unix/
+  sudo ./configure
+  sudo make
+  sudo make install
+  ```
 - cd ~/programs/redis，执行 make test。
 - 修改 /etc/sysctl.conf，添加 vm.overcommit_memory=1。
 - 修改 /etc/rc.local 文件添加 echo never > /sys/kernel/mm/transparent_hugepage/enabled。
 
-## 4. Centos 二进制包安装
+## 2.4 Centos 二进制包安装
 
 - cd /home/ivfzhou/programs/redis && make MALLOC=libc
 - make distclean
@@ -76,7 +74,7 @@ docker run -v volumes/redis/config:/etc/redis -v volumes/redis/data:/data --name
 - echo 511 > /proc/sys/net/core/somaxconn
 - 修改 redis.conf，maxclient 500。
 
-## 5. Debian apt 安装
+## 2.5 Debian apt 安装
 
 ```shell
 sudo apt install lsb-release curl gpg
@@ -88,7 +86,7 @@ sudo systemctl disable redis-server
 sudo vim /etc/redis/redis.conf
 ```
 
-## 6. Docker 安装 sentinel
+## 2.6 Docker 安装 sentinel
 
 docker run -v volumes/sentinel/config:/etc/redis -v volumes/sentinel/data:/data --hostname ivfzhoudockerredissentinel --name redis-sentinel redis:8.0.2 redis-sentinel /etc/redis/sentinel.conf
 
@@ -281,7 +279,7 @@ services:
 
 # 四、命令
 
-## 1. 系统命令
+## 4.1 系统命令
 
 - redis-server /opt/redis/redis.conf --loadmodule /opt/redis/redisbloom.so
 - redis-cli -h 172.18.0.1 -p 6379：连接服务进入命令窗口。
@@ -296,7 +294,7 @@ services:
 - CONFIG GET *：获得所有参数。
 - CONFIG SET *param* *value*：设置参数。
 
-## 2. 操作命令
+## 4.2 操作命令
 
 - DEL *key*：删除 key，无论数据类型。
 - EXISTS *key*：判断 key 是否存在，存在返回 1，不存在返回 0。
@@ -316,11 +314,11 @@ services:
 - KEYS *：查看当前 redis 库中所有的 key。正则匹配。
 - TYPE *key*：返回 key 对应的数据类型。
 - EVAL *script* *numkeys* *key*... *args*...：执行 lua 脚本，KEYS 和 ARGV。
-   - redis.call('set', 'name', 'ivfzhou')：lua 脚本函数。
-   - for i,len,step do *执行体* end：lua 中循环。
-   - local *var*：lua 中定义变量。
-   - tonumber(*str* or 0)：返回数字。
-   - if *条件* then *语句* elseif *条件* then *语句* elseif *条件* then *代码块* end：判断语句。
+  - redis.call('set', 'name', 'ivfzhou')：lua 脚本函数。
+  - for i,len,step do *执行体* end：lua 中循环。
+  - local *var*：lua 中定义变量。
+  - tonumber(*str* or 0)：返回数字。
+  - if *条件* then *语句* elseif *条件* then *语句* elseif *条件* then *代码块* end：判断语句。
 - SCRIPT LOAD *script*：生成 lua 脚本散列值。
 - EVALSHA *sha* *numkeys* *keys*... *args*...：执行 lua脚本。
 - INFO REPLLICATION：查看集群信息。
@@ -331,7 +329,7 @@ services:
 - CLUSTER INFO：集群信息。
 - CLUSTER MODES：集群节点信息。
 
-## 3. string/integer
+## 4.3 string/integer
 
 - SET *key* *value* EX *second* PX *minute*：设置 key value 并指定过期时间。
 - GET *key*：获取 key value。
@@ -348,7 +346,7 @@ services:
 - MGET *key*...：批量读取。
 - STRLEN *key*：返回长度。
 
-## 4. list
+## 4.4 list
 
 - LPUSH *key* *value*...：向 list 左边添加 value，返回 list 长度。
 - RPUSH *key* *value*...：向 list 右边添加 value，返回 list 长度。
@@ -365,7 +363,7 @@ services:
 - LREM *key* *count* *value*：删除 key 中 count 个为 value 的元素，并返回删除的个数。count><0 从左右开始删，count=0 全删。
 - RPOPLPUSH *key1* *key2*：删除 key1 的最后元素，并添加到 key2 中左边，没有 key2 则创建，并返回这个元素。
 
-## 5. set
+## 4.5 set
 
 - SADD *key* *value*...：向 set 添加 value，返回成功数量。
 - SREM *key* *value*：删除 set 集合的元素。成功返回 1，没有 value 可删除返回 0。
@@ -382,7 +380,7 @@ services:
 - SUNIONSTORE *key* *key1*...：取并集后添加到 key。
 - SMOVE *key* *key1* *value*：将 value 从 key 移到 key1。
 
-## 6. sorted set
+## 4.6 sorted set
 
 - ZADD *key* *score* *value*：向 sorted-set 添加 value。
 - ZRANGE *key* *start* *end*：可选 WITHSCORE 返回 sorted-set 指定范围内的 value。withscore 表示显示 score。
@@ -397,7 +395,7 @@ services:
 - ZREMRANGEBYRANK *key* *start* *end*：移除有序集合中给定的排名区间的所有成员。
 - ZREMRANGEBYSCORE *key* *min* *max*：移除有序集合中给定的分数区间的所有成员。
 
-## 7. hash
+## 4.7 hash
 
 - HSET | HMSET *key* *field1* *value1* *field2* *value2*...：设置 hash value。
 - HGETALL *key*：返回 hash value。
@@ -410,16 +408,15 @@ services:
 - HKEYS *key*：返回指定 key 的所有字段。
 - HVALS *key*：返回指定 key 的所有值。
 
-## 8. boolm
+## 4.8 boolm
 
 - bf.reserva *key* *容错率* *大小*：初始化一个布隆过滤器。
 - bf.add *key* *value*：向布隆过滤器添加元素。
 - bf.exist *key* *value*：检查布隆过滤器中是否有该元素。
 
-## 9. hyperloglog
+## 4.9 hyperloglog
 
 统计一个集合中不重复元素的数量。
-
 - PFADD *key* *value*...：添加基数型 key。
 - PFCOUNT *key*：计算该 key 基数。
 - PFMERGE *key* *key1*...：将 key1 的基数加如到 key 中。

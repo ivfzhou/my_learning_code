@@ -1,7 +1,6 @@
 # 一、通过 Docker-Compose 安装运行
 
 docker compose yaml 配置：
-
 ```yml
 services:
   tusd:
@@ -21,7 +20,6 @@ services:
     entrypoint: "tusd -expose-metrics=false -disable-cors -hooks-enabled-events="
 ```
 运行命令：
-
 ```shell
 mkdir -p ~/volumes/tusd/data
 sudo chown 1000:1000 -R ~/volumes/tusd
@@ -30,4 +28,3 @@ sudo tee -a /etc/hosts <<EOF
 EOF
 docker-compose -f src/my_learning_code/note/docker/docker-compose.yml up -d tusd
 ```
-

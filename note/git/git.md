@@ -1,7 +1,6 @@
 # 一、笔记
 
-1. Git 源码包中的命令补齐脚本 `contrib/completion/git-completion.bash` 复制到 `/etc/bash_completion.d/`
-   对应的目录中。重新加载自动补齐脚本，使之在当前的 shell 中生效 `. /etc/bash_completion`。
+1. Git 源码包中的命令补齐脚本 `contrib/completion/git-completion.bash` 复制到 `/etc/bash_completion.d/` 对应的目录中。重新加载自动补齐脚本，使之在当前的 shell 中生效 `. /etc/bash_completion`。
 1. ![](./工作区、版本库、暂存区原理图.jpeg)
 
 # 二、文件说明
@@ -15,22 +14,22 @@
 
 # 三、各类型 SHA1 ID 计算规则：
 
-## Commit
+## 3.1 Commit
 
 1. git cat-file commit HEAD | wc -c
 1. (printf "commit <字数>\000"; git cat-file commit HEAD) | sha1sum
 
-## Blob
+## 3.2 Blob
 
 1. git cat-file blob HEAD:a.txt | wc -c
 1. (printf "blob <字数>\000"; git cat-file blob HEAD:a.txt) | sha1sum
 
-## Tree
+## 3.3 Tree
 
 1. git cat-file tree HEAD^{tree} | wc -c
 1. (printf "tree <字数>\000"; git cat-file tree HEAD^{tree}) | sha1sum
 
-## Tag
+## 3.4 Tag
 
 1. git cat-file tag v2.0.0 | wc -c
 1. (printf "tag <字数>\000"; git cat-file tag v2.0.0) | sha1sum
@@ -71,8 +70,7 @@ make NO_DOC=1 NO_TCLTK=1 NO_RUST=1 prefix=~/programs/git install
 # 七、设置访问远程仓库账密
 
 1. 开启账密存储：`git config --global credential.helper store`。
-2. 用户家目录下文件 `.git-credentials` 添加 `https://user:token@host.com`。`.netrc` 添加
-   `machine github.com login USERNAME password APIKEY`。
+1. 用户家目录下文件 `.git-credentials` 添加 `https://user:token@host.com`。`.netrc` 添加 `machine github.com login USERNAME password APIKEY`。
 
 # 八、配置 ssh 网络代理
 
@@ -80,9 +78,7 @@ make NO_DOC=1 NO_TCLTK=1 NO_RUST=1 prefix=~/programs/git install
 sudo apt install connect-proxy
 vim .ssh/config
 ```
-
 添加：
-
 ```txt
 Host github.com
 User git
@@ -91,14 +87,14 @@ ProxyCommand connect-proxy -S 127.0.0.1:7897 %h %p
 
 # 九、命令样例
 
-## 生成一个没有父提交的新提交对象
+## 9.1 生成一个没有父提交的新提交对象
 
 ```shell
 git cat-file commit <commit> | sed -e '/^parent/d' > tmpfile
 git hash-object -t commit -w -- tmpfile
 ```
 
-## 提取提交与回放
+## 9.2 提取提交与回放
 
 ```shell
 # 提取从 <起始提交> 之后（不含它）到 <结束提交> 的所有提交
@@ -108,12 +104,12 @@ git format-patch -o /path/to/patches/ <起始提交>..<结束提交>
 git am /path/to/patches/*.patch
 ```
 
-## 1. 公钥密钥
+##  9.3 公钥密钥
 
 - `ssh-keygen -t rsa -C <email>`：生成 RSA 密钥对。
 - `ssh -T git@github.com`：测试与 GitHub 的 SSH 连接是否正常。
 
-## 2. 配置
+## 9.4 配置
 
 - `git config set --global user.name ivfzhou`：设置全局用户名。
 - `git config set --global user.email ivfzhou@126.com`：设置全局用户邮箱地址。
@@ -140,12 +136,12 @@ git am /path/to/patches/*.patch
 - `remote.<origin>.skipDefaultUpdate true`：在执行 `git remote update` 时跳过该远程仓库的自动更新。
 - `receive.denyDeletes true`：禁止通过推送操作删除远程分支。
 
-## 3. 初始化仓库
+## 9.5 初始化仓库
 
 - `git init <dir>`：在指定目录下初始化一个空的 Git 版本库。
 - `git clone <url> -o <origin> -b <branch> <dir>`：从远程 URL 克隆仓库到本地指定目录，可自定义远端名称和初始分支。
 
-## 4. 工作区与暂存区交互
+## 9.6 工作区与暂存区交互
 
 - `git add <file>`：将指定文件添加到暂存区（staging area）。
 - `git add .`：将工作区中所有修改和新增文件添加到暂存区。
@@ -156,7 +152,7 @@ git am /path/to/patches/*.patch
 - `git rm --cached -rf <filename>`：从暂存区移除文件（保留工作区物理文件不受影响）。
 - `git checkout .`：使用暂存区内容整体覆盖工作区，撤销所有未提交的改动。
 
-## 5. 暂存区与版本库交互
+## 9.7 暂存区与版本库交互
 
 - `git commit -m <注释>`：将暂存区的内容提交到本地版本库，并附带提交说明。
 - `git commit -am <注释>`：将工作区所有已追踪文件的修改一并提交至暂存区和本地版本库（仅限已追踪文件）。
@@ -165,7 +161,7 @@ git am /path/to/patches/*.patch
 - `git reset <filename>`：将指定文件从暂存区撤回（用 HEAD 版本覆盖暂存区），工作区保持不变。
 - `git commit -C <commit-id>`：复用指定提交的提交说明（message）和作者信息。
 
-## 6. 版本库操作
+## 9.8 版本库操作
 
 - `git reset --hard HEAD^`：硬重置到上一个版本，工作区、暂存区和版本库均被还原，所有未提交的改动将丢失。
 - `git reset --hard <commitId>`：硬重置到指定提交版本，三区（工作区、暂存区、版本库指针）全部对齐到该版本。
@@ -176,7 +172,7 @@ git am /path/to/patches/*.patch
 - `git checkout <branch> -- <file-path>`：从指定分支取出文件，覆盖当前分支的暂存区和工作区。
 - `git cherry-pick <commit-id>`：将指定提交的改动"拣选"出来，在当前 HEAD 上重新应用为一个新提交。
 
-## 7. 查看
+## 9.9 查看
 
 - `git status -s`：以简洁格式显示工作区与暂存区的状态（已暂存、已修改、未追踪等）。
 - `git ls-tree <commit-id>`：查看指定提交对应的目录树结构（包含文件列表及其模式）。
@@ -234,7 +230,7 @@ git am /path/to/patches/*.patch
 - `git name-rev`：将提交 ID 转换为最接近的可读引用名称（如分支名或 tag 名）。
 - `git show <object> --stat`：显示指定对象（提交、tag 等）的简要统计信息（变更文件列表及增删行数）。
 
-## 8. 远程分支
+## 9.10 远程分支
 
 - `git remote -v`：列出当前仓库配置的所有远程仓库地址（含 fetch 和 push URL）。
 - `git remote add <origin> <url>`：添加一个新的远程仓库，并命名为 origin。
@@ -254,7 +250,7 @@ git am /path/to/patches/*.patch
 - `git cherry`：查看当前分支有哪些提交尚未推送到上游跟踪分支（ahead 的提交数）。
 - `git push <origin> :<branch-name>`：通过推送空引用的方式删除远程仓库中的指定分支。
 
-## 9. 里程碑
+## 9.11 里程碑
 
 - `git tag --sort=-creatordate -l -n <pattern>`：按创建时间倒序列出匹配模式的 tag 及其注解。
 - `git tag -d <tag>`：删除本地指定的 tag。
@@ -267,7 +263,7 @@ git am /path/to/patches/*.patch
 - `git push <remote> :<tag>`：通过推送空引用删除远程仓库中的指定 tag。
 - `git show <tag>`：查看指定 tag 的详细信息（包括关联的提交内容和注解）。
 
-## 10. 分支
+## 9.12 分支
 
 - `git branch -v`：显示本地分支列表及每个分支最后一次提交的摘要信息。
 - `git checkout <branch-name>`：切换工作区到指定的已有分支。
@@ -287,7 +283,7 @@ git am /path/to/patches/*.patch
 - `git push <origin> --all`：将本地所有分支推送到远程仓库。
 - `git merge <branch-name>`：将指定分支合并到当前分支，并保留合并提交历史。
 
-## 11. 日志
+## 9.13 日志
 
 - `git reflog`：查看 HEAD 引用的移动历史（包括被 reset 丢弃的提交等操作记录）。
 - `git log --pretty=oneline`：每条提交显示为一行（提交 hash + 说明）。
@@ -305,14 +301,14 @@ git am /path/to/patches/*.patch
 - `git reflog expire --expire=now --all`：立即过期清空所有 reflog 日志条目（`.git/logs/` 下文件将被清空）。
 - `git log -n 5`：查看最近 5 条提交记录。
 
-## 12. 暂存
+## 9.14 暂存
 
 - `git stash`：将当前工作区的修改（含暂存区改动）临时保存到 stash 栈中，恢复工作区到干净状态。
 - `git stash pop`：恢复 stash 栈顶保存的最近一次修改到工作区，并将其从栈中移除。
 - `git stash apply`：恢复 stash 栈顶保存的修改到工作区（不从栈中删除，可重复应用）。
 - `git stash list`：列出 stash 栈中所有已保存的暂存版本条目。
 
-## 13. 比较
+## 9.15 比较
 
 - `git diff <file>`：比较指定文件在暂存区与工作区之间的差异。
 - `git diff --cached <file>`：比较指定文件在最新提交（HEAD）与暂存区之间的差异。
@@ -331,7 +327,7 @@ git am /path/to/patches/*.patch
 - `git diff A...B`：找出 A 与 B 的共同祖先（merge base），然后显示从共同祖先到 B 的差异。
 - `git format-patch -s <commit-id>..<commit-id>`：根据两个提交之间的差异生成可邮寄的标准邮件格式补丁文件。
 
-## 14. 查找提交
+## 9.16 查找提交
 
 - `git bisect start`：启动二分查找流程，开始定位引入 bug 的提交。
 - `git bisect bad`：将当前 HEAD 版本标记为"坏提交"（存在 bug 的版本）。
@@ -342,7 +338,7 @@ git am /path/to/patches/*.patch
 - `git bisect replay logfile`：根据之前保存的日志文件恢复二分查找进度并重新开始。
 - `git bisect run sh good-or-bad.sh`：自动化运行二分查找，由脚本判断每次测试版本的好坏。
 
-## 15. 变基
+## 9.17 变基
 
 - `git rebase --onto <newbase> <since> <till>`：将从 `<since>` 到 `<till>` 之间的提交摘出，重新应用到 `<newbase>` 分支之上。
 - `git rebase <base-branch>`：将当前分支自分歧点以来的所有提交逐一重新应用（replay）到 `<base-branch>` 之上。
@@ -350,18 +346,18 @@ git am /path/to/patches/*.patch
 - `git rebase --skip`：跳过当前冲突提交不做任何修改，继续变基剩余的提交。
 - `git rebase --abort`：完全中止变基操作并将版本库恢复到执行 rebase 之前的原始状态。
 
-## 16. gnupg
+## 9.18 gnupg
 
 - `gpg --list-keys`：列出当前系统可用的 GnuPG 公钥密钥环中的密钥。
 - `gpg gen-key`：交互式地生成一对全新的 GnuPG 公钥和私钥。
 
-## 17. 归档
+## 9.19 归档
 
 - `git archive -o <file> HEAD`：基于当前最新提交（HEAD）打包生成归档文件。
 - `git archive -o <file> HEAD src doc`：基于 HEAD 打包归档，仅包含 src 和 doc 两个目录下的内容。
 - `git archive --format=tar --prefix=1.0/ v1.0 | gzip > foo-1.0.tar.gz`：基于 v1.0 tag 创建 tar.gz 归档，并为内部文件统一添加 `1.0/` 目录前缀。
 
-## 18. 松散文件
+## 9.20 松散文件
 
 - `git show-ref`：列出当前版本库中存在的所有引用（含分支、tag 等）及其对应的对象 ID。
 - `git pack-refs --all`：将分散的松散引用文件打包合并到一个集中的 pack 文件中以提升性能。
@@ -370,23 +366,22 @@ git am /path/to/patches/*.patch
 - `git prune`：清理并永久删除所有未被任何引用关联到的松散对象以释放磁盘空间。
 - `git gc`：执行垃圾回收操作，打包松散对象、清理无效引用并压缩优化版本库存储。
 
-## 19. 子模组
+## 9.21 子模组
 
 - `git submodule add <url> <dir>`：将外部仓库作为子模块添加到指定目录，并在 `.gitmodules` 中记录配置。
 - `git submodule status`：显示各子模块的当前提交哈希、路径及状态摘要（与记录版本是否一致）。
 - `git submodule init`：根据 `.gitmodules` 配置初始化子模块，在 `.git/config` 中完成本地注册。
 - `git submodule update`：依据注册信息克隆缺失的子模块，或将其检出到记录的提交版本。
 
-## 20. 合并其它版本库
+## 9.22 合并其它版本库
 
 1. `git remote add <other-git> <url>`：添加其它版本库。
-2. `git fetch <other-git>`：拉取数据。
-3. `git checkout -b <branch-name1> <other-git/master>`：基于远程版本库创建分支。
-4. `git read-tree --prefix=<dir> <branch-name1>`：将远程版本库文件写入暂存区。
-5. `git checkout master`：切换原分支。
-6. `git write-tree`：获取当前暂存区的树 ID。
-7. `git rev-parse HEAD`、`git rev-parse <branch-name1>`：获取到提交 ID。
-8. `git commit-tree <暂存区树 ID> -p <HEAD 提交 ID> -p <branch-name1 树 ID> -m <提交说明>`：创建树获取 ID。
-9. `git reset <新树 ID>`：将版本库重置到新的树。
-10. `git log`：查看其它版本库i合并进来的日志。
-
+1. `git fetch <other-git>`：拉取数据。
+1. `git checkout -b <branch-name1> <other-git/master>`：基于远程版本库创建分支。
+1. `git read-tree --prefix=<dir> <branch-name1>`：将远程版本库文件写入暂存区。
+1. `git checkout master`：切换原分支。
+1. `git write-tree`：获取当前暂存区的树 ID。
+1. `git rev-parse HEAD`、`git rev-parse <branch-name1>`：获取到提交 ID。
+1. `git commit-tree <暂存区树 ID> -p <HEAD 提交 ID> -p <branch-name1 树 ID> -m <提交说明>`：创建树获取 ID。
+1. `git reset <新树 ID>`：将版本库重置到新的树。
+1. `git log`：查看其它版本库i合并进来的日志。
