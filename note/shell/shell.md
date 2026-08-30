@@ -3,26 +3,35 @@
 1. /etc/shells 系统支持的 shell。
 1. 脚本文件第一行注释 `#!/bin/bash`，指明脚本的解释器。
 1. 标准输入内容：
-
    ```bash
    <<EOF
    内容...
    EOF
    ```
 
+   将输入的内容去掉前导的 Tab 字符：
+   ```bash
+   <<-EOF
+   内容...
+   EOF
+   ```
+
+   硬标签，不解析内容里的变量和命令替换：
+   ```bash
+   <<'EOF'
+   内容...
+   EOF
+   ```
 1. 变量名只能以数字、字母、下划线组合，且不以数字开头。
 1. 单引号字符串中不识别变量，不能转义。双引号字符串中可解析变量可转义。
 1. 检测系统中是否安装了 bash，并根据检测结果输出 yes 或 no：`command -v bash > /dev/null 2>&1 && echo yes || echo no`。
 1. 运行脚本：
-
    ```shell
    bash -x script.sh # 逐行显示执行过程
    bash -n script.sh # 仅检查语法不执行
    bash -v script.sh # 显示读取的每一行
    ```
-
 1. 算术扩展，可以使用：变量（可省略 `$`，如 `a` 直接代表变量值）、整数常量、算术运算符、比较、逻辑、位运算等：
-
    ```bash
    a=5
    b=3
@@ -34,10 +43,8 @@
    result=$((x=3, y=5, x+y)))
    echo $result # 8
    ```
-
 1. 命令替换，执行命令，将其标准输出作为字符串插入到当前位置：`var=$(date +%F)`。
 1. 大括号扩展：
-
     ```bash
     # 生成一个从 1 到 8 的整数序列
     echo {1..8}
@@ -58,9 +65,7 @@
     echo {a,b,c} # 输出：a b c
     echo file{1,2,3}.txt # 输出：file1.txt file2.txt file3.txt
     ```
-
 1. 字面量单词列表：
-
     ```bash
     echo 1 2 3 4
     
@@ -68,19 +73,14 @@
         echo $i
     done
     ```
-
 1. 临时设置环境变量，仅对本行外部命令运行可获取，后面行的命令获取不到变量设置的值：
-
     ```bash
     LANG=zh_CN 外部命令 ...
     ```
-
 1. 短路求值：
- 
     - `CmdA && CmdB`：CmdA 返回码为 0 时才运行 CmdB。
     - `CmdA || CmdB`：CmdA 返回码为非 0 时才运行 CmdB。
     - `CmdA && CmdB || CmdC`：CmdA 返回码为非 0 时，不运行 CmdB，`CmdA && CmdB` 整体是失败的，运行 CmdC；CmdA 返回码为 0 时，运行 CmdB，若 CmdB失败则运行 CmdC，否则 CmdC 不运行。
-
 1. 查询当前是登陆 Shell 还是交互式 Shell，`echo $0`，输出 bash 是交互式 Shell，输出 -bash 是登陆 Shell。
 
 # 二、Bash 语法
@@ -106,17 +106,14 @@
 - local *变量*=*值*：在函数内部定义局部变量。
 - unset *变量*：删除变量或函数。
 - set：显示或设置 Shell 变量和选项。
-
-```bash
-set -e          # 任何命令失败立即退出
-set -u          # 使用未定义变量时退出
-set -x          # 打印每条执行的命令
-set -o pipefail # 管道中任一命令失败则整体失败
-```
-
+  ```bash
+  set -e          # 任何命令失败立即退出
+  set -u          # 使用未定义变量时退出
+  set -x          # 打印每条执行的命令
+  set -o pipefail # 管道中任一命令失败则整体失败
+  ```
 - shift [*n*]：将位置参数左移 *n* 位（默认 1）。
 - getopts *optstring* *var* [*args*]：解析命令行选项（用于脚本参数解析）。args 默认为 $@（所有位置参数）。如果遇到非法选项或缺少参数，则设置 var 为 ?（或 :，若处于静默模式）并设置 OPTARG 为错误信息。
-  
   - *optstring* 的语法：
   - 普通字母：表示一个无参数选项，如 "a" 表示接受 -a。
   - 字母后跟冒号 :：表示该选项需要一个参数，如 "b:" 表示 -b value。
@@ -124,71 +121,67 @@ set -o pipefail # 管道中任一命令失败则整体失败
   - 变量：
   - OPTARG：保存当前选项的参数值（如果该选项需要参数）。
   - OPTIND：保存下一个要处理的参数在位置参数中的索引。初始值为 1，每次调用 getopts 后更新。
-  - 示例 1：
+  示例 1：
+  ```bash
+  # ./script.sh -a -b hello
+  
+  while getopts "ab:" opt; do
+      case $opt in
+          a)
+              echo "选项 -a 被指定"
+              ;;
+          b)
+              echo "选项 -b 被指定，参数为：$OPTARG"
+              ;;
+          ?)
+              echo "无效选项或缺少参数"
+              exit 1
+              ;;
+      esac
+  done
+  ```
 
-    ```bash
-    # ./script.sh -a -b hello
-    
-    while getopts "ab:" opt; do
-        case $opt in
-            a)
-                echo "选项 -a 被指定"
-                ;;
-            b)
-                echo "选项 -b 被指定，参数为：$OPTARG"
-                ;;
-            ?)
-                echo "无效选项或缺少参数"
-                exit 1
-                ;;
-        esac
-    done
-    ```
+  示例 2：
+  ```bash 
+  # ./script.sh -a
+  
+  while getopts ":a:b:" opt; do
+      case $opt in
+          a)
+              echo "-a 参数：$OPTARG"
+              ;;
+          b)
+              echo "-b 参数：$OPTARG"
+              ;;
+          :)
+              echo "选项 -$OPTARG 缺少参数"
+              exit 1
+              ;;
+          ?)
+              echo "未知选项：-$OPTARG"
+              exit 1
+              ;;
+      esac
+  done
+  ```
 
-  - 示例 2：
-
-    ```bash 
-    # ./script.sh -a
-    
-    while getopts ":a:b:" opt; do
-        case $opt in
-            a)
-                echo "-a 参数：$OPTARG"
-                ;;
-            b)
-                echo "-b 参数：$OPTARG"
-                ;;
-            :)
-                echo "选项 -$OPTARG 缺少参数"
-                exit 1
-                ;;
-            ?)
-                echo "未知选项：-$OPTARG"
-                exit 1
-                ;;
-        esac
-    done
-    ```
-
-  - 示例 3：
-
-    ```bash
-    # ./script.sh -v -n Alice file1 file2
-    
-    while getopts "vn:" opt; do
-        case $opt in
-            v) verbose=1 ;;
-            n) name="$OPTARG" ;;
-        esac
-    done
-    
-    shift $((OPTIND - 1))   # 移除已解析的选项，剩余位置参数作为普通参数
-    
-    echo "verbose = $verbose"
-    echo "name = $name"
-    echo "剩余参数：$@"
-    ```
-
+  示例 3：
+  ```bash
+  # ./script.sh -v -n Alice file1 file2
+  
+  while getopts "vn:" opt; do
+      case $opt in
+          v) verbose=1 ;;
+          n) name="$OPTARG" ;;
+      esac
+  done
+  
+  shift $((OPTIND - 1))   # 移除已解析的选项，剩余位置参数作为普通参数
+  
+  echo "verbose = $verbose"
+  echo "name = $name"
+  echo "剩余参数：$@"
+  ```
 - echo [*字符串*]：输出文本到标准输出。支持 -n（不换行）、-e（解释转义字符）。
 - printf *格式* [*参数*...]：按格式输出，功能比 echo 更强大，类似 C 语言 printf。
 - read [*变量*]：从标准输入读取一行并赋值给变量。常用 -p（提示）、-a（读入数组）。
@@ -239,13 +232,10 @@ set -o pipefail # 管道中任一命令失败则整体失败
 ## 2.3 变量与环境
 
 - 普通 Shell 变量：只在当前 Shell 中有效。
-
   - 定义变量：*变量名*=*值*。
   - 引用变量：$变量名、${变量名}。
-
 - 环境变量：可传递给子进程。
 - 常见环境变量：
-
   - PATH：命令搜索路径。
   - HOME：当前用户主目录。
   - USER：当前用户名。
@@ -257,9 +247,7 @@ set -o pipefail # 管道中任一命令失败则整体失败
   - RANDOM：随机数。
   - LINENO：当前脚本行号。
   - BASH_VERSION：Bash 版本号。
-
 - 特殊变量：
-
   - !!：代表上一条命令。
   - !$：表示上一条命令的最后一个参数。
   - $0：脚本名。
@@ -281,42 +269,29 @@ set -o pipefail # 管道中任一命令失败则整体失败
 - ~/.bashrc：用户交互式 Shell 配置。
 - ~/.bash_logout：用户退出登录 Shell 时执行。
 - 配置文件读取顺序：
-
   - 登录 Shell，例如通过 TTY、SSH 或 `bash --login`：
- 
     1. /etc/profile
     2. ~/.bash_profile、~/.bash_login、~/.profile（三选一）
- 
   - 交互式 Shell，在已登录的图形界面中打开终端模拟器（如 GNOME Terminal、Konsole 等）或执行 bash 命令启动的子 Shell：
- 
     1. /etc/bash.bashrc（如果存在）
     2. ~/.bashrc
- 
   - 非交互式 Shell，当 Bash 用于执行脚本（如 `bash script.sh` 或直接运行 ./script.sh）时：
- 
     1. 仅当设置了 BASH_ENV 时读取该变量指定的文件。
- 
   - 以 sh 调用（POSIX）登录：
- 
     1. ./etc/profile
     2. ~/.profile
- 
   - 以 sh 调用（POSIX）交互式：
- 
     1. 若设置了 ENV，则读取该变量指定的文件。
 
 ## 2.5 索引数组与关联数组
 
 - 索引数组：
-
   ```bash
   arr=(apple banana cherry)
   echo ${arr[0]}          # apple
   echo ${#arr[@]}         # 数组长度
   ```
-
 - 关联数组：
-
   ```bash
   declare -A person
   person[name]="小明"
@@ -327,7 +302,6 @@ set -o pipefail # 管道中任一命令失败则整体失败
 ## 2.6 运算符
 
 - 算术运算符：+  -  *  /  %  ** ++ -- ?:。
-
    ```bash
    a=10
    b=3
@@ -340,9 +314,7 @@ set -o pipefail # 管道中任一命令失败则整体失败
    b=$(expr 5 + 3)
    echo $b
    ```
-
 - 字符串比较运算符：
-
    - =、==：字符串相等。
    - !=：字符串不相等。
    - -z：字符串为空。
@@ -350,18 +322,14 @@ set -o pipefail # 管道中任一命令失败则整体失败
    - <：按字典序小于（需转义或在 [[ ]] 中使用）。
    - \>：字典序大于。
    - =~：正则比较，例如 `[[ "abc123" =~ ^[a-z]+[0-9]+$ ]]`。
-
 - 整数比较运算符：
-
    - -eq：等于。
    - -ne：不等于。
    - -gt：大于。
    - -ge：大于等于。
    - -lt：小于。
    - -le：小于等于。
-
 - 文件测试运算符：
-
    - -e：文件存在。
    - -f：是普通文件。
    - -d：是目录。
@@ -370,9 +338,7 @@ set -o pipefail # 管道中任一命令失败则整体失败
    - -x：可执行。
    - -s：文件非空。
    - -L：是符号链接。
-
 - 逻辑运算符：
-
    - &&：逻辑与。
    - ||：逻辑或。
    - !：逻辑非。
@@ -380,7 +346,7 @@ set -o pipefail # 管道中任一命令失败则整体失败
 ## 2.7 条件判断与循环
 
 ```bash
-# 根据命令列表中最后一个命令的退出状态码来决定条件真假
+# 根据命令列表中最后一个命令的退出状态码来决定条件真假。
 if 条件; then
     命令
 elif 条件; then
@@ -563,10 +529,8 @@ var2="abc"$var"123"
 ## 3.1 常用命令
 
 - 查看系统信息：lscpu free fdisk top printenv
-
   - uptime：查看系统启动时间、运行时间。
   - nproc：打印 CPU 核心数量。
-
 - 基础配置：localectl timedatectl date hwclock
 - 管理用户：useradd id passwd cracklib-unpacker create-cracklib-dict usermod userdel groupadd groupmod groupdel newgrp
 - 管理软件包：vi dnf createrepo
@@ -579,7 +543,6 @@ var2="abc"$var"123"
 ## 3.2 more
 
 more *参数*... *文件*...：适合屏幕查看的文件阅读输出工具。more +num
-  
 - -d 显示帮助而非响铃。
 - -f 计算逻辑行数，而非屏幕行数。
 - -l 屏蔽换页(form feed)后的暂停。
@@ -615,7 +578,6 @@ more *参数*... *文件*...：适合屏幕查看的文件阅读输出工具。m
 ## 3.3 less
 
 less *文件*：类似于 more 命令，但是它允许在文件中和正向操作一样的反向操作，浏览多个文件时，输入:n 切换到上一个文件，输入:p 切换到下一个文件。
-
 - 空格键 滚动一页。
 - 回车键 滚动一行。
 - \[pagedown] 向下翻动一页。
@@ -629,7 +591,6 @@ less *文件*：类似于 more 命令，但是它允许在文件中和正向操�
 
 vi *参数*... *文件*：编辑文件。  
 正常模式：
-    
 - hjkl 左上下右，可以使用 30j 或 30↓ 的组合按键。
 - ctrl+f 前一页。
 - ctrl+b 后一页。
@@ -674,9 +635,7 @@ vi *参数*... *文件*：编辑文件。
 - cw 进入编辑模式，删除当前光标到所在单词尾部字符。
 - c$ 进入编辑模式，删除当前光标到行尾的字符。
 - c^ 进入编辑模式，删除当前光标(不包括)之前到行首的字符。
-  
-命令模式：  
-
+命令模式：
 - :行 跳转到指定行。
 - :set nu 显示行号。
 - :set nonu 取消显示行号。
@@ -703,7 +662,6 @@ vi *参数*... *文件*：编辑文件。
 
 sed *选项* *脚本* *文件*... ：对文本查找、替换和删除处理。逐行读取输入，对于每一行，依次执行脚本中所有地址条件满足的命令，然后输出结果。省略文件时，从标准输入读取。如果斜线 / 匹配冲突可以换成别的符号作分割符。脚本由地址、命令和参数组成。  
 地址：
-  
 - *N*：第 *N* 行，例如 `5d` 删除第五行。
 - $：最后一行。
 - /*正则*/：正则匹配的行。
@@ -712,18 +670,13 @@ sed *选项* *脚本* *文件*... ：对文本查找、替换和删除处理。�
 - *N*,$：第 *N* 到最后一行。
 - *地址*!：与*地址*不匹配的行。
 - 省略地址，表示处理所有行。
-
 命令：
-
 - s/*原内容*/*新内容*/*标志*：替换文本。支持正则表达式。
-
   标志：
-
   - g：全局替换。
   - p：打印替换成功的行。
   - i：忽略大小写。
   - *数字*：替换第 n 次出现。
-
 - d：删除当前行，立即开始下一行。
 - p：打印当前行。
 - =：打印当前行号。
@@ -749,7 +702,6 @@ sed *选项* *脚本* *文件*... ：对文本查找、替换和删除处理。�
 - G：将保持空间追加到模式空间。
 - x：交换模式空间和保持空间的内容。
 - {}：命令分组。多个命令需要作用于同一地址。
-   
   ```sed
   地址 {
       命令1
@@ -758,22 +710,18 @@ sed *选项* *脚本* *文件*... ：对文本查找、替换和删除处理。�
   }
   地址 { 命令1; 命令2; }
   ```
-
-选项：
-
+  选项：
 - -n：取消默认输出，只输出显式打印的内容。
 - -e *脚本*：添加一个脚本（可多次使用）。
 - -f *脚本文件*：从文件读取脚本。
 - -i[*后缀*]：直接修改文件（可备份为后缀）。
 - -E 或 -r：使用扩展正则表达式（ERE）。
 - -u：无缓冲输出（GNU sed）。
-
 在脚本文件中，# 开头的行是注释（GNU sed 支持；POSIX 要求脚本第一行可以是注释）。
 
 ## 3.6 awk
 
 awk *参数* *文件*
-
 - -F '分割符或者正则'
 - -f 文件
 - 'print $1 $2' *文件* 打印每行的第一个字段和第二个字段。
@@ -801,33 +749,28 @@ awk *参数* *文件*
 ## 3.7 ulimit
 
 ulimit
-
 - -a 查看当前用户系统资源使用限制，例如打开文件数。
 - -s 查看栈大小。单位 KB。
 
 ## 3.8 tar
 
 tar
-
 - -zxvf xxx.tar.gzip 解压 gzip 文件
 - -Jxvf xxx.tar.xz 解压 xz 文件
 
 ## 3.9 ln
 
 ln
-
 - ln -s lib64 /usr/local/lib：创建软连接
 
 ## 3.10 find
 
 find：搜索文件
-
 - sudo find / -name xxx -type f：搜索文件。
 
 ## 3.11 uname
 
 uname
-
 - uname -s：Linux
 - uname -r：6.1.0-28-amd64
 
@@ -859,16 +802,13 @@ WM_CLASS：点击应用窗口，获取 StartupWMClass 值（输出值的第二�
 
 zip *选项* *archive.zip* *files*...  
 选项：
-  
 - -r：递归压缩。压缩整个目录 `zip -r archive.zip myfolder/`。
 - -x *模式*...：压缩时排除某些文件。例如 `zip -r archive.zip myfolder/ -x "*.log" "*.tmp"`。
 - -*n*：设置压缩级别。默认是 -6。例如
- 
   ```shell
   zip -9 -r archive.zip myfolder/   # 最大压缩（速度慢）
   zip -0 -r archive.zip myfolder/   # 仅存储，不压缩（速度快）
   ```
-
 - -UN=*字符集*：压缩时使用指定字符编码。例如 `zip -r -UN=UTF-8 archive.zip myfolder/`。
 - -q：安静模式。
 - -e：创建带密码的压缩包。会提示输入密码。
@@ -878,7 +818,6 @@ zip *选项* *archive.zip* *files*...
 
 unzip *选项* *archive.zip*  
 选项：
-  
 - -d：解压到指定目录，不存在会自动创建。。例如 `unzip archive.zip -d /path/to/target/`。
 - -l：查看压缩包内容。例如 `unzip -l archive.zip`。
 - -x *模式*...：解压时排除某些文件。例如 `unzip archive.zip -x "*.log"`。
@@ -890,7 +829,6 @@ unzip *选项* *archive.zip*
 
 curl *选项*... *URL*：支持多种协议，HTTP、HTTPS、FTP、SFTP、SMTP 等。  
 选项：
-
 - -o *文件*：将内容保存为指定文件名。
 - -O：使用 URL 中的文件名保存。
 - -L：跟随重定向。
@@ -919,7 +857,6 @@ curl *选项*... *URL*：支持多种协议，HTTP、HTTPS、FTP、SFTP、SMTP �
 
 grep *选项*... *模式* *文件、文件夹*...  
 选项：
-
 - -i：忽略大小写。
 - -r、-R：递归搜索目录。
 - -n：显示匹配行的行号。
@@ -937,3 +874,9 @@ grep *选项*... *模式* *文件、文件夹*...
 - --include=*模式*：递归搜索文件时，按*模式*过滤。例如 `grep -r --include="*.txt" "TODO" ./`。
 - --exclude=*模式*：递归搜索文件时，按*模式*排除文件。
 - --exclude-dir=*模式*：递归搜索文件时，按*模式*排除文件夹。
+
+## 3.19 tee
+
+tee *选项*... *文件*...：将标准输入内容复制到文件中，同时输出到标准输出。  
+选项：
+- -a、--append：内容追加到文件尾部。
