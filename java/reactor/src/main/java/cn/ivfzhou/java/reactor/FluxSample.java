@@ -1,4 +1,4 @@
-package cn.ivfzhou.java.flux;
+package cn.ivfzhou.java.reactor;
 
 import reactor.core.publisher.Flux;
 import reactor.core.scheduler.Schedulers;
@@ -6,7 +6,7 @@ import reactor.core.scheduler.Schedulers;
 import java.time.Duration;
 import java.util.List;
 
-public final class Sample {
+public final class FluxSample {
 
     static void main() throws InterruptedException {
         handleError();

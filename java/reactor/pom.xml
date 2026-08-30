@@ -11,7 +11,7 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>cn.ivfzhou.java</groupId>
-    <artifactId>flux</artifactId>
+    <artifactId>reactor</artifactId>
     <version>1.0.0</version>
 
     <dependencies>

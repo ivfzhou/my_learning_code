@@ -33,7 +33,7 @@
         <module>apksigner</module>
         <module>jarsigner</module>
         <module>agentscope</module>
-        <module>flux</module>
+        <module>reactor</module>
     </modules>
 
     <properties>
