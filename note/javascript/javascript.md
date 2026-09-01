@@ -2,6 +2,9 @@
 
 1. [ECMA_262_2023.pdf](./ECMA_262_2023.pdf)
 1. https://developer.mozilla.org/en-US/docs/Web/JavaScript
+
+## 1.1 语法
+
 1. 一行多变量声明：`var test1 = "hi", test2 = "hello", age = 25;`。
 1. 原始数据类型：undefined、boolean、number、string、bigint。引用类型：object、function。
 1. 未声明的变量值为 undefined，对其只能使用 typeof 运算符，使用其他运算符将报错。
