@@ -38,7 +38,6 @@ import io.agentscope.core.permission.PermissionBehavior;
 import io.agentscope.core.permission.PermissionContextState;
 import io.agentscope.core.permission.PermissionMode;
 import io.agentscope.core.permission.PermissionRule;
-import io.agentscope.core.skill.repository.FileSystemSkillRepository;
 import io.agentscope.core.tool.Toolkit;
 import io.agentscope.core.tool.builtin.TodoTools;
 import io.agentscope.core.tool.mcp.McpClientBuilder;
@@ -47,6 +46,8 @@ import io.agentscope.extensions.model.dashscope.formatter.DashScopeChatFormatter
 import io.agentscope.extensions.redis.RedisDistributedStore;
 import io.agentscope.extensions.redis.state.RedisAgentStateStore;
 import io.agentscope.harness.agent.HarnessAgent;
+import io.agentscope.harness.agent.memory.compaction.CompactionConfig;
+import io.agentscope.harness.agent.memory.compaction.ToolResultEvictionConfig;
 import redis.clients.jedis.DefaultJedisClientConfig;
 import redis.clients.jedis.RedisClient;
 
@@ -89,6 +90,7 @@ public final class Sample {
                 .sysPrompt("你是一个全知助手，能回答各类问题。")
                 .model(model)
                 .toolkit(toolkit)
+                .workspace(workspace)
                 .permissionContext(
                         PermissionContextState.builder()
                                 .mode(PermissionMode.DEFAULT)
@@ -98,11 +100,23 @@ public final class Sample {
                 .stateStore(new RedisAgentStateStore.Builder().jedisClient(redisClient).build())
                 .distributedStore(RedisDistributedStore.fromJedis(redisClient))
                 .enableTaskList(true)
-                .skillRepository(new FileSystemSkillRepository(Path.of(System.getProperty("user.home"), ".agentscope", "skills"), true))
+                .compaction(
+                        CompactionConfig.builder()
+                                .triggerMessages(30)
+                                .keepMessages(10)
+                                .truncateArgs(
+                                        CompactionConfig.TruncateArgsConfig.builder()
+                                                .maxArgLength(2000)
+                                                .truncationText("... [truncated] ...")
+                                                .build()
+                                )
+                                .build()
+                )
+                .toolResultEviction(ToolResultEvictionConfig.defaults())
                 .build();
         try (agent) {
-            // chat(agent, "ivfzhou", "session-1");
-            clearState(agent, "ivfzhou", "session-1");
+            chat(agent, "ivfzhou", "session-1");
+            // clearState(agent, "ivfzhou", "session-1");
         }
     }
 
@@ -200,7 +214,9 @@ public final class Sample {
         if (!path.toFile().isDirectory()) {
             path = path.getParent();
         }
-        System.out.println("workspace is " + path.toString());
+        path = path.getParent().getParent();
+        path = Path.of(path.toAbsolutePath().toString(), "workspace");
+        System.out.println("workspace is " + path);
         return path;
     }
 
