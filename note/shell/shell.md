@@ -943,7 +943,7 @@ ls *选项*... *文件*...：列出文件信息，默认当前工作区。
 
 示例：
 ```bash
-alias ll='ls -l --author -b --color=alway --classify=always --group-directories-first -a -i -s --time=mtime --time-style="+%Y-%m-%d %H:%M:%S %z"'
+alias ll='ls -l --author -b --color=alway --classify=always --group-directories-first -a -i -s --time=mtime --time-style="+%Y-%m-%d %H:%M:%S. %z"'
 ```
 
 ll 输出列的含义：
