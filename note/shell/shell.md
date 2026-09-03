@@ -1,6 +1,11 @@
 # 一、笔记
 
+1. [POSIX Shell 语法](https://pubs.opengroup.org/onlinepubs/9799919799/idx/shell.html)
+1. [Bash 语法](https://www.gnu.org/software/bash/manual/html_node/index.html)
 1. /etc/shells 系统支持的 shell。
+1. ctrl+z 挂起当前进程。ctrl+d 结束命令。
+1. ~{account} 表示这个 account 的家目录，- 表示上次所在目录。
+1. ssh 复制文件：scp src ivfzhou@ivfzhoudebian:~/src。
 1. 脚本文件第一行注释 `#!/bin/bash`，指明脚本的解释器。
 1. 标准输入内容：
    ```bash
@@ -45,42 +50,42 @@
    ```
 1. 命令替换，执行命令，将其标准输出作为字符串插入到当前位置：`var=$(date +%F)`。
 1. 大括号扩展：
-    ```bash
-    # 生成一个从 1 到 8 的整数序列
-    echo {1..8}
-    # 输出：1 2 3 4 5 6 7 8
-    
-    # 指定步长
-    echo {1..8..2}
-    # 生成 1 3 5 7
-    
-    # 字母序列
-    echo {a..z}
-    # 生成 a 到 z 的字母
-    
-    # 逆序
-    echo {8..1}
-    # 生成 8 7 6 5 4 3 2 1
-    
-    echo {a,b,c} # 输出：a b c
-    echo file{1,2,3}.txt # 输出：file1.txt file2.txt file3.txt
-    ```
+   ```bash
+   # 生成一个从 1 到 8 的整数序列
+   echo {1..8}
+   # 输出：1 2 3 4 5 6 7 8
+   
+   # 指定步长
+   echo {1..8..2}
+   # 生成 1 3 5 7
+   
+   # 字母序列
+   echo {a..z}
+   # 生成 a 到 z 的字母
+   
+   # 逆序
+   echo {8..1}
+   # 生成 8 7 6 5 4 3 2 1
+   
+   echo {a,b,c} # 输出：a b c
+   echo file{1,2,3}.txt # 输出：file1.txt file2.txt file3.txt
+   ```
 1. 字面量单词列表：
-    ```bash
-    echo 1 2 3 4
-    
-    for i in 1 2 3 4; do
-        echo $i
-    done
-    ```
+   ```bash
+   echo 1 2 3 4
+   
+   for i in 1 2 3 4; do
+       echo $i
+   done
+   ```
 1. 临时设置环境变量，仅对本行外部命令运行可获取，后面行的命令获取不到变量设置的值：
-    ```bash
-    LANG=zh_CN 外部命令 ...
-    ```
+   ```bash
+   LANG=zh_CN 外部命令 ...
+   ```
 1. 短路求值：
-    - `CmdA && CmdB`：CmdA 返回码为 0 时才运行 CmdB。
-    - `CmdA || CmdB`：CmdA 返回码为非 0 时才运行 CmdB。
-    - `CmdA && CmdB || CmdC`：CmdA 返回码为非 0 时，不运行 CmdB，`CmdA && CmdB` 整体是失败的，运行 CmdC；CmdA 返回码为 0 时，运行 CmdB，若 CmdB失败则运行 CmdC，否则 CmdC 不运行。
+   - `CmdA && CmdB`：CmdA 返回码为 0 时才运行 CmdB。
+   - `CmdA || CmdB`：CmdA 返回码为非 0 时才运行 CmdB。
+   - `CmdA && CmdB || CmdC`：CmdA 返回码为非 0 时，不运行 CmdB，`CmdA && CmdB` 整体是失败的，运行 CmdC；CmdA 返回码为 0 时，运行 CmdB，若 CmdB失败则运行 CmdC，否则 CmdC 不运行。
 1. 查询当前是登陆 Shell 还是交互式 Shell，`echo $0`，输出 bash 是交互式 Shell，输出 -bash 是登陆 Shell。
 
 # 二、Bash 语法
@@ -798,7 +803,8 @@ WM_CLASS：点击应用窗口，获取 StartupWMClass 值（输出值的第二�
 
 ## 3.15 zip
 
-zip *选项* *archive.zip* *files*...  
+zip *选项* *archive.zip* *files*...
+
 选项：
 - -r：递归压缩。压缩整个目录 `zip -r archive.zip myfolder/`。
 - -x *模式*...：压缩时排除某些文件。例如 `zip -r archive.zip myfolder/ -x "*.log" "*.tmp"`。
@@ -814,7 +820,8 @@ zip *选项* *archive.zip* *files*...
 
 ## 3.16 unzip
 
-unzip *选项* *archive.zip*  
+unzip *选项* *archive.zip*
+
 选项：
 - -d：解压到指定目录，不存在会自动创建。。例如 `unzip archive.zip -d /path/to/target/`。
 - -l：查看压缩包内容。例如 `unzip -l archive.zip`。
@@ -825,7 +832,8 @@ unzip *选项* *archive.zip*
 
 ## 3.17 curl
 
-curl *选项*... *URL*：支持多种协议，HTTP、HTTPS、FTP、SFTP、SMTP 等。  
+curl *选项*... *URL*：支持多种协议，HTTP、HTTPS、FTP、SFTP、SMTP 等。
+
 选项：
 - -o *文件*：将内容保存为指定文件名。
 - -O：使用 URL 中的文件名保存。
@@ -853,7 +861,8 @@ curl *选项*... *URL*：支持多种协议，HTTP、HTTPS、FTP、SFTP、SMTP �
 
 ## 3.18 grep
 
-grep *选项*... *模式* *文件、文件夹*...  
+grep *选项*... *模式* *文件、文件夹*...
+
 选项：
 - -i：忽略大小写。
 - -r、-R：递归搜索目录。
@@ -875,24 +884,25 @@ grep *选项*... *模式* *文件、文件夹*...
 
 ## 3.19 tee
 
-tee *选项*... *文件*...：将标准输入内容复制到文件中，同时输出到标准输出。  
+tee *选项*... *文件*...：将标准输入内容复制到文件中，同时输出到标准输出。
+
 选项：
 - -a、--append：内容追加到文件尾部。
 
 ## 3.10 head
 
-head *选项*... *文件*...：输出文件的开头部分，默认显示文件的前 10 行。没指定文件或者文件为 - ，就从标准输入读取。  
-选项：
+head *选项*... *文件*...：输出文件的开头部分，默认显示文件的前 10 行。没指定文件或者文件为 - ，就从标准输入读取。
 
+选项：
 - -c [-]*字节数*：显示文件前面*字节数*字节内容；负数表示不展示文件最后*字节数*字节的内容，其余内容都展示。
 - -n [-]*行数*：显示文件前面*行数*行内容；负数表示不展示文件最后*行数*行内容，其余行内容都展示。
 - -q：不打印文件名。指定多个文件时，会打印文件名作为头部。
 
 ## 3.11 tail
 
-tail *选项*... *文件*...：显示文件末尾的内容，默认输出最后 10 行。没指定文件或者文件为 - ，就从标准输入读取。  
-选项：
+tail *选项*... *文件*...：显示文件末尾的内容，默认输出最后 10 行。没指定文件或者文件为 - ，就从标准输入读取。
 
+选项：
 - -c [+]*字节数*：展示文件尾部*字节数*字节内容；加号表示从*字节数*字节处开始展示。
 - -n [+]*行数*：展示文件尾部*行数*行内容；加号表示从*行数*行开始展示。
 - -f=name、descriptor：实时输出新增内容。
@@ -900,3 +910,29 @@ tail *选项*... *文件*...：显示文件末尾的内容，默认输出最后 
 - --retry：文件不可访问时持续尝试打开。
 - -q：不打印文件名。指定多个文件时，会打印文件名作为头部。
 - --pid=*pid*：当指定进程结束后自动退出。
+
+## 3.12 umask
+
+umask *选项* *去除权限数字*：（User file-creation mode mask，用户文件创建模式掩码），查看或指定创建文件（夹）是，从默认权限中“拿走”哪些权限。永久修改 umask 值，需要将 umask 命令写入 Shell 的配置文件中。
+
+选项：
+- -S：以更易读的符号形式打印当前模式掩码。
+
+## 3.13 chmod
+
+chmod *选项*... *模式* *文件*...：修改文件（夹）访问权限。
+
+选项：
+- -R：递归处理，对目录及其所有子目录和文件应用相同权限。
+- -v：显示每个文件的权限修改详情。
+- c：类似 -v，但仅显示有更改的文件。
+
+模式表示方式：
+- 符号模式；标示：u 属主、g 属组、o 其它、a 所有，可以组合；操作符：+ - =；权限 r w x s t。例如 chmod ug=rw,o=r file。
+- 数字模式；用三位或四位八进制数字表示。表示特殊权限、所有者、所属组、其他用户的权限，每个占三比特。
+
+示例：
+```bash
+find /var/www/html -type d -exec chmod 755 {} +
+find /var/www/html -type f -exec chmod 644 {} +
+```

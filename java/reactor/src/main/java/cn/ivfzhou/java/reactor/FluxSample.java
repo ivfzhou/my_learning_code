@@ -9,7 +9,7 @@ import java.util.List;
 public final class FluxSample {
 
     static void main() throws InterruptedException {
-        handleError();
+        doOnNext();
     }
 
     private static void createAndSubscribe() {
@@ -119,6 +119,38 @@ public final class FluxSample {
                         err -> System.out.println("error " + err),
                         () -> System.out.println("done")
                 );
+    }
+
+    private static void timeout() throws InterruptedException {
+        Flux.interval(Duration.ofSeconds(1)).timeout(Duration.ofMillis(500)).subscribe(
+                v -> System.out.println("received " + v),
+                err -> System.out.println("error " + err),
+                () -> System.out.println("done")
+        );
+        Thread.sleep(5000);
+    }
+
+    private static void doOnNext() throws InterruptedException {
+        final class Value {
+            public long num;
+
+            public Value(long num) {
+                this.num = num;
+            }
+        }
+
+        Flux.interval(Duration.ofSeconds(1))
+                .map(Value::new)
+                .doOnNext(v -> {
+                    System.out.println("doOnNext " + v.num);
+                    v.num = v.num + 1;
+                })
+                .subscribe(
+                        v -> System.out.println("received " + v.num),
+                        err -> System.out.println("error " + err),
+                        () -> System.out.println("done")
+                );
+        Thread.sleep(5000);
     }
 
 }

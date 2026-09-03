@@ -36,7 +36,6 @@ public class LanguageFeature {
         }
     }
 
-
     // Java9 允许在 try 块中使用有效终态（effectively final） 的变量。
     static void example1() throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader("file.txt"));
