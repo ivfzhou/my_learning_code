@@ -4,7 +4,7 @@
 1. [Bash 语法](https://www.gnu.org/software/bash/manual/html_node/index.html)。
 1. 波浪号 ~ 扩展发生在变量扩展之前，~$user 展开为名为 $user 的用户的家目录。
 1. /etc/shells 系统支持的 shell。
-1. ctrl+z 挂起当前进程；ctrl+d 结束命令。
+1. ctrl+z 挂起当前进程；ctrl+d 发送 EOF 信号。
 1. ssh 复制文件：scp src ivfzhou@ivfzhoudebian:~/src。
 1. 脚本文件第一行注释 #!/bin/bash，指明脚本的解释器。
 1. 标准输入内容：
@@ -106,39 +106,43 @@
 - unset *变量*：删除变量或函数。
 - set：显示或设置 Shell 变量和选项。
   ```bash
-  set -e          # 任何命令失败立即退出。
-  set -u          # 使用未定义变量时退出。
-  set -x          # 打印每条执行的命令。
+  set -e # 任何命令失败立即退出。
+  set -u # 使用未定义变量时退出。
+  set -x # 打印每条执行的命令。
   set -o pipefail # 管道中任一命令失败则整体失败。
   ```
 - shift *n*：将位置参数左移 *n* 位（默认 1）。
 - getopts *optstring* *var* *args*：解析命令行选项（用于脚本参数解析）。args 默认为 $@（所有位置参数）。如果遇到非法选项或缺少参数，则设置 var 为 ?（或 :，若处于静默模式）并设置 OPTARG 为错误信息。
-  - *optstring* 的语法：
+
+  *optstring* 的语法：
   - 普通字母：表示一个无参数选项，如 a 表示接受 -a。
   - 字母后跟冒号 :：表示该选项需要一个参数，如 b: 表示 -b value。
   - 开头的冒号 :：如果 *optstring* 以 : 开头，则 getopts 进入静默错误模式，不自动打印错误信息，由用户自行处理。
-  - 变量：
+  
+  变量：
   - OPTARG：保存当前选项的参数值（如果该选项需要参数）。
   - OPTIND：保存下一个要处理的参数在位置参数中的索引。初始值为 1，每次调用 getopts 后更新。
-  - 示例 1：
+  
+  示例 1：
   ```bash
   # ./script.sh -a -b hello
   
   while getopts "ab:" opt; do
-      case $opt in
-          a)
-              echo "选项 -a 被指定"
-              ;;
-          b)
-              echo "选项 -b 被指定，参数为：$OPTARG"
-              ;;
-          ?)
-              echo "无效选项或缺少参数"
-              exit 1
-              ;;
-      esac
+     case $opt in
+         a)
+             echo "选项 -a 被指定"
+             ;;
+         b)
+             echo "选项 -b 被指定，参数为：$OPTARG"
+             ;;
+         ?)
+             echo "无效选项或缺少参数"
+             exit 1
+             ;;
+        esac
   done
   ```
+    
   示例 2：
   ```bash 
   # ./script.sh -a
@@ -162,6 +166,7 @@
       esac
   done
   ```
+  
   示例 3：
   ```bash
   # ./script.sh -v -n Alice file1 file2
@@ -173,30 +178,30 @@
       esac
   done
   
-  shift $((OPTIND - 1))   # 移除已解析的选项，剩余位置参数作为普通参数
+  shift $((OPTIND - 1)) # 移除已解析的选项，剩余位置参数作为普通参数。
   
   echo "verbose = $verbose"
   echo "name = $name"
   echo "剩余参数：$@"
   ```
-- echo [*字符串*]：输出文本到标准输出。支持 -n（不换行）、-e（解释转义字符）。
-- printf *格式* [*参数*...]：按格式输出，功能比 echo 更强大，类似 C 语言 printf。
-- read [*变量*]：从标准输入读取一行并赋值给变量。常用 -p（提示）、-a（读入数组）。
+- echo *字符串*：输出文本到标准输出。支持 -n（不换行）、-e（解释转义字符）。
+- printf *格式* *参数*...：按格式输出，功能比 echo 更强大，类似 C 语言 printf。
+- read *变量*：从标准输入读取一行并赋值给变量。常用 -p（提示）、-a（读入数组）。
 - readarray、mapfile：将文本行读入数组。例如 `readarray lines < file.txt`。
-- eval [*参数*]：将参数作为 Shell 命令重新解析执行。常用于动态构建命令。`eval "ls -l"`。
-- exec [*命令*]：用指定命令替换当前 Shell 进程（不创建子进程）。若不含命令则用于重定向。
+- eval *参数*：将参数作为 Shell 命令重新解析执行。常用于动态构建命令。eval "ls -l"。
+- exec *命令*：用指定命令替换当前 Shell 进程（不创建子进程）。若不含命令则用于重定向。
 - source *文件* 或 . *文件*：在当前 Shell 中读取并执行脚本，不启动子进程。
-- command *命令*：执行命令，并绕过函数或别名。常用 `command -v` 检查命令是否存在。`command -v ls` 输出 ls 的路径。
+- command *命令*：执行命令，并绕过函数或别名。常用 command -v 检查命令是否存在。command -v ls 输出 ls 的路径。
 - builtin *内置命令*：强制执行 Bash 内置命令，即使有同名函数或别名。
 - hash：管理命令哈希表，加速外部命令查找。
 - enable：启用或禁用内置命令。
-- times：显示当前 Shell 及子进程的用户/系统 CPU 时间。
-- jobs	列出当前 Shell 的后台作业。
-- fg [*作业号*]：将后台作业切换到前台运行。
-- bg [*作业号*]：将暂停的后台作业继续在后台运行。
-- kill [*信号*] 作业号/进程号：向作业或进程发送信号。内置 kill 支持作业号（如 %1）。
-- wait [*进程号、作业号*]：等待指定进程或作业结束，并返回其退出状态。
-- disown [*作业号*]：将作业从作业表中移除，使其不受 Shell 退出影响。
+- times：显示当前 Shell 及子进程的用户、系统、CPU、时间。
+- jobs：列出当前 Shell 的后台作业。
+- fg *作业号*：将后台作业切换到前台运行。
+- bg *作业号*：将暂停的后台作业继续在后台运行。
+- kill *信号* 作业号/进程号：向作业或进程发送信号。内置 kill 支持作业号（如 %1）。
+- wait *进程号、作业号*：等待指定进程或作业结束，并返回其退出状态。
+- disown *作业号*：将作业从作业表中移除，使其不受 Shell 退出影响。
 - suspend：挂起当前 Shell（类似 Ctrl+Z）。
 - test *表达式*：条件测试，返回 0（真）或 1（假）。
 - [ *表达式* ]：test 的等价形式，注意方括号两侧必须有空格。
@@ -207,9 +212,9 @@
 - unalias *别名*：删除别名。
 - ulimit：设置或显示资源限制（如文件大小、内存等）。
 - umask：设置或显示文件创建时的默认权限掩码。
-- trap *命令列表* *信号列表*：捕获信号并执行指定命令。`trap 'echo "收到 SIGINT"; exit' INT`。
+- trap *命令列表* *信号列表*：捕获信号并执行指定命令。trap 'echo "收到 SIGINT"; exit' INT。
 - let：执行算术运算（类似 $(( ))）。
-- :：空命令，永远返回 0。常用于占位或无限循环。`: > file.txt` 清空文件。
+- :：空命令，永远返回 0。常用于占位或无限循环。: > file.txt 清空文件。
 - true：返回 0。
 - false：返回 1。
 - logout：退出登录 Shell。
