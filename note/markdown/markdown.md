@@ -2,6 +2,7 @@
 
 1. [CommonMark](https://commonmark.org/) 标准文档。
 1. [GitHub Flavored Markdown (GFM)](https://github.github.com/gfm/) 标准文档。
+2. [Mermaid 语法](https://mermaid.js.org/intro/syntax-reference.html)。
 1. GFM 是 CommonMark 的严格超集。CommonMark 不支持表格、任务列表和删除线。
 
 # 二、语法
