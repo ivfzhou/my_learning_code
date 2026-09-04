@@ -163,9 +163,9 @@ gantt
 ````markdown
 ```mermaid
 classDiagram
-    Class01 <|-- AveryLongClass : 继承
-    Class03 *-- Class04 : 组合
-    Class05 o-- Class06 : 聚合
+    父类 <|-- 子类 : 继承
+    整体类 *-- 部分类 : 组合
+    容器类 o-- 元素类 : 聚合
 ```
 ````
 
