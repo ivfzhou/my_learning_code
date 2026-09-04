@@ -1,12 +1,13 @@
 # 一、笔记
 
-1. [POSIX Shell 语法](https://pubs.opengroup.org/onlinepubs/9799919799/idx/shell.html)
-1. [Bash 语法](https://www.gnu.org/software/bash/manual/html_node/index.html)
+1. [POSIX Shell 语法](https://pubs.opengroup.org/onlinepubs/9799919799/idx/shell.html)。
+1. [Bash 语法](https://www.gnu.org/software/bash/manual/html_node/index.html)。
+1. 波浪号 ~ 扩展发生在变量扩展之前，~$user 展开为名为 $user 的用户的家目录。
 1. /etc/shells 系统支持的 shell。
-1. ctrl+z 挂起当前进程。ctrl+d 结束命令。
-1. ~{account} 表示这个 account 的家目录，- 表示上次所在目录。
+1. ctrl+z 挂起当前进程；ctrl+d 结束命令。
+1. - 表示上次所在目录。
 1. ssh 复制文件：scp src ivfzhou@ivfzhoudebian:~/src。
-1. 脚本文件第一行注释 `#!/bin/bash`，指明脚本的解释器。
+1. 脚本文件第一行注释 #!/bin/bash，指明脚本的解释器。
 1. 标准输入内容：
    ```bash
    <<EOF
@@ -30,13 +31,7 @@
 1. 变量名只能以数字、字母、下划线组合，且不以数字开头。
 1. 单引号字符串中不识别变量，不能转义。双引号字符串中可解析变量可转义。
 1. 检测系统中是否安装了 bash，并根据检测结果输出 yes 或 no：`command -v bash > /dev/null 2>&1 && echo yes || echo no`。
-1. 运行脚本：
-   ```shell
-   bash -x script.sh # 逐行显示执行过程
-   bash -n script.sh # 仅检查语法不执行
-   bash -v script.sh # 显示读取的每一行
-   ```
-1. 算术扩展，可以使用：变量（可省略 `$`，如 `a` 直接代表变量值）、整数常量、算术运算符、比较、逻辑、位运算等：
+1. 算术扩展，可以使用：变量（可省略 $，如 a 直接代表变量值）、整数常量、算术运算符、比较、逻辑、位运算等：
    ```bash
    a=5
    b=3
@@ -49,7 +44,7 @@
    echo $result # 8
    ```
 1. 命令替换，执行命令，将其标准输出作为字符串插入到当前位置：`var=$(date +%F)`。
-1. 大括号扩展：
+1. 花括号扩展：
    ```bash
    # 生成一个从 1 到 8 的整数序列
    echo {1..8}
@@ -78,15 +73,15 @@
        echo $i
    done
    ```
-1. 临时设置环境变量，仅对本行外部命令运行可获取，后面行的命令获取不到变量设置的值：
+1. 临时设置环境变量，仅对本行命令运行可获取，后面行的命令获取不到变量设置的值：
    ```bash
-   LANG=zh_CN 外部命令 ...
+   LANG=zh_CN 命令 ...
    ```
 1. 短路求值：
    - `CmdA && CmdB`：CmdA 返回码为 0 时才运行 CmdB。
    - `CmdA || CmdB`：CmdA 返回码为非 0 时才运行 CmdB。
-   - `CmdA && CmdB || CmdC`：CmdA 返回码为非 0 时，不运行 CmdB，`CmdA && CmdB` 整体是失败的，运行 CmdC；CmdA 返回码为 0 时，运行 CmdB，若 CmdB失败则运行 CmdC，否则 CmdC 不运行。
-1. 查询当前是登陆 Shell 还是交互式 Shell，`echo $0`，输出 bash 是交互式 Shell，输出 -bash 是登陆 Shell。
+   - `CmdA && CmdB || CmdC`：CmdA 返回码为非 0 时，不运行 CmdB，CmdA && CmdB 整体是失败的，运行 CmdC；CmdA 返回码为 0 时，运行 CmdB，若 CmdB失败则运行 CmdC，否则 CmdC 不运行。
+1. 查询当前是登陆 Shell 还是交互式 Shell，echo $0，输出 bash 是交互式 Shell，输出 -bash 是登陆 Shell。
 
 # 二、Bash 语法
 
@@ -96,32 +91,32 @@
 
 不需要启动子进程即可执行命令。外部命令，由 Bash 通过 PATH 环境变量查找并调用独立可执行文件。
 
-- help：列出所有内置命令及其简要说明。`help cd` 查看内置命令的详细帮助。
+- help：列出所有内置命令及其简要说明。help cd 查看内置命令的详细帮助。
 - compgen -b：列出所有内置命令名（不含说明）。
 - type *命令*：查看某个命令是内置命令还是外部命令。
-- cd [*目录*]：切换当前工作目录。无参数时切换到 $HOME。
-- pwd：打印当前工作目录（等价于 `echo $PWD`）。
+- cd *目录*：切换当前工作目录。无参数时切换到 $HOME。
+- pwd：打印当前工作目录（等价于 echo $PWD）。
 - dirs：显示目录栈内容。
-- pushd [*目录*]：将当前目录压入目录栈并切换到指定目录。
+- pushd *目录*：将当前目录压入目录栈并切换到指定目录。
 - popd：从目录栈弹出栈顶目录并切换到该目录。
-- export [*变量*=*值*]：将变量设为环境变量，使其可传递给子进程。
-- readonly [*变量*=*值*]：定义只读变量，不可修改或删除。
-- declare [*选项*] *变量*：声明变量并设置属性（如整数、数组、只读等），例如 `declare -i num=10` 声明为整数。
+- export *变量*=*值*：将变量设为环境变量，使其可传递给子进程。
+- readonly *变量*=*值*：定义只读变量，不可修改或删除。
+- declare *选项* *变量*：声明变量并设置属性（如整数、数组、只读等），例如 declare -i num=10 声明为整数。
 - typeset：declare 的别名（部分系统）。
 - local *变量*=*值*：在函数内部定义局部变量。
 - unset *变量*：删除变量或函数。
 - set：显示或设置 Shell 变量和选项。
   ```bash
-  set -e          # 任何命令失败立即退出
-  set -u          # 使用未定义变量时退出
-  set -x          # 打印每条执行的命令
-  set -o pipefail # 管道中任一命令失败则整体失败
+  set -e          # 任何命令失败立即退出。
+  set -u          # 使用未定义变量时退出。
+  set -x          # 打印每条执行的命令。
+  set -o pipefail # 管道中任一命令失败则整体失败。
   ```
-- shift [*n*]：将位置参数左移 *n* 位（默认 1）。
-- getopts *optstring* *var* [*args*]：解析命令行选项（用于脚本参数解析）。args 默认为 $@（所有位置参数）。如果遇到非法选项或缺少参数，则设置 var 为 ?（或 :，若处于静默模式）并设置 OPTARG 为错误信息。
+- shift *n*：将位置参数左移 *n* 位（默认 1）。
+- getopts *optstring* *var* *args*：解析命令行选项（用于脚本参数解析）。args 默认为 $@（所有位置参数）。如果遇到非法选项或缺少参数，则设置 var 为 ?（或 :，若处于静默模式）并设置 OPTARG 为错误信息。
   - *optstring* 的语法：
-  - 普通字母：表示一个无参数选项，如 "a" 表示接受 -a。
-  - 字母后跟冒号 :：表示该选项需要一个参数，如 "b:" 表示 -b value。
+  - 普通字母：表示一个无参数选项，如 a 表示接受 -a。
+  - 字母后跟冒号 :：表示该选项需要一个参数，如 b: 表示 -b value。
   - 开头的冒号 :（可选）：如果 *optstring* 以 : 开头，则 getopts 进入静默错误模式，不自动打印错误信息，由用户自行处理。
   - 变量：
   - OPTARG：保存当前选项的参数值（如果该选项需要参数）。
@@ -957,3 +952,15 @@ ll 输出列的含义：
 1. 文件大小。
 1. 文件修改时间。
 1. 文件名与分类标识符，/ 表示目录，* 表示可执行文件，普通文件无后缀符号。
+
+## 3.15 bash
+
+bash *选项*... *参数*...
+
+选项：
+- -c *命令*：新开子 Shell 执行一条命令。
+- -x：开启调试模式，逐行打印执行过程。
+- --norc：跳过配置文件 .bashrc 启动一个新的子 Shell 环境。
+- -n：仅检查语法不执行。
+- -v：显示读取的每一行。
+- -e：遇到错误停止运行。
