@@ -172,9 +172,9 @@ classDiagram
 
 ```mermaid
 classDiagram
-    Class01 <|-- AveryLongClass : Cool
-    Class03 *-- Class04
-    Class05 o-- Class06
+    父类 <|-- 子类 : 继承
+    整体类 *-- 部分类 : 组合
+    容器类 o-- 元素类 : 聚合
 ```
 
 ### 2.8.5 状态图
