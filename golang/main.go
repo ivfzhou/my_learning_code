@@ -19,6 +19,7 @@ import (
 	"net"
 	"net/http"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"regexp"
 	"runtime"
@@ -31,7 +32,7 @@ import (
 )
 
 func main() {
-	to := 10
+	to := 22
 	switch to {
 	case 1:
 		x := byte(1)
@@ -180,6 +181,12 @@ func main() {
 	case 21:
 		rg := regexp.MustCompile(`^.*?(@v.*?)/.*$`)
 		fmt.Println(rg.FindStringSubmatch("comm@v0.0.0-20260502063458-e61198fd041b/query/gen.go"))
+	case 22:
+		output, err := exec.Command("bash", "-c", "echo $PATH").CombinedOutput()
+		if err != nil {
+			panic(err)
+		}
+		fmt.Println(string(output))
 	}
 }
 
