@@ -40,17 +40,18 @@ ls -l 打印输出中：
 
 源配置例子：
 ```
-deb http://ftp.cn.debian.org/debian-security bookworm-security main
-deb-src http://ftp.cn.debian.org/debian-security bookworm-security main
+deb http://ftp.cn.debian.org/debian-security trixie-security main
+deb-src http://ftp.cn.debian.org/debian-security trixie-security main
 
-deb http://ftp.cn.debian.org/debian bookworm main non-free non-free-firmware contrib
-deb-src http://ftp.cn.debian.org/debian bookworm main non-free non-free-firmware contrib
+deb http://ftp.cn.debian.org/debian trixie main non-free non-free-firmware contrib
+deb-src http://ftp.cn.debian.org/debian trixie main non-free non-free-firmware contrib
 
-deb http://ftp.cn.debian.org/debian/ bookworm-updates main non-free non-free-firmware contrib
-deb-src http://ftp.cn.debian.org/debian bookworm-updates main non-free non-free-firmware contrib
+deb http://ftp.cn.debian.org/debian/ trixie-updates main non-free non-free-firmware contrib
+deb-src http://ftp.cn.debian.org/debian trixie-updates main non-free non-free-firmware contrib
 
-# deb http://ftp.cn.debian.org/debian/ bookworm-backports main non-free non-free-firmware contrib
-# deb-src http://ftp.cn.debian.org/debian bookworm-backports main non-free non-free-firmware contrib
+
+# deb http://ftp.cn.debian.org/debian/ trixie-backports main non-free non-free-firmware contrib
+# deb-src http://ftp.cn.debian.org/debian trixie-backports main non-free non-free-firmware contrib
 ```
 
 # 五、LVM 操作示例
