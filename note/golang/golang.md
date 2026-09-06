@@ -103,13 +103,13 @@ go env -w GOSUMDB="sum.golang.org https://goproxy.cn/sumdb/sum.golang.org"
 - 并行请求每个可能的模块，如果能拉到多个模块包含这个包，取模块名最长的。
 - 代理服务器响应错误时，内容应为 text/palin charset=utf8 us-acsii。
 - 请求代理服务器的 URL：
-  - $proxy_url/$module_path/@v/$version_query_suffix：其中大写字母将转成感叹号加小写。
-  - $proxy_url/$module_path/@v/$version_query_suffix.mod：返回模块 go.mod 文件内容。
-  - $proxy_url/$module_path/@v/list：表示列出所有可用版本号。
-  - $proxy_url/$module_path/@v/$version_query_suffix.info：返回 JSON 格式信息，包含时间和版本号。
+  - \$proxy_url/\$module_path/@v/$version_query_suffix：其中大写字母将转成感叹号加小写。
+  - \$proxy_url/\$module_path/@v/$version_query_suffix.mod：返回模块 go.mod 文件内容。
+  - \$proxy_url/\$module_path/@v/list：表示列出所有可用版本号。
+  - \$proxy_url/\$module_path/@v/$version_query_suffix.info：返回 JSON 格式信息，包含时间和版本号。
 - 代理服务器会将没有 go.mod 的模块，生成的 go.mod 只带上 module_path 返回。如果是请求 VCS 则由 go command 生成该文件。
-- $proxy_url/$module_path/@v/$version_query_suffix.zip，返回打包的 zip 模块文件。该文件不包含 vendor 目录，也不包含子或父模块。如果是下载子模块，而且子模块没有 LICENSE 文件，go command 会从父模块拷贝一个过来，这样 sum 值会改变。
-- $proxy_url/$module_path/@latest，返回最新版本号信息。
+- \$proxy_url/\$module_path/@v/$version_query_suffix.zip，返回打包的 zip 模块文件。该文件不包含 vendor 目录，也不包含子或父模块。如果是下载子模块，而且子模块没有 LICENSE 文件，go command 会从父模块拷贝一个过来，这样 sum 值会改变。\
+- \$proxy_url/\$module_path/@latest，返回最新版本号信息。
 - 在 GOPATH 模式下，代理不能提供模块服务。
 - 直接请求不使用代理：GET 请求 < http | git | ssh | https ...>://module_path?go-get=1，返回有头部标签 meta，name 为 go-import，content 为 root_path (VCS | mod) (repo_url | proxy)。如果是 mod 则转而使用代理请求模块。
 - 模块 zip 文件最大不能超过 500mib，go.mod LICENSE 不能超过 16mib。
