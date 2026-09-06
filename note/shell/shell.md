@@ -1305,6 +1305,69 @@ curl *选项*... *URL*：支持多种协议，HTTP、HTTPS、FTP、SFTP、SMTP �
 
 ### 3.11.13 host
 
+### 3.11.14 iptables
+
+iptables *选项* *链名* *匹配条件*：配置、管理和检查数据包过滤和规则。  
+表：raw → mangle → nat → filter。  
+链：PREROUTING → INPUT → FORWARD → OUTPUT → POSTROUTING。  
+
+数据包处理顺序：
+- 入站数据包：网络接口 → PREROUTING（raw，mangle，nat） → 路由决策 → INPUT（mangle，filter） → 本地进程。
+- 转发数据包：网络接口 → PREROUTING（raw，mangle，nat） → 路由决策 → FORWARD（mangle，filter） → POSTROUTING（mangle，nat） → 网络接口。
+- 出站数据包：本地进程 → 路由决策 → OUTPUT（raw，mangle，nat，filter） → POSTROUTING（mangle，nat） → 网络接口。
+
+目标：
+- ACCEPT：接受数据包。
+- DROP：丢弃数据包，不回应。
+- REJECT：拒绝数据包，并返回错误信息（如 ICMP port unreachable）。
+- LOG：记录日志（通过 syslog）。
+- SNAT：源地址转换（修改源 IP）。
+- DNAT：目的地址转换（修改目的 IP）。
+- MASQUERADE：动态源地址转换（适用于动态 IP 场景）。
+
+选项：
+- -t *表*：指定表，默认是 filter。
+- -A *链*：在链末尾追加一条规则。
+- -I *链* *规则编号*：在链开头或指定编号插入规则。
+- -D *链* *规则编号或规则内容*：删除一条规则。
+- -R *链* *规则编号* *新规则*：替换指定编号的规则。
+- -L *链* 列出规则，可加 -v（详细）、-n（数字形式）。
+- -F *链*：清空链或所有链的规则。
+- -P *链* *目标*：设置链的默认策略（如 ACCEPT、DROP）。
+- -N *链*：新建自定义链。
+- -X *链*：删除自定义链。
+- -Z *链*：清空计数器。
+- -p *协议*：指定协议（tcp、udp、icmp、all）。
+- -s *地址*：源地址，如 192.168.1.0/24。
+- -d *地址*：目的地址。
+- --sport *端口*：源端口（需 -p tcp/udp）。
+- --dport *端口*：目的端口。
+- -i *接口*：入接口（如 eth0）。
+- -o *接口*：出接口。
+- -m *模块*：使用扩展匹配模块（如 multiport、state、limit）。
+- --state *状态*：匹配连接状态（NEW、ESTABLISHED、RELATED、INVALID）。
+- -j *目标*：跳转目标（ACCEPT、DROP、REJECT、LOG、SNAT、DNAT 等）。
+- --to-source *地址*：用于 SNAT，指定源地址。
+- --to-destination *地址*：用于 DNAT，指定目的地址。
+
+示例：
+```shell
+# 默认拒绝所有入站流量。
+iptables -P INPUT DROP
+
+# 默认允许出站流量。
+iptables -P OUTPUT ACCEPT
+
+# 不默认允许转发。
+iptables -P FORWARD DROP
+
+# 允许所有已建立或相关的连接进入。
+iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+# 允许回环接口通信。
+iptables -A INPUT -i lo -j ACCEPT
+```
+
 ## 3.12 内核模块管理
 
 ### 3.12.1 modprobe
