@@ -268,7 +268,6 @@ git am /path/to/patches/*.patch
 - `git branch -v`：显示本地分支列表及每个分支最后一次提交的摘要信息。
 - `git checkout <branch-name>`：切换工作区到指定的已有分支。
 - `git checkout -b <branch-name> <start-point>`：基于指定起始点创建新分支并立即切换过去。
-- `git branch -v`：查看本地分支列表及各分支的最新提交摘要。
 - `git branch -r`：列出所有远程跟踪分支（remote-tracking branches）。
 - `git branch <branch-name>`：基于当前 HEAD 创建一个新的本地分支（不切换）。
 - `git branch <branch-name> <strat-point>`：基于指定的起始点（提交或分支）创建新的本地分支。

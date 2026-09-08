@@ -9,7 +9,7 @@ import java.util.List;
 public final class FluxSample {
 
     static void main() throws InterruptedException {
-        doOnNext();
+        transform();
     }
 
     private static void createAndSubscribe() {
@@ -43,6 +43,12 @@ public final class FluxSample {
                 .distinct()
                 .sort()
                 .buffer(3) // 每 3 个字符打包成一个 List。
+                .subscribe(System.out::println);
+
+        System.out.println("===");
+        Flux.just("reactor", "java", "stream")
+                .map(String::toUpperCase)
+                .concatMap(v -> Flux.fromArray(v.split("")))
                 .subscribe(System.out::println);
     }
 
@@ -147,6 +153,17 @@ public final class FluxSample {
                 })
                 .subscribe(
                         v -> System.out.println("received " + v.num),
+                        err -> System.out.println("error " + err),
+                        () -> System.out.println("done")
+                );
+        Thread.sleep(5000);
+    }
+
+    private static void doOnComplete() throws InterruptedException {
+        Flux.just(1, 2, 3)
+                .doOnComplete(() -> System.out.println("doOnComplete")) // 只在正常完成时触发，error / cancel 不触发。
+                .subscribe(
+                        v -> System.out.println("received " + v),
                         err -> System.out.println("error " + err),
                         () -> System.out.println("done")
                 );
