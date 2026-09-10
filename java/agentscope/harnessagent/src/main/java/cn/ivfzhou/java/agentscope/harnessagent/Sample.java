@@ -45,7 +45,9 @@ import io.agentscope.extensions.model.dashscope.DashScopeChatModel;
 import io.agentscope.extensions.model.dashscope.formatter.DashScopeChatFormatter;
 import io.agentscope.extensions.redis.RedisDistributedStore;
 import io.agentscope.extensions.redis.state.RedisAgentStateStore;
+import io.agentscope.extensions.redis.store.RedisStore;
 import io.agentscope.harness.agent.HarnessAgent;
+import io.agentscope.harness.agent.filesystem.spec.RemoteFilesystemSpec;
 import io.agentscope.harness.agent.memory.compaction.CompactionConfig;
 import io.agentscope.harness.agent.memory.compaction.ToolResultEvictionConfig;
 import redis.clients.jedis.DefaultJedisClientConfig;
@@ -113,6 +115,12 @@ public final class Sample {
                                 .build()
                 )
                 .toolResultEviction(ToolResultEvictionConfig.defaults())
+                .filesystem(new RemoteFilesystemSpec(new RedisStore(redisClient)))
+                /*.filesystem(new DockerFilesystemSpec().image("debian:13")
+                        .workspaceRoot("/workspace")
+                        .environment(Map.of("DEBUG", "true"))
+                        .memorySizeBytes(512L * 1024 * 1024)
+                        .cpuCount(2L))*/
                 .build();
         try (agent) {
             chat(agent, "ivfzhou", "session-1");
