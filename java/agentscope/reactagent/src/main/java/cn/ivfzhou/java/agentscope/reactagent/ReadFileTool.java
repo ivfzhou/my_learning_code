@@ -4,23 +4,23 @@ import io.agentscope.core.tool.Tool;
 import io.agentscope.core.tool.ToolParam;
 
 import java.io.File;
-import java.io.FileOutputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
 
-public class WriteFileTool {
+public class ReadFileTool {
 
-    @Tool(name = "write_file")
-    public void writeFile(
+    @Tool(name = "read_file", description = "读取文件内容")
+    public byte[] readFile(
             @ToolParam(name = "fileName", description = "文件路径")
-            String fileName,
-            @ToolParam(name = "content", description = "文件内容")
-            String content
+            String fileName
     ) throws IOException {
         var file = new File(fileName);
+        if (!file.exists()) throw new RuntimeException("file not exist");
         if (file.isDirectory()) throw new RuntimeException("file is a directory");
 
-        try (var w = new FileOutputStream(file)) {
-            w.write(content.getBytes());
+        var stream = new FileInputStream(file);
+        try (stream) {
+            return stream.readAllBytes();
         }
     }
 

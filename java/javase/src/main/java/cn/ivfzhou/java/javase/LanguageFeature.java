@@ -79,7 +79,7 @@ public class LanguageFeature {
             case TUESDAY -> 7;
             case THURSDAY, SATURDAY -> 8;
             default -> {
-                // 多行逻辑使用 yield 返回
+                // 多行逻辑使用 yield 返回。
                 int len = 9;
                 yield len;
             }
