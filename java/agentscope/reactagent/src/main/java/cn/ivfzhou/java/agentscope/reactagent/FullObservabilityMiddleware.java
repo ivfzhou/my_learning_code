@@ -17,8 +17,8 @@ public class FullObservabilityMiddleware implements MiddlewareBase {
 
     @Override
     public Flux<AgentEvent> onAgent(Agent agent, RuntimeContext ctx, AgentInput input, Function<AgentInput, Flux<AgentEvent>> next) {
-        System.out.println("[onAgentBegin] name=" + agent.getName());
-        return next.apply(input).doOnComplete(() -> System.out.println("[onAgentEnd] name=" + agent.getName()));
+        System.out.println("[onAgentBegin]");
+        return next.apply(input).doOnComplete(() -> System.out.println("[onAgentEnd]"));
     }
 
     @Override
@@ -35,13 +35,15 @@ public class FullObservabilityMiddleware implements MiddlewareBase {
 
     @Override
     public Flux<AgentEvent> onModelCall(Agent agent, RuntimeContext ctx, ModelCallInput input, Function<ModelCallInput, Flux<AgentEvent>> next) {
-        System.out.println("[onModelCall] classSimapleName=" + input.model().getClass().getSimpleName());
+        System.out.println("[onModelCall]");
         return next.apply(input).doOnComplete(() -> System.out.println("[onModelCallEnd]"));
     }
 
     @Override
     public Mono<String> onSystemPrompt(Agent agent, RuntimeContext ctx, String currentPrompt) {
-        System.out.println("[onSystemPrompt] length=" + currentPrompt.length());
+        System.out.println("[onSystemPrompt]");
+        // List<String> list = ctx.getAgentState().getToolContext().getActivatedGroups();
+        // System.out.println(list);
         return Mono.just(currentPrompt);
     }
 
