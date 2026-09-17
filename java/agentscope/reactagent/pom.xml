@@ -15,36 +15,45 @@
     <version>1.0.0</version>
     <name>agentscope-reactagent</name>
 
+    <properties>
+        <agentscope.version>2.0.3</agentscope.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>io.agentscope</groupId>
             <artifactId>agentscope-core</artifactId>
-            <version>2.0.2</version>
+            <version>${agentscope.version}</version>
         </dependency>
         <dependency>
             <groupId>io.agentscope</groupId>
             <artifactId>agentscope-extensions-model-dashscope</artifactId>
-            <version>2.0.2</version>
+            <version>${agentscope.version}</version>
         </dependency>
         <dependency>
             <groupId>io.agentscope</groupId>
             <artifactId>agentscope-extensions-model-openai</artifactId>
-            <version>2.0.2</version>
+            <version>${agentscope.version}</version>
         </dependency>
         <dependency>
             <groupId>io.agentscope</groupId>
             <artifactId>agentscope-extensions-skill-mysql-repository</artifactId>
-            <version>2.0.2</version>
+            <version>${agentscope.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.agentscope</groupId>
+            <artifactId>agentscope-extensions-skill-git-repository</artifactId>
+            <version>${agentscope.version}</version>
         </dependency>
         <dependency>
             <groupId>io.agentscope</groupId>
             <artifactId>agentscope-extensions-redis</artifactId>
-            <version>2.0.2</version>
+            <version>${agentscope.version}</version>
         </dependency>
         <dependency>
             <groupId>io.agentscope</groupId>
             <artifactId>agentscope-extensions-mysql</artifactId>
-            <version>2.0.2</version>
+            <version>${agentscope.version}</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>

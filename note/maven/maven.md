@@ -187,6 +187,7 @@
    - -V、--show-version：打印版本信息并编译。
    - -P、--activate-profiles *args*：指定环境文件，逗号分隔。
    - -D、--define *arg*：指定参数。
+
    lifecycle 的 phases，和 phase 下的默认 goals：
    - clean
      - pre-clean

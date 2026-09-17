@@ -39,6 +39,7 @@ import io.agentscope.core.message.ToolResultMessage;
 import io.agentscope.core.message.ToolResultState;
 import io.agentscope.core.message.ToolUseBlock;
 import io.agentscope.core.message.UserMessage;
+import io.agentscope.core.model.Model;
 import io.agentscope.core.permission.PermissionBehavior;
 import io.agentscope.core.permission.PermissionContextState;
 import io.agentscope.core.permission.PermissionMode;
@@ -88,14 +89,7 @@ public final class Sample {
         toolkit.createSkillToolGroup("mojibake-fixer-group", "执行 Shell 命令", false, "mojibake-fixer");
         toolkit.registration().tool(new ShellCommandTool()).group("mojibake-fixer-group").apply();
 
-        var model = DashScopeChatModel.builder()
-                .apiKey(System.getenv("DASHSCOPE_API_KEY"))
-                .modelName("qwen3-max")
-                .stream(true)
-                .formatter(new DashScopeChatFormatter())
-                // .nativeStructuredOutput(true) // 需要 LLM 支持结构化输出。
-                // .nativeStructuredOutputWithTools(false) // 不要优先遵循 response_format 约束而跳过工具调用。
-                .build();
+        var model = createModel();
 
         // printModelCards(OpenAICredential.builder()
         //         .apiKey(System.getenv("DASHSCOPE_API_KEY"))
@@ -121,7 +115,7 @@ public final class Sample {
                 // .stateStore(new JsonFileAgentStateStore(workspace))
                 // 为 agent 全生命周期接入 OpenTelemetry 追踪。需要配置 OpenTelemetry SDK。
                 // .middlewares(List.of(new OtelTracingMiddleware()))
-                .middleware(new FullObservabilityMiddleware())
+                // .middleware(new FullObservabilityMiddleware())
                 // .middleware(new TimingMiddleware())
                 // .middleware(new RateLimitMiddleware(Duration.ofSeconds(3)))
                 // .middleware(new StopOnAllDeniedMiddleware())
@@ -133,6 +127,20 @@ public final class Sample {
         try (agent) {
             chat(agent, "ivfzhou", "session-1");
         }
+    }
+
+    private static Model createModel() {
+        return DashScopeChatModel.builder()
+                .modelName("qwen3.7-plus")
+                .apiKey(System.getenv("DASHSCOPE_API_KEY"))
+                // .baseUrl("https://ws-1t9uu8m17ouv3le5.cn-beijing.maas.aliyuncs.com/api/v1")
+                .stream(true)
+                .formatter(new DashScopeChatFormatter())
+                .enableEncrypt(true)
+                .enableThinking(true)
+                .enableSearch(true)
+                .contextWindowSize(1_000_000)
+                .build();
     }
 
     private static void printModelCards(CredentialBase credentialBase) {
