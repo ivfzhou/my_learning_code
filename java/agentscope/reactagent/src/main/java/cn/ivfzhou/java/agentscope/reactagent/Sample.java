@@ -43,22 +43,25 @@ import io.agentscope.core.message.UserMessage;
 import io.agentscope.core.model.GenerateOptions;
 import io.agentscope.core.model.Model;
 import io.agentscope.core.model.ToolSchema;
-import io.agentscope.core.permission.AdditionalWorkingDirectory;
 import io.agentscope.core.permission.PermissionBehavior;
 import io.agentscope.core.permission.PermissionContextState;
 import io.agentscope.core.permission.PermissionMode;
 import io.agentscope.core.permission.PermissionRule;
-import io.agentscope.core.skill.repository.FileSystemSkillRepository;
+import io.agentscope.core.skill.repository.AgentSkillRepository;
 import io.agentscope.core.skill.repository.mysql.MysqlSkillRepository;
+import io.agentscope.core.state.ConflictPolicy;
 import io.agentscope.core.tool.Toolkit;
 import io.agentscope.core.tool.builtin.TodoTools;
-import io.agentscope.core.tool.coding.ShellCommandTool;
-import io.agentscope.core.tool.file.ReadFileTool;
-import io.agentscope.core.tool.file.WriteFileTool;
 import io.agentscope.core.tool.mcp.McpClientBuilder;
 import io.agentscope.extensions.model.dashscope.DashScopeChatModel;
 import io.agentscope.extensions.model.dashscope.credential.DashScopeCredential;
 import io.agentscope.extensions.model.dashscope.formatter.DashScopeChatFormatter;
+import io.agentscope.extensions.model.openai.OpenAIChatModel;
+import io.agentscope.extensions.model.openai.formatter.OpenAIChatFormatter;
+import io.agentscope.extensions.redis.state.RedisAgentStateStore;
+import redis.clients.jedis.DefaultJedisClientConfig;
+import redis.clients.jedis.RedisClient;
+import redis.clients.jedis.UnifiedJedis;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -71,11 +74,16 @@ import java.util.Map;
 
 public final class Sample {
 
+    private static Toolkit toolkit;
+
     static void main() throws IOException {
         var workspace = getWorkspace();
-        var toolkit = createToolkit();
-        var model = createModel();
         var dataSource = getDataSource();
+        var skillRepository = createSkillRepository(dataSource);
+        toolkit = createToolkit(skillRepository);
+        var model = createModel();
+        var fallbackModel = createFallbackModel();
+        var redisClient = getRedisClient();
         // printModelCards();
         var agent = ReActAgent.builder()
                 .name("answer-helper")
@@ -84,11 +92,13 @@ public final class Sample {
                 .model(model)
                 .toolkit(toolkit)
                 .maxIters(20)
+                .maxRetries(1)
+                .fallbackModel(fallbackModel)
+                .stateStore(RedisAgentStateStore.builder().jedisClient(redisClient).keyPrefix("agentscope:reactagent:").build())
                 .permissionContext(
                         PermissionContextState.builder()
                                 .mode(PermissionMode.DEFAULT)
-                                .addWorkingDirectory("workspace",
-                                        new AdditionalWorkingDirectory(Path.of(workspace.toAbsolutePath().toString(), "workspace").toAbsolutePath().toString(), "userSettings"))
+                                // .addWorkingDirectory("workspace", new AdditionalWorkingDirectory(Path.of(workspace.toAbsolutePath().toString(), "workspace").toAbsolutePath().toString(), "userSettings"))
                                 .build()
                 )
                 // .stateStore(new JsonFileAgentStateStore(workspace))
@@ -97,8 +107,10 @@ public final class Sample {
                 // .middleware(new TimingMiddleware())
                 // .middleware(new RateLimitMiddleware(Duration.ofSeconds(3)))
                 // .middleware(new StopOnAllDeniedMiddleware())
-                .skillRepository(new FileSystemSkillRepository(Path.of(workspace.toAbsolutePath().toString(), "agentdir", "skills"), false))
-                .skillRepository(MysqlSkillRepository.builder(dataSource).writeable(true).createIfNotExist(true).databaseName("agentscope_skill").build())
+                // .skillRepository(new FileSystemSkillRepository(Path.of(workspace.toAbsolutePath().toString(), "agentdir", "skills"), false))
+                .skillRepository(skillRepository)
+                .conflictPolicy(ConflictPolicy.FAIL)
+                .skillWorkDir(Path.of(workspace.toAbsolutePath().toString(), "agentdir"))
                 .build();
         try {
             chat(agent, "ivfzhou", "session-1");
@@ -106,48 +118,71 @@ public final class Sample {
         } finally {
             dataSource.close();
             agent.close();
+            redisClient.close();
         }
     }
 
     private static Model createModel() {
-        return // OpenAIChatModel.builder()
-                DashScopeChatModel.builder()
-                        // .modelName("deepseek-v4-pro")
-                        .modelName("qwen3.8-max")
-                        .apiKey(System.getenv("DASHSCOPE_API_KEY"))
-                        // .apiKey(System.getenv("OPENAI_API_KEY"))
-                        // .apiKey(System.getenv("DEEPSEEK_API_KEY"))
-                        // .baseUrl("https://ws-1t9uu8m17ouv3le5.cn-beijing.maas.aliyuncs.com/compatible-mode/v1")
-                        // .baseUrl("https://ws-1t9uu8m17ouv3le5.cn-beijing.maas.aliyuncs.com/api/v1")
-                        // .baseUrl("https://api.deepseek.com")
-                        .stream(true)
-                        // .formatter(new OpenAIChatFormatter())
-                        .formatter(new DashScopeChatFormatter())
-                        // .enableEncrypt(true)
-                        // .enableThinking(true)
-                        // .enableSearch(true)
-                        // .contextWindowSize(1_000_000)
-                        // .nativeStructuredOutput(true)
-                        // .nativeStructuredOutputWithTools(true)
-                        // .endpointPath("/v2/chat/completions")
-                        // .httpTransport(JdkHttpTransport.builder().client(HttpClient.newHttpClient()).config(HttpTransportConfig.defaults()).build())
-                        // .httpTransport(OkHttpTransport.builder().client(new OkHttpClient.Builder().build()).build())
-                        // .proxy(ProxyConfig.builder().host("127.0.0.1").port(7897).type(ProxyType.HTTP).build())
-                        // .generateOptions(GenerateOptions.builder().reasoningEffort("high").build())
-                        // .endpointType(EndpointType.AUTO)
-                        .defaultOptions(GenerateOptions.builder().reasoningEffort("high").build())
-                        .build();
+        return OpenAIChatModel.builder()
+                // DashScopeChatModel.builder()
+                .modelName("deepseek-v4-pro")
+                // .modelName("qwen3.8-max")
+                // .apiKey(System.getenv("DASHSCOPE_API_KEY"))
+                // .apiKey(System.getenv("OPENAI_API_KEY"))
+                .apiKey(System.getenv("DEEPSEEK_API_KEY"))
+                // .baseUrl("https://ws-1t9uu8m17ouv3le5.cn-beijing.maas.aliyuncs.com/compatible-mode/v1")
+                // .baseUrl("https://ws-1t9uu8m17ouv3le5.cn-beijing.maas.aliyuncs.com/api/v1")
+                .baseUrl("https://api.deepseek.com")
+                .stream(true)
+                .formatter(new OpenAIChatFormatter())
+                // .formatter(new DashScopeChatFormatter())
+                // .enableEncrypt(true)
+                // .enableThinking(true)
+                // .enableSearch(true)
+                // .contextWindowSize(1_000_000)
+                // .nativeStructuredOutput(true)
+                // .nativeStructuredOutputWithTools(true)
+                // .endpointPath("/v2/chat/completions")
+                // .httpTransport(JdkHttpTransport.builder().client(HttpClient.newHttpClient()).config(HttpTransportConfig.defaults()).build())
+                // .httpTransport(OkHttpTransport.builder().client(new OkHttpClient.Builder().build()).build())
+                // .proxy(ProxyConfig.builder().host("127.0.0.1").port(7897).type(ProxyType.HTTP).build())
+                .generateOptions(GenerateOptions.builder().reasoningEffort("low").build())
+                // .endpointType(EndpointType.AUTO)
+                // .defaultOptions(GenerateOptions.builder().reasoningEffort("high").build())
+                .build();
     }
 
-    private static Toolkit createToolkit() {
+    private static Model createFallbackModel() {
+        return DashScopeChatModel.builder()
+                .modelName("qwen3.7-plus")
+                .apiKey(System.getenv("DASHSCOPE_API_KEY"))
+                .stream(true)
+                .formatter(new DashScopeChatFormatter())
+                .enableEncrypt(true)
+                .enableThinking(true)
+                .enableSearch(true)
+                .defaultOptions(GenerateOptions.builder().reasoningEffort("low").build())
+                .build();
+    }
+
+    private static AgentSkillRepository createSkillRepository(HikariDataSource dataSource) {
+        return MysqlSkillRepository.builder(dataSource)
+                .createIfNotExist(true)
+                .writeable(true)
+                .databaseName("agentscope_reactagent_skill")
+                .build();
+    }
+
+    private static Toolkit createToolkit(AgentSkillRepository skillRepository) {
         var toolkit = new Toolkit();
-        toolkit.registerMcpClient(McpClientBuilder.create("amap")
-                .streamableHttpTransport("https://mcp.amap.com/mcp?key=" + System.getenv("AMAP_API_KEY"))
-                .buildSync()).block();
-        toolkit.registerTool(new WriteFileTool());
-        toolkit.registerTool(new ReadFileTool());
-        toolkit.registerTool(new ShellCommandTool());
+        // toolkit.registerMcpClient(McpClientBuilder.create("amap")
+        //         .streamableHttpTransport("https://mcp.amap.com/mcp?key=" + System.getenv("AMAP_API_KEY"))
+        //         .buildSync()).block();
+        // toolkit.registerTool(new WriteFileTool());
+        // toolkit.registerTool(new ReadFileTool());
+        // toolkit.registerTool(new ShellCommandTool());
         toolkit.registerTool(new TodoTools());
+        toolkit.registerTool(new SkillWriterTool(skillRepository));
         toolkit.registerMetaTool();
 
         System.out.println("tool names is " + toolkit.getToolNames());
@@ -165,6 +200,17 @@ public final class Sample {
         // toolkit.registration().tool(new ShellCommandTool()).group("mojibake-fixer-group").apply();
 
         return toolkit;
+    }
+
+    private static UnifiedJedis getRedisClient() {
+        return RedisClient.builder()
+                .hostAndPort("127.0.0.1", 6379)
+                .clientConfig(DefaultJedisClientConfig.builder()
+                        .user("ivfzhou")
+                        .password("123456")
+                        .database(0)
+                        .build())
+                .build();
     }
 
     private static void printModelCards() {
@@ -246,6 +292,22 @@ public final class Sample {
             final List<ToolUseBlock> toolUseBlocks = new ArrayList<>();
             while (ask != null) {
 
+                if (ask.equals("add_mcp")) {
+                    toolkit.registerMcpClient(McpClientBuilder.create("amap")
+                            .streamableHttpTransport("https://mcp.amap.com/mcp?key=" + System.getenv("AMAP_API_KEY"))
+                            .buildSync()).block();
+                    ask = reader.readLine();
+                    continue;
+                }
+
+                if (ask.equals("add_tools")) {
+                    toolkit.registerTool(new WriteFileTool());
+                    toolkit.registerTool(new ReadFileTool());
+                    toolkit.registerTool(new ShellCommandTool());
+                    ask = reader.readLine();
+                    continue;
+                }
+
                 if (ask.equalsIgnoreCase("quit")) {
                     break;
                 }
@@ -265,13 +327,17 @@ public final class Sample {
                 Msg msg;
                 if (ask.equalsIgnoreCase("confirm") && !toolUseBlocks.isEmpty()) {
                     var confirmResults = new ArrayList<ConfirmResult>();
-                    for (int i = 0; i < toolUseBlocks.size(); i++) {
+                    for (var i = 0; i < toolUseBlocks.size(); i++) {
                         var toolUseBlock = toolUseBlocks.get(i);
                         System.out.print("allow to run tool " + toolUseBlock.getName() + " [" + (i + 1) + "]: (y/n)");
                         var ret = reader.readLine();
                         if (ret.equalsIgnoreCase("y")) {
-                            confirmResults.add(new ConfirmResult(true, toolUseBlock,
-                                    List.of(new PermissionRule(toolUseBlock.getName(), null, PermissionBehavior.ALLOW, "userSettings"))));
+                            confirmResults.add(new ConfirmResult(
+                                            true,
+                                            toolUseBlock,
+                                            List.of(new PermissionRule(toolUseBlock.getName(), null, PermissionBehavior.ALLOW, "userSettings"))
+                                    )
+                            );
                         } else {
                             confirmResults.add(new ConfirmResult(false, toolUseBlock));
                         }
@@ -282,7 +348,7 @@ public final class Sample {
                     toolUseBlocks.clear();
                 } else if (ask.equalsIgnoreCase("execute") && !toolUseBlocks.isEmpty()) {
                     var toolResultBlocks = new ArrayList<ToolResultBlock>();
-                    for (int i = 0; i < toolUseBlocks.size(); i++) {
+                    for (var i = 0; i < toolUseBlocks.size(); i++) {
                         var toolUseBlock = toolUseBlocks.get(i);
                         System.out.print("enter external tool " + toolUseBlock.getName() + " result [" + (i + 1) + "]:");
                         toolResultBlocks.add(
@@ -294,9 +360,7 @@ public final class Sample {
                                         .build()
                         );
                     }
-                    msg = ToolResultMessage.builder()
-                            .results(toolResultBlocks)
-                            .build();
+                    msg = ToolResultMessage.builder().results(toolResultBlocks).build();
                     toolUseBlocks.clear();
                 } else {
                     msg = new UserMessage(ask);
@@ -313,7 +377,7 @@ public final class Sample {
     }
 
     private static Path getWorkspace() {
-        var home = Path.of(System.getProperty("user.home"), "src", "my_learning_code-master", "java", "agentscope");
+        var home = Path.of(System.getProperty("user.home"), "src", "my_learning_code", "java", "agentscope");
         var agentWorkDir = Path.of(home.toAbsolutePath().toString(), "reactagent");
         System.out.println("workspace is " + agentWorkDir);
         return agentWorkDir;

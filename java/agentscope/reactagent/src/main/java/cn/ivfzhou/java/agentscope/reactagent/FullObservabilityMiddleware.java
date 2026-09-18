@@ -42,7 +42,7 @@ public class FullObservabilityMiddleware implements MiddlewareBase {
     @Override
     public Mono<String> onSystemPrompt(Agent agent, RuntimeContext ctx, String currentPrompt) {
         System.out.println("[onSystemPrompt]");
-        // List<String> list = ctx.getAgentState().getToolContext().getActivatedGroups();
+        // var list = ctx.getAgentState().getToolContext().getActivatedGroups();
         // System.out.println(list);
         return Mono.just(currentPrompt);
     }

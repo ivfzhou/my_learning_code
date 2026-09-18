@@ -15,6 +15,7 @@ import java.util.function.Function;
 public class RateLimitMiddleware implements MiddlewareBase {
 
     private final long minIntervalMs;
+
     private final AtomicLong lastCall = new AtomicLong(0);
 
     public RateLimitMiddleware(Duration minInterval) {
@@ -23,9 +24,9 @@ public class RateLimitMiddleware implements MiddlewareBase {
 
     @Override
     public Flux<AgentEvent> onModelCall(Agent agent, RuntimeContext ctx, ModelCallInput input, Function<ModelCallInput, Flux<AgentEvent>> next) {
-        long now = System.currentTimeMillis();
-        long wait = minIntervalMs - (now - lastCall.get());
-        Mono<Void> delay = wait > 0 ? Mono.delay(Duration.ofMillis(wait)).then() : Mono.empty();
+        var now = System.currentTimeMillis();
+        var wait = minIntervalMs - (now - lastCall.get());
+        var delay = wait > 0 ? Mono.delay(Duration.ofMillis(wait)).then() : Mono.empty();
         return delay.thenMany(next.apply(input)).doOnSubscribe(s -> lastCall.set(System.currentTimeMillis()));
     }
 

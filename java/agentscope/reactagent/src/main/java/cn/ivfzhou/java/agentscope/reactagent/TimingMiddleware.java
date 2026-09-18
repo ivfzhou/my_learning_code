@@ -13,10 +13,10 @@ public class TimingMiddleware implements MiddlewareBase {
 
     @Override
     public Flux<AgentEvent> onModelCall(Agent agent, RuntimeContext ctx, ModelCallInput input, Function<ModelCallInput, Flux<AgentEvent>> next) {
-        long start = System.nanoTime();
+        var start = System.nanoTime();
         return next.apply(input)
                 .doFinally(sig -> {
-                    long ms = (System.nanoTime() - start) / 1_000_000;
+                    var ms = (System.nanoTime() - start) / 1_000_000;
                     System.out.println("[timing] " + agent.getName() + ": " + ms + "ms");
                 });
     }
