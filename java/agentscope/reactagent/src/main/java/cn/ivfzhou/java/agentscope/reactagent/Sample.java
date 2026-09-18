@@ -1,8 +1,9 @@
 package cn.ivfzhou.java.agentscope.reactagent;
 
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import io.agentscope.core.ReActAgent;
 import io.agentscope.core.agent.RuntimeContext;
-import io.agentscope.core.credential.CredentialBase;
 import io.agentscope.core.event.AgentEndEvent;
 import io.agentscope.core.event.AgentEvent;
 import io.agentscope.core.event.AgentEventType;
@@ -39,117 +40,159 @@ import io.agentscope.core.message.ToolResultMessage;
 import io.agentscope.core.message.ToolResultState;
 import io.agentscope.core.message.ToolUseBlock;
 import io.agentscope.core.message.UserMessage;
+import io.agentscope.core.model.GenerateOptions;
 import io.agentscope.core.model.Model;
+import io.agentscope.core.model.ToolSchema;
+import io.agentscope.core.permission.AdditionalWorkingDirectory;
 import io.agentscope.core.permission.PermissionBehavior;
 import io.agentscope.core.permission.PermissionContextState;
 import io.agentscope.core.permission.PermissionMode;
 import io.agentscope.core.permission.PermissionRule;
 import io.agentscope.core.skill.repository.FileSystemSkillRepository;
-import io.agentscope.core.tool.ToolGroup;
-import io.agentscope.core.tool.ToolGroupScope;
+import io.agentscope.core.skill.repository.mysql.MysqlSkillRepository;
 import io.agentscope.core.tool.Toolkit;
+import io.agentscope.core.tool.builtin.TodoTools;
 import io.agentscope.core.tool.coding.ShellCommandTool;
+import io.agentscope.core.tool.file.ReadFileTool;
+import io.agentscope.core.tool.file.WriteFileTool;
 import io.agentscope.core.tool.mcp.McpClientBuilder;
 import io.agentscope.extensions.model.dashscope.DashScopeChatModel;
+import io.agentscope.extensions.model.dashscope.credential.DashScopeCredential;
 import io.agentscope.extensions.model.dashscope.formatter.DashScopeChatFormatter;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public final class Sample {
 
-    static void main() throws IOException, URISyntaxException {
-        var toolkit = new Toolkit();
-        toolkit.registerToolGroup(ToolGroup.builder()
-                .active(false)
-                .name("my_tool_group")
-                .scope(ToolGroupScope.META)
-                .description("文件读写")
-                .tools(Set.of("write_file", "read_file"))
-                .build());
-        toolkit.registerTool(new WriteFileTool());
-        toolkit.registerTool(new ReadFileTool());
-        // toolkit.registerTool(new ShellCommandTool());
-        toolkit.registerMcpClient(
-                McpClientBuilder.create("amap")
-                        .streamableHttpTransport("https://mcp.amap.com/mcp?key=" + System.getenv("AMAP_API_KEY"))
-                        .buildSync()
-        ).block();
-        // toolkit.registerTool(new TodoTools());
-
-        toolkit.createSkillToolGroup("mojibake-fixer-group", "执行 Shell 命令", false, "mojibake-fixer");
-        toolkit.registration().tool(new ShellCommandTool()).group("mojibake-fixer-group").apply();
-
-        var model = createModel();
-
-        // printModelCards(OpenAICredential.builder()
-        //         .apiKey(System.getenv("DASHSCOPE_API_KEY"))
-        //         .baseUrl("https://ws-1t9uu8m17ouv3le5.cn-beijing.maas.aliyuncs.com/compatible-mode/v1")
-        //         .id("qwen")
-        //         .build());
-
+    static void main() throws IOException {
         var workspace = getWorkspace();
+        var toolkit = createToolkit();
+        var model = createModel();
+        var dataSource = getDataSource();
+        // printModelCards();
         var agent = ReActAgent.builder()
                 .name("answer-helper")
                 .sysPrompt("你是一个全知助手，能回答各类问题。")
                 // .model("dashscope:qwen-plus")
                 .model(model)
                 .toolkit(toolkit)
+                .maxIters(20)
                 .permissionContext(
                         PermissionContextState.builder()
                                 .mode(PermissionMode.DEFAULT)
-                                // .addWorkingDirectory(workspace.toAbsolutePath().toString(), new AdditionalWorkingDirectory(workspace.toAbsolutePath().toString(), "userSettings"))
-                                .addAllowRule("read_file", new PermissionRule("read_file", null, PermissionBehavior.ALLOW, "userSettings"))
-                                .addAskRule("write_file", new PermissionRule("write_file", null, PermissionBehavior.ASK, "userSettings"))
+                                .addWorkingDirectory("workspace",
+                                        new AdditionalWorkingDirectory(Path.of(workspace.toAbsolutePath().toString(), "workspace").toAbsolutePath().toString(), "userSettings"))
                                 .build()
                 )
                 // .stateStore(new JsonFileAgentStateStore(workspace))
-                // 为 agent 全生命周期接入 OpenTelemetry 追踪。需要配置 OpenTelemetry SDK。
-                // .middlewares(List.of(new OtelTracingMiddleware()))
+                // .middlewares(List.of(new OtelTracingMiddleware())) // 为 agent 全生命周期接入 OpenTelemetry 追踪。需要配置 OpenTelemetry SDK。
                 // .middleware(new FullObservabilityMiddleware())
                 // .middleware(new TimingMiddleware())
                 // .middleware(new RateLimitMiddleware(Duration.ofSeconds(3)))
                 // .middleware(new StopOnAllDeniedMiddleware())
-                .skillRepository(new FileSystemSkillRepository(Path.of(workspace.toAbsolutePath().toString(), "skills")))
-                // .skillRepository(new MysqlSkillRepository())
-                .enableMetaTool(true) // 启用 meta tool 支持模型主动切换 group。
-                // .enableTaskList(true)
+                .skillRepository(new FileSystemSkillRepository(Path.of(workspace.toAbsolutePath().toString(), "agentdir", "skills"), false))
+                .skillRepository(MysqlSkillRepository.builder(dataSource).writeable(true).createIfNotExist(true).databaseName("agentscope_skill").build())
                 .build();
-        try (agent) {
+        try {
             chat(agent, "ivfzhou", "session-1");
+            // chatWithStructure(agent, "ivfzhou", "session-2");
+        } finally {
+            dataSource.close();
+            agent.close();
         }
     }
 
     private static Model createModel() {
-        return DashScopeChatModel.builder()
-                .modelName("qwen3.7-plus")
-                .apiKey(System.getenv("DASHSCOPE_API_KEY"))
-                // .baseUrl("https://ws-1t9uu8m17ouv3le5.cn-beijing.maas.aliyuncs.com/api/v1")
-                .stream(true)
-                .formatter(new DashScopeChatFormatter())
-                .enableEncrypt(true)
-                .enableThinking(true)
-                .enableSearch(true)
-                .contextWindowSize(1_000_000)
-                .build();
+        return // OpenAIChatModel.builder()
+                DashScopeChatModel.builder()
+                        // .modelName("deepseek-v4-pro")
+                        .modelName("qwen3.8-max")
+                        .apiKey(System.getenv("DASHSCOPE_API_KEY"))
+                        // .apiKey(System.getenv("OPENAI_API_KEY"))
+                        // .apiKey(System.getenv("DEEPSEEK_API_KEY"))
+                        // .baseUrl("https://ws-1t9uu8m17ouv3le5.cn-beijing.maas.aliyuncs.com/compatible-mode/v1")
+                        // .baseUrl("https://ws-1t9uu8m17ouv3le5.cn-beijing.maas.aliyuncs.com/api/v1")
+                        // .baseUrl("https://api.deepseek.com")
+                        .stream(true)
+                        // .formatter(new OpenAIChatFormatter())
+                        .formatter(new DashScopeChatFormatter())
+                        // .enableEncrypt(true)
+                        // .enableThinking(true)
+                        // .enableSearch(true)
+                        // .contextWindowSize(1_000_000)
+                        // .nativeStructuredOutput(true)
+                        // .nativeStructuredOutputWithTools(true)
+                        // .endpointPath("/v2/chat/completions")
+                        // .httpTransport(JdkHttpTransport.builder().client(HttpClient.newHttpClient()).config(HttpTransportConfig.defaults()).build())
+                        // .httpTransport(OkHttpTransport.builder().client(new OkHttpClient.Builder().build()).build())
+                        // .proxy(ProxyConfig.builder().host("127.0.0.1").port(7897).type(ProxyType.HTTP).build())
+                        // .generateOptions(GenerateOptions.builder().reasoningEffort("high").build())
+                        // .endpointType(EndpointType.AUTO)
+                        .defaultOptions(GenerateOptions.builder().reasoningEffort("high").build())
+                        .build();
     }
 
-    private static void printModelCards(CredentialBase credentialBase) {
+    private static Toolkit createToolkit() {
+        var toolkit = new Toolkit();
+        toolkit.registerMcpClient(McpClientBuilder.create("amap")
+                .streamableHttpTransport("https://mcp.amap.com/mcp?key=" + System.getenv("AMAP_API_KEY"))
+                .buildSync()).block();
+        toolkit.registerTool(new WriteFileTool());
+        toolkit.registerTool(new ReadFileTool());
+        toolkit.registerTool(new ShellCommandTool());
+        toolkit.registerTool(new TodoTools());
+        toolkit.registerMetaTool();
+
+        System.out.println("tool names is " + toolkit.getToolNames());
+        System.out.println("tool schemas is " + toolkit.getToolSchemas().stream().map(ToolSchema::getName).toList());
+        System.out.println("tool active groups is " + toolkit.getActiveGroups());
+
+        // toolkit.registerToolGroup(ToolGroup.builder()
+        //         .active(false)
+        //         .name("my_tool_group")
+        //         .scope(ToolGroupScope.META)
+        //         .description("文件读写")
+        //         .tools(Set.of("write_file", "read_file"))
+        //         .build());
+        // toolkit.createSkillToolGroup("mojibake-fixer-group", "执行 Shell 命令", false, "mojibake-fixer");
+        // toolkit.registration().tool(new ShellCommandTool()).group("mojibake-fixer-group").apply();
+
+        return toolkit;
+    }
+
+    private static void printModelCards() {
+        var credentialBase = DashScopeCredential.builder()
+                .apiKey(System.getenv("DASHSCOPE_API_KEY"))
+                .baseUrl("https://ws-1t9uu8m17ouv3le5.cn-beijing.maas.aliyuncs.com/api/v1")
+                .id("qwen")
+                .build();
         var cards = credentialBase.listModels().block();
         System.out.println("[MODEL_CARDS]");
         for (int i = 0; i < cards.size(); i++) {
             var card = cards.get(i);
             System.out.print("    " + (i + 1) + ". modelName=" + card.modelName() + " contextSize=" + card.contextSize() + " displayName=" + card.displayName());
         }
+    }
+
+    private static HikariDataSource getDataSource() {
+        var config = new HikariConfig();
+        config.setJdbcUrl("jdbc:mysql://127.0.0.1:3306?useSSL=false&serverTimezone=Asia/Shanghai&characterEncoding=utf8");
+        config.setUsername("root");
+        config.setPassword("123456");
+        config.setDriverClassName("com.mysql.cj.jdbc.Driver");
+        config.setMaximumPoolSize(10);
+        config.setMinimumIdle(1);
+        config.setConnectionTimeout(30000);
+        config.setIdleTimeout(600000);
+        config.setMaxLifetime(1800000);
+        return new HikariDataSource(config);
     }
 
     private static void chatWithStructure(ReActAgent agent, String userId, String sessionId) {
@@ -196,7 +239,7 @@ public final class Sample {
                 .userId(userId)
                 .build();
 
-        System.out.println("enter message to chat:");
+        System.out.println("enter message to chat:(quit/confirm/execute/interupt)");
         var reader = new BufferedReader(new InputStreamReader(System.in, StandardCharsets.UTF_8));
         var ask = reader.readLine();
         try (reader) {
@@ -269,14 +312,11 @@ public final class Sample {
         }
     }
 
-    private static Path getWorkspace() throws URISyntaxException {
-        var path = Paths.get(Sample.class.getProtectionDomain().getCodeSource().getLocation().toURI());
-        if (!path.toFile().isDirectory()) {
-            path = path.getParent();
-        }
-        path = path.getParent().getParent();
-        System.out.println("workspace is " + path.toString());
-        return path;
+    private static Path getWorkspace() {
+        var home = Path.of(System.getProperty("user.home"), "src", "my_learning_code-master", "java", "agentscope");
+        var agentWorkDir = Path.of(home.toAbsolutePath().toString(), "reactagent");
+        System.out.println("workspace is " + agentWorkDir);
+        return agentWorkDir;
     }
 
     private static List<ToolUseBlock> handleEvent(AgentEvent event) {
@@ -410,7 +450,7 @@ public final class Sample {
     }
 
     private static void handleToolCallStartEvent(ToolCallStartEvent event) {
-        System.out.println("[TOOL_CALL_START]");
+        System.out.println("[TOOL_CALL_START] " + event.getToolCallName());
     }
 
     private static void handleToolCallDeltaEvent(ToolCallDeltaEvent event) {
