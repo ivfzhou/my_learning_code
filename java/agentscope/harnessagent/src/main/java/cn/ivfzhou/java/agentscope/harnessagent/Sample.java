@@ -1,6 +1,5 @@
 package cn.ivfzhou.java.agentscope.harnessagent;
 
-import cn.ivfzhou.java.agentscope.harnessagent.tool.AfterSaleTools;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import io.agentscope.core.agent.RuntimeContext;
@@ -47,6 +46,7 @@ import io.agentscope.core.permission.PermissionMode;
 import io.agentscope.core.permission.PermissionRule;
 import io.agentscope.core.skill.repository.mysql.MysqlSkillRepository;
 import io.agentscope.core.tool.Toolkit;
+import io.agentscope.core.tool.builtin.TodoTools;
 import io.agentscope.extensions.model.dashscope.DashScopeChatModel;
 import io.agentscope.extensions.model.dashscope.formatter.DashScopeChatFormatter;
 import io.agentscope.extensions.mysql.store.JdbcStore;
@@ -64,17 +64,15 @@ import redis.clients.jedis.UnifiedJedis;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public final class Sample {
 
-    static void main() throws IOException, URISyntaxException {
+    static void main() throws IOException {
         var model = getModel();
         var workspace = getWorkspace();
         var dataSource = getDataSource();
@@ -83,13 +81,9 @@ public final class Sample {
 
         var agent = HarnessAgent.builder()
                 .name("aftersale-orchestrator")
-                .sysPrompt(
-                        "你是电商售后工单调度员。先按 workspace/AGENTS.md 的流程给工单定性，"
-                                + "再用 agent_spawn 派发 policy-expert / order-analyst / risk-reviewer"
-                                + "并行核查，最后交给 reply-writer 成文并自己汇总。")
+                .sysPrompt("你是电商售后工单调度员。先按 workspace/AGENTS.md 的流程给工单定性，再用 agent_spawn 派发 policy-expert / order-analyst / risk-reviewer 并行核查，最后交给 reply-writer 成文并自己汇总。")
                 .model(model)
                 .toolkit(toolkit)
-                .enableMetaTool(true)
                 .permissionContext(
                         PermissionContextState.builder()
                                 .mode(PermissionMode.DEFAULT)
@@ -178,7 +172,7 @@ public final class Sample {
     private static Model getModel() {
         return DashScopeChatModel.builder()
                 .apiKey(System.getenv("DASHSCOPE_API_KEY"))
-                .modelName("qwen3.8-max")
+                .modelName("qwen3.7-plus")
                 .stream(true)
                 .formatter(new DashScopeChatFormatter())
                 .enableThinking(true)
@@ -187,25 +181,17 @@ public final class Sample {
 
     private static Toolkit getToolkit() {
         var toolkit = new Toolkit();
-        // 注册售后场景的业务工具（query_order / query_logistics / calc_refund ...）。
         toolkit.registerTool(new AfterSaleTools());
-        // toolkit.registerMcpClient(
-        //         McpClientBuilder.create("amap")
-        //                 .streamableHttpTransport("https://mcp.amap.com/mcp?key=" + System.getenv("AMAP_API_KEY"))
-        //                 .buildSync()
-        // ).block();
+        toolkit.registerTool(new TodoTools());
+        toolkit.registerMetaTool();
         return toolkit;
     }
 
-    private static Path getWorkspace() throws URISyntaxException {
-        var path = Paths.get(Sample.class.getProtectionDomain().getCodeSource().getLocation().toURI());
-        if (!path.toFile().isDirectory()) {
-            path = path.getParent();
-        }
-        path = path.getParent().getParent();
-        path = Path.of(path.toAbsolutePath().toString(), "workspace");
-        System.out.println("workspace is " + path);
-        return path;
+    private static Path getWorkspace() {
+        var home = Path.of(System.getProperty("user.home"), "src", "my_learning_code", "java", "agentscope");
+        var agentWorkDir = Path.of(home.toAbsolutePath().toString(), "harnessagent");
+        System.out.println("workspace is " + agentWorkDir);
+        return agentWorkDir;
     }
 
     private static void chat(HarnessAgent agent, String userId, String sessionId) throws IOException {
@@ -369,7 +355,7 @@ public final class Sample {
     }
 
     private static void handleAgentStartEvent(AgentStartEvent event) {
-        System.out.println("[AGENT_START]");
+        System.out.println("[AGENT_START] " + event.getName());
     }
 
     private static void handleModelCallStartEvent(ModelCallStartEvent event) {
@@ -417,7 +403,7 @@ public final class Sample {
     }
 
     private static void handleToolCallStartEvent(ToolCallStartEvent event) {
-        System.out.println("[TOOL_CALL_START]");
+        System.out.println("[TOOL_CALL_START] " + event.getToolCallName());
     }
 
     private static void handleToolCallDeltaEvent(ToolCallDeltaEvent event) {
