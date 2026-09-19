@@ -10,20 +10,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * 让 Agent 具备把技能写回技能仓库的能力。
- *
- * <p>framework 只内置了只读的 load_skill_through_path，没有任何工具能调用
- * AgentSkillRepository#save，所以这里包一层暴露给 LLM。
- *
- * <p>save_skill 是「一次性整技能写入」：必须一次性给出该技能的全部资源文件，
- * 已存在的同名技能不会被覆盖，而是报错。
- */
 public final class SkillWriterTool {
 
-    /**
-     * 框架约定的二进制资源前缀，见 SkillFileSystemHelper / SkillToolFactory。
-     */
     private static final String BASE64_PREFIX = "base64:";
 
     private final AgentSkillRepository repository;
@@ -32,13 +20,6 @@ public final class SkillWriterTool {
         this.repository = repository;
     }
 
-    /**
-     * 一份随技能保存的资源文件。
-     *
-     * @param path    技能内的相对路径，可含多级目录，如 scripts/analyze.py
-     * @param content 文本内容；binary=true 时传标准 Base64（可带或不带 base64: 前缀）
-     * @param binary  是否为二进制资源，true 时按 Base64 解码校验并加上 base64: 前缀后存储
-     */
     public record ResourceItem(String path, String content, Boolean binary) {
     }
 
@@ -130,7 +111,6 @@ public final class SkillWriterTool {
         }
 
         try {
-            // force=false：由上面的 skillExists 保证不会误覆盖，这里再兜一道。
             var ok = repository.save(List.of(builder.build()), false);
             if (!ok) {
                 return "写入失败：技能仓库返回 false，请检查仓库配置。";

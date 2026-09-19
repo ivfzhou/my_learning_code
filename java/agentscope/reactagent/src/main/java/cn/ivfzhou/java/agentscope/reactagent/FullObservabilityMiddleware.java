@@ -17,7 +17,7 @@ public class FullObservabilityMiddleware implements MiddlewareBase {
 
     @Override
     public Flux<AgentEvent> onAgent(Agent agent, RuntimeContext ctx, AgentInput input, Function<AgentInput, Flux<AgentEvent>> next) {
-        System.out.println("[onAgentBegin]");
+        System.out.println("[onAgentBegin] " + agent.getName());
         return next.apply(input).doOnComplete(() -> System.out.println("[onAgentEnd]"));
     }
 
@@ -35,7 +35,7 @@ public class FullObservabilityMiddleware implements MiddlewareBase {
 
     @Override
     public Flux<AgentEvent> onModelCall(Agent agent, RuntimeContext ctx, ModelCallInput input, Function<ModelCallInput, Flux<AgentEvent>> next) {
-        System.out.println("[onModelCall]");
+        System.out.println("[onModelCall] " + input.model().getModelName());
         return next.apply(input).doOnComplete(() -> System.out.println("[onModelCallEnd]"));
     }
 

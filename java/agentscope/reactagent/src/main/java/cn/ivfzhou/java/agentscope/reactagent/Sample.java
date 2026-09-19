@@ -43,6 +43,7 @@ import io.agentscope.core.message.UserMessage;
 import io.agentscope.core.model.GenerateOptions;
 import io.agentscope.core.model.Model;
 import io.agentscope.core.model.ToolSchema;
+import io.agentscope.core.permission.AdditionalWorkingDirectory;
 import io.agentscope.core.permission.PermissionBehavior;
 import io.agentscope.core.permission.PermissionContextState;
 import io.agentscope.core.permission.PermissionMode;
@@ -52,7 +53,12 @@ import io.agentscope.core.skill.repository.mysql.MysqlSkillRepository;
 import io.agentscope.core.state.ConflictPolicy;
 import io.agentscope.core.tool.Toolkit;
 import io.agentscope.core.tool.builtin.TodoTools;
+import io.agentscope.core.tool.coding.ShellCommandTool;
+import io.agentscope.core.tool.file.ReadFileTool;
+import io.agentscope.core.tool.file.WriteFileTool;
 import io.agentscope.core.tool.mcp.McpClientBuilder;
+import io.agentscope.core.tool.mcp.McpClientWrapper;
+import io.agentscope.core.tool.mcp.McpTool;
 import io.agentscope.extensions.model.dashscope.DashScopeChatModel;
 import io.agentscope.extensions.model.dashscope.credential.DashScopeCredential;
 import io.agentscope.extensions.model.dashscope.formatter.DashScopeChatFormatter;
@@ -71,20 +77,22 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public final class Sample {
 
-    private static Toolkit toolkit;
+    private static final List<McpClientWrapper> mcpClients = new ArrayList<>();
 
-    static void main() throws IOException {
+    static void main(String[] args) throws IOException {
         var workspace = getWorkspace();
         var dataSource = getDataSource();
         var skillRepository = createSkillRepository(dataSource);
-        toolkit = createToolkit(skillRepository);
+        var toolkit = createToolkit(skillRepository);
         var model = createModel();
         var fallbackModel = createFallbackModel();
         var redisClient = getRedisClient();
-        // printModelCards();
         var agent = ReActAgent.builder()
                 .name("answer-helper")
                 .sysPrompt("你是一个全知助手，能回答各类问题。")
@@ -98,7 +106,7 @@ public final class Sample {
                 .permissionContext(
                         PermissionContextState.builder()
                                 .mode(PermissionMode.DEFAULT)
-                                // .addWorkingDirectory("workspace", new AdditionalWorkingDirectory(Path.of(workspace.toAbsolutePath().toString(), "workspace").toAbsolutePath().toString(), "userSettings"))
+                                .addWorkingDirectory("workspace", new AdditionalWorkingDirectory(Path.of(workspace.toAbsolutePath().toString(), "workspace").toAbsolutePath().toString(), "userSettings"))
                                 .build()
                 )
                 // .stateStore(new JsonFileAgentStateStore(workspace))
@@ -112,14 +120,26 @@ public final class Sample {
                 .conflictPolicy(ConflictPolicy.FAIL)
                 .skillWorkDir(Path.of(workspace.toAbsolutePath().toString(), "agentdir"))
                 .build();
-        try {
-            chat(agent, "ivfzhou", "session-1");
-            // chatWithStructure(agent, "ivfzhou", "session-2");
-        } finally {
-            dataSource.close();
-            agent.close();
-            redisClient.close();
-        }
+
+        registerExitingClose(Stream.concat(
+                Stream.of(agent, skillRepository, dataSource, redisClient),
+                mcpClients.stream()
+        ).toList());
+
+        chat(agent, "ivfzhou", "session-1");
+    }
+
+    private static void registerExitingClose(List<AutoCloseable> closeables) {
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            for (var closeable : closeables) {
+                try {
+                    closeable.close();
+                } catch (Exception e) {
+                    System.out.println("close resource error: " + e.getMessage());
+                }
+            }
+            System.out.println("all resources are released");
+        }));
     }
 
     private static Model createModel() {
@@ -175,9 +195,11 @@ public final class Sample {
 
     private static Toolkit createToolkit(AgentSkillRepository skillRepository) {
         var toolkit = new Toolkit();
-        // toolkit.registerMcpClient(McpClientBuilder.create("amap")
+        // var mcpClientWrapper = McpClientBuilder.create("amap")
         //         .streamableHttpTransport("https://mcp.amap.com/mcp?key=" + System.getenv("AMAP_API_KEY"))
-        //         .buildSync()).block();
+        //         .buildSync();
+        // toolkit.registerMcpClient(mcpClientWrapper).block();
+        // mcpClients.add(mcpClientWrapper);
         // toolkit.registerTool(new WriteFileTool());
         // toolkit.registerTool(new ReadFileTool());
         // toolkit.registerTool(new ShellCommandTool());
@@ -200,6 +222,15 @@ public final class Sample {
         // toolkit.registration().tool(new ShellCommandTool()).group("mojibake-fixer-group").apply();
 
         return toolkit;
+    }
+
+    private static Set<String> getRegisteredMcpClients(Toolkit toolkit) {
+        return toolkit.getToolNames().stream()
+                .map(toolkit::getTool)
+                .filter(McpTool.class::isInstance)
+                .map(McpTool.class::cast)
+                .map(McpTool::getClientName)
+                .collect(Collectors.toSet());
     }
 
     private static UnifiedJedis getRedisClient() {
@@ -293,14 +324,19 @@ public final class Sample {
             while (ask != null) {
 
                 if (ask.equals("add_mcp")) {
-                    toolkit.registerMcpClient(McpClientBuilder.create("amap")
+                    var toolkit = agent.getToolkit();
+                    var mcpClientWrapper = McpClientBuilder.create("amap")
                             .streamableHttpTransport("https://mcp.amap.com/mcp?key=" + System.getenv("AMAP_API_KEY"))
-                            .buildSync()).block();
+                            .buildSync();
+                    toolkit.registerMcpClient(mcpClientWrapper).block();
+                    System.out.println("registered mcp " + getRegisteredMcpClients(toolkit));
+                    mcpClients.add(mcpClientWrapper);
                     ask = reader.readLine();
                     continue;
                 }
 
                 if (ask.equals("add_tools")) {
+                    var toolkit = agent.getToolkit();
                     toolkit.registerTool(new WriteFileTool());
                     toolkit.registerTool(new ReadFileTool());
                     toolkit.registerTool(new ShellCommandTool());
@@ -466,7 +502,7 @@ public final class Sample {
     }
 
     private static void handleAgentStartEvent(AgentStartEvent event) {
-        System.out.println("[AGENT_START]");
+        System.out.println("[AGENT_START] " + event.getName());
     }
 
     private static void handleModelCallStartEvent(ModelCallStartEvent event) {
