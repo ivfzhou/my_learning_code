@@ -19,6 +19,7 @@
     <modules>
         <module>reactagent</module>
         <module>harnessagent</module>
+        <module>springboot</module>
     </modules>
 
 </project>

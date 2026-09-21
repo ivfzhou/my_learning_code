@@ -1,0 +1,8 @@
+agentscope:
+  model:
+    provider: openai
+  agent:
+    enabled: true
+    name: sliver
+    sysPrompt:
+    maxIters: 10

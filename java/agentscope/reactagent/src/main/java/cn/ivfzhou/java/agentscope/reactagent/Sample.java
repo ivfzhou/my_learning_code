@@ -103,13 +103,13 @@ public final class Sample {
                 .maxRetries(1)
                 .fallbackModel(fallbackModel)
                 .stateStore(RedisAgentStateStore.builder().jedisClient(redisClient).keyPrefix("agentscope:reactagent:").build())
+                // .stateStore(new JsonFileAgentStateStore(workspace))
                 .permissionContext(
                         PermissionContextState.builder()
                                 .mode(PermissionMode.DEFAULT)
                                 .addWorkingDirectory("workspace", new AdditionalWorkingDirectory(Path.of(workspace.toAbsolutePath().toString(), "workspace").toAbsolutePath().toString(), "userSettings"))
                                 .build()
                 )
-                // .stateStore(new JsonFileAgentStateStore(workspace))
                 // .middlewares(List.of(new OtelTracingMiddleware())) // 为 agent 全生命周期接入 OpenTelemetry 追踪。需要配置 OpenTelemetry SDK。
                 // .middleware(new FullObservabilityMiddleware())
                 // .middleware(new TimingMiddleware())

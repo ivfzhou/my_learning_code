@@ -1,7 +1,6 @@
-package cn.ivfzhou.java.agentscope.harnessagent;
+package cn.ivfzhou.java.agentscope.springboot;
 
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
+import io.agentscope.core.ReActAgent;
 import io.agentscope.core.agent.RuntimeContext;
 import io.agentscope.core.event.AgentEndEvent;
 import io.agentscope.core.event.AgentEvent;
@@ -39,197 +38,42 @@ import io.agentscope.core.message.ToolResultMessage;
 import io.agentscope.core.message.ToolResultState;
 import io.agentscope.core.message.ToolUseBlock;
 import io.agentscope.core.message.UserMessage;
-import io.agentscope.core.model.Model;
-import io.agentscope.core.permission.AdditionalWorkingDirectory;
 import io.agentscope.core.permission.PermissionBehavior;
-import io.agentscope.core.permission.PermissionContextState;
-import io.agentscope.core.permission.PermissionMode;
 import io.agentscope.core.permission.PermissionRule;
-import io.agentscope.core.tool.Toolkit;
-import io.agentscope.core.tool.builtin.TodoTools;
-import io.agentscope.extensions.model.openai.OpenAIChatModel;
-import io.agentscope.extensions.model.openai.formatter.OpenAIChatFormatter;
-import io.agentscope.extensions.redis.state.RedisAgentStateStore;
-import io.agentscope.harness.agent.HarnessAgent;
-import io.agentscope.harness.agent.IsolationScope;
-import io.agentscope.harness.agent.filesystem.spec.LocalFilesystemSpec;
-import io.agentscope.harness.agent.memory.compaction.CompactionConfig;
-import io.agentscope.harness.agent.memory.compaction.ToolResultEvictionConfig;
-import io.agentscope.harness.agent.subagent.SubagentDeclaration;
-import io.agentscope.harness.agent.subagent.WorkspaceMode;
-import redis.clients.jedis.DefaultJedisClientConfig;
-import redis.clients.jedis.RedisClient;
-import redis.clients.jedis.UnifiedJedis;
+import jakarta.annotation.Resource;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public final class Sample {
+@SpringBootApplication
+public class Main implements ApplicationRunner {
 
-    static void main() throws IOException {
-        var model = getModel();
-        var workspace = getWorkspace();
-        var dataSource = getDataSource();
-        var redisClient = getRedisClient();
-        var toolkit = getToolkit();
+    static void main() {
+        SpringApplication.run(Main.class);
+    }
 
-        var agent = HarnessAgent.builder()
-                .name("aftersale-orchestrator")
-                .sysPrompt("你是电商售后工单调度员。先按 workspace/AGENTS.md 的流程给工单定性，再用 agent_spawn 派发 policy-expert / order-analyst / risk-reviewer 并行核查，最后交给 reply-writer 成文并自己汇总。")
-                .model(model)
-                .toolkit(toolkit)
-                .permissionContext(
-                        PermissionContextState.builder()
-                                .mode(PermissionMode.DEFAULT)
-                                .addWorkingDirectory("workspace", new AdditionalWorkingDirectory(Path.of(workspace.toAbsolutePath().toString(), "workspace").toAbsolutePath().toString(), "userSetting"))
-                                .build()
-                )
-                // .stateStore(new JsonFileAgentStateStore(Paths.get(workspace.toAbsolutePath().toString(), "agentdir", "states")))
-                // .stateStore(new MysqlAgentStateStore(dataSource, true))
-                .stateStore(RedisAgentStateStore.builder().jedisClient(redisClient).keyPrefix("agentscope:harnessagent:").build())
-                .compaction(
-                        CompactionConfig.builder()
-                                .triggerMessages(30)
-                                .keepMessages(10)
-                                .truncateArgs(
-                                        CompactionConfig.TruncateArgsConfig.builder()
-                                                .maxArgLength(2000)
-                                                .truncationText("... [truncated] ...")
-                                                .build()
-                                )
-                                .build()
-                )
-                .toolResultEviction(ToolResultEvictionConfig.defaults())
-                .workspace(Path.of(workspace.toString(), "agentdir"))
-                .filesystem(new LocalFilesystemSpec().isolationScope(IsolationScope.USER))
-                // .filesystem(new RemoteFilesystemSpec(new RedisStore(redisClient)).isolationScope(IsolationScope.USER))
-                // .filesystem(new RemoteFilesystemSpec(
-                //         JdbcStore.builder(dataSource)
-                //                 .dialect(new MysqlJdbcStoreDialect())
-                //                 .initializeSchema(true)
-                //                 .build())
-                //         .isolationScope(IsolationScope.USER))
-                // .filesystem(new DockerFilesystemSpec().image("debian:13")
-                //         .workspaceRoot("/workspace")
-                //         .environment(Map.of("DEBUG", "true"))
-                //         .memorySizeBytes(512L * 1024 * 1024)
-                //         .cpuCount(2L))
-                // .skillRepository(new GitSkillRepository("", false))
-                // .skillRepository(MysqlSkillRepository.builder(dataSource)
-                //         .createIfNotExist(true)
-                //         .writeable(true)
-                //         .build())
-                .subagent(SubagentDeclaration.builder()
-                        .name("order-analyst")
-                        .description("订单与物流核查员。调用订单/物流工具核实客观事实：是否签收、是否超时、金额与优惠构成、退款试算金额。需要确认\"发生了什么\"时派发。")
-                        .workspaceMode(WorkspaceMode.SHARED)
-                        .inlineAgentsBody("""
-                                你是订单与物流核查员，只输出**可验证的客观事实**，不做政策判断、不做风险判断。
-                                
-                                ## 工作方式
-                                
-                                1. 用 `query_order` 拿到订单快照：商品、实付金额、优惠构成、下单与发货时间、状态。
-                                2. 用 `query_logistics` 拿到物流轨迹：揽收、在途、派送、签收节点与时间戳。
-                                3. 需要给钱时用 `calc_refund` 试算退款金额，不要自己算。
-                                
-                                ## 输出格式
-                                
-                                ```
-                                订单事实：
-                                - 订单号/商品/实付金额：<...>
-                                - 下单时间 / 发货时间 / 签收时间：<...>
-                                - 当前状态：<...>
-                                物流事实：
-                                - 轨迹关键节点：<时间 - 事件>
-                                - 是否签收 / 是否停滞：<是/否，停滞天数>
-                                金额试算：
-                                - calc_refund 结果：<金额与构成>
-                                异常点：<与用户描述不一致的地方>
-                                ```
-                                
-                                ## 约束
-                                
-                                - 只报工具返回的数据；查不到就写"未查到"，不要补全。
-                                - 用户描述与工具数据冲突时，如实并列展示，**不要选边**。
-                                """)
-                        .build())
-                .build();
+    @Resource
+    private ReActAgent agent;
+
+    @Override
+    public void run(ApplicationArguments args) throws Exception {
         try {
-            chat(agent, "ivfzhou", "session-1");
+            chat(agent, "ivfzhou", "seesion-1");
         } finally {
             agent.close();
-            dataSource.close();
-            redisClient.close();
         }
     }
 
-    private static void clearState(HarnessAgent agent, String userId, String sessionId) {
-        agent.clearContext(userId, sessionId);
-    }
-
-    private static void getState(HarnessAgent agent, String userId, String sessionId) {
-        var agentState = agent.getDelegate().getAgentState(userId, sessionId);
-        // AgentState.fromJsonString("{}");
-        System.out.println(agentState.toJson());
-    }
-
-    private static HikariDataSource getDataSource() {
-        var config = new HikariConfig();
-        config.setJdbcUrl("jdbc:mysql://127.0.0.1:3306/?useSSL=false&serverTimezone=Asia/Shanghai&characterEncoding=utf8");
-        config.setUsername("root");
-        config.setPassword("123456");
-        config.setDriverClassName("com.mysql.cj.jdbc.Driver");
-        config.setMaximumPoolSize(10);
-        config.setMinimumIdle(1);
-        config.setConnectionTimeout(30000);
-        config.setIdleTimeout(600000);
-        config.setMaxLifetime(1800000);
-        return new HikariDataSource(config);
-    }
-
-    private static UnifiedJedis getRedisClient() {
-        return RedisClient.builder()
-                .hostAndPort("127.0.0.1", 6379)
-                .clientConfig(DefaultJedisClientConfig.builder()
-                        .user("ivfzhou")
-                        .password("123456")
-                        .database(0)
-                        .build())
-                .build();
-    }
-
-    private static Model getModel() {
-        return OpenAIChatModel.builder()
-                .apiKey(System.getenv("OPENAI_API_KEY"))
-                .modelName("qwen3.7-plus")
-                .stream(true)
-                .formatter(new OpenAIChatFormatter())
-                .baseUrl("https://ws-1t9uu8m17ouv3le5.cn-beijing.maas.aliyuncs.com/compatible-mode/v1")
-                .build();
-    }
-
-    private static Toolkit getToolkit() {
-        var toolkit = new Toolkit();
-        toolkit.registerTool(new AfterSaleTools());
-        toolkit.registerTool(new TodoTools());
-        toolkit.registerMetaTool();
-        return toolkit;
-    }
-
-    private static Path getWorkspace() {
-        var home = Path.of(System.getProperty("user.home"), "src", "my_learning_code", "java", "agentscope");
-        var agentWorkDir = Path.of(home.toAbsolutePath().toString(), "harnessagent");
-        System.out.println("workspace is " + agentWorkDir);
-        return agentWorkDir;
-    }
-
-    private static void chat(HarnessAgent agent, String userId, String sessionId) throws IOException {
+    private static void chat(ReActAgent agent, String userId, String sessionId) throws IOException {
         var ctx = RuntimeContext.builder()
                 .sessionId(sessionId)
                 .userId(userId)
@@ -247,14 +91,12 @@ public final class Sample {
                 }
 
                 if (ask.equalsIgnoreCase("interrupt")) {
-                    // 中断该 session 正在进行的 call。
-                    agent.getDelegate().interrupt(userId, sessionId);
+                    agent.interrupt(userId, sessionId);
                     continue;
                 }
 
                 if (ask.equalsIgnoreCase("interrupt with recovery message")) {
-                    // 带消息中断——中断消息会被 LLM 在恢复时看到。
-                    agent.getDelegate().interrupt(userId, sessionId, Msg.builder().textContent(ask).build());
+                    agent.interrupt(userId, sessionId, Msg.builder().textContent(ask).build());
                 }
 
                 Msg msg;
@@ -500,5 +342,4 @@ public final class Sample {
     private static void handleAgentEndEvent(AgentEndEvent event) {
         System.out.println("[AGENT_END]");
     }
-
 }
