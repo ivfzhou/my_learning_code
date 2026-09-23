@@ -5,46 +5,35 @@
 
     <parent>
         <groupId>cn.ivfzhou.java</groupId>
-        <artifactId>agentscope</artifactId>
+        <artifactId>agentscope-a2a</artifactId>
         <version>1.0.0</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>cn.ivfzhou.java</groupId>
-    <artifactId>agentscope-springboot</artifactId>
+    <artifactId>agentscope-a2a-client</artifactId>
     <version>1.0.0</version>
-    <name>agentscope-springboot</name>
+    <name>agentscope-a2a-client</name>
 
     <properties>
         <agentscope.version>2.0.3</agentscope.version>
     </properties>
 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-dependencies</artifactId>
-                <version>3.5.6</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-
     <dependencies>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter</artifactId>
-        </dependency>
-        <dependency>
             <groupId>io.agentscope</groupId>
-            <artifactId>agentscope-openai-spring-boot-starter</artifactId>
+            <artifactId>agentscope-core</artifactId>
             <version>${agentscope.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-nop</artifactId>
-            <version>2.0.17</version>
+            <groupId>io.agentscope</groupId>
+            <artifactId>agentscope-extensions-a2a-client</artifactId>
+            <version>${agentscope.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.agentscope</groupId>
+            <artifactId>agentscope-extensions-model-openai</artifactId>
+            <version>${agentscope.version}</version>
         </dependency>
     </dependencies>
 

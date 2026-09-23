@@ -55,7 +55,7 @@
 - AUTO_INCREMENT：自动增长。
 - CHECK：选择约束。check(sex='男' or sex='女')、check(sex in ('男', '女'))。
 - ON DELETE | UPDATE RESTRICT：不允许父表删除更新有后代的元组。
-- ON DELETE | UPDATE CASCADE：同步删除和更新。
+- ON DELETE | UPDATE CASCADE：同步删除和更新。例如子表定义：FOREIGN KEY (b_id) REFERENCES B(id) ON DELETE CASCADE，删除父表记录时，级联删除子表中引用它的记录。
 - ON DELETE | UPDATE SET NULL：对应元组属性设置为空值。
 - ON DELETE | UPDATE SET DEFAULT：对应元组属性置位默认值。
 - CREATE ASSERTION *名* CHECK (*条件*)：定义断言。

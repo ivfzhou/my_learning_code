@@ -2,6 +2,7 @@ package cn.ivfzhou.java.agentscope.reactagent;
 
 import io.agentscope.core.agent.RuntimeContext;
 import io.agentscope.core.tool.Tool;
+import io.agentscope.core.tool.ToolEmitter;
 import io.agentscope.core.tool.ToolParam;
 
 import java.io.File;
@@ -14,7 +15,8 @@ public class ReadFileTool {
     public byte[] readFile(
             @ToolParam(name = "fileName", description = "文件路径")
             String fileName,
-            RuntimeContext context
+            RuntimeContext context,
+            ToolEmitter emitter
     ) throws IOException {
         var file = new File(fileName);
         if (!file.exists()) throw new RuntimeException("file not exist");

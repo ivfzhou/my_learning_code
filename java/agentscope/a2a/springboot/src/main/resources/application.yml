@@ -1,0 +1,37 @@
+agentscope:
+  model:
+    provider: openai
+  agent:
+    enabled: true
+    name: sliver
+    # sysPrompt:
+    maxIters: 10
+  a2a:
+    server:
+      enabled: true
+      # agentCompletionTimeoutSeconds:
+      # consumptionCompletionTimeoutSeconds:
+      completeWithMessage: false
+      requireInnerMessage: false
+      card:
+        name: a2a-demo-agent
+        description: AgentScope 2.x A2A Server 示例
+        # url:
+        # provider: { }
+        # version:
+        # documentationUrl:
+        # defaultInputModes: [ ]
+        # defaultOutputModes: [ ]
+        # skills: [ ]
+        # securitySchemes: { }
+        # security: [ ]
+        # iconUrl:
+        # additionalInterfaces: [ ]
+        preferredTransport: JSONRPC
+      transports:
+        jsonrpc:
+          enabled: true
+          deploymentProperties:
+            host: 127.0.0.1
+            port: 8080
+            path: /a2a

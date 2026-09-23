@@ -384,3 +384,48 @@ git am /path/to/patches/*.patch
 1. `git commit-tree <暂存区树 ID> -p <HEAD 提交 ID> -p <branch-name1 树 ID> -m <提交说明>`：创建树获取 ID。
 1. `git reset <新树 ID>`：将版本库重置到新的树。
 1. `git log`：查看其它版本库i合并进来的日志。
+
+# 十、同仓库不同分支使用不同 user 信息方案
+
+## 10.1 使用 includeIf 和 onbranch
+
+在 .git/ 下创建分支专属配置文件，例如 .git/\<branch\>-config：
+```ini
+[user]
+    name = Your Personal Name
+    email = personal@example.com
+```
+然后在仓库配置 .git/config 中添加：
+```ini
+[includeIf "onbranch:<branch>"]
+    path = .git/<branch>-config
+```
+切换到分支 \<branch\>，查看 user 信息：
+```shell
+git config get user.name
+git config get user.email
+```
+
+## 10.2 使用 git worktree
+
+为分支创建工作目录：
+```shell
+git worktree add ../<repo>-<branch> <branch>
+```
+进入目录，查看 user 信息：
+```shell
+cd ../<repo>-<branch>
+git config get user.name
+git config get user.email
+```
+
+## 10.3 使用环境变量
+
+在提交时设置环境变量：
+```shell
+GIT_AUTHOR_NAME="Your Name" GIT_AUTHOR_EMAIL="email@example.com" git commit -m "message"
+```
+
+## 10.4 使用 pre-commit 钩子
+
+在 .git/hooks/pre-commit 中编写脚本。

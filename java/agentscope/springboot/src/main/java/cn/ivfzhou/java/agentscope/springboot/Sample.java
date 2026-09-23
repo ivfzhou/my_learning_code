@@ -55,10 +55,10 @@ import java.util.List;
 import java.util.Map;
 
 @SpringBootApplication
-public class Main implements ApplicationRunner {
+public class Sample implements ApplicationRunner {
 
     static void main() {
-        SpringApplication.run(Main.class);
+        SpringApplication.run(Sample.class);
     }
 
     @Resource
