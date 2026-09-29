@@ -18,6 +18,7 @@ import io.agentscope.core.tool.Toolkit;
 import io.agentscope.core.tool.mcp.McpClientBuilder;
 import io.agentscope.extensions.model.openai.OpenAIChatModel;
 import io.agentscope.extensions.model.openai.formatter.OpenAIChatFormatter;
+import io.agentscope.spring.boot.agui.common.AguiAgentRegistryCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import reactor.core.publisher.Flux;
@@ -27,8 +28,16 @@ import java.util.LinkedHashMap;
 import java.util.Set;
 import java.util.function.Function;
 
-@Configuration(proxyBeanMethods = false)
+@Configuration
 public class AgentConfiguration {
+
+    @Bean
+    public AguiAgentRegistryCustomizer aguiAgentRegistryCustomizer() {
+        return registry -> {
+            registry.registerFactory("default", this::defaultAgent);
+            registry.registerFactory("chat",  this::chatAgent);
+        };
+    }
 
     @Bean
     public AgentEventConverter agentEventConverter() {
@@ -81,30 +90,6 @@ public class AgentConfiguration {
     }
 
     @Bean
-    public Agent defaultAgent(Model model) {
-        return ReActAgent.builder()
-                .name("AG-UI Assistant")
-                .sysPrompt("You are a helpful AI assistant exposed via the AG-UI protocol. "
-                        + "You can help users with various tasks including weather queries "
-                        + "and calculations. Be concise and helpful in your responses.")
-                .model(model)
-                .build();
-    }
-
-    @Bean
-    public Agent chatAgent(MiddlewareBase customEventMiddleware, Model model, Toolkit toolkit) {
-        return ReActAgent.builder()
-                .name("Chat Assistant")
-                .sysPrompt("You are a friendly conversational assistant. "
-                        + "Engage in natural conversation and help users "
-                        + "with general questions and discussions.")
-                .model(model)
-                .toolkit(toolkit)
-                .middleware(customEventMiddleware)
-                .build();
-    }
-
-    @Bean
     public MiddlewareBase customEventMiddleware() {
         return new MiddlewareBase() {
 
@@ -147,6 +132,28 @@ public class AgentConfiguration {
                 .modelName("qwen3.7-plus")
                 .stream(true)
                 .formatter(new OpenAIChatFormatter())
+                .build();
+    }
+
+    private Agent defaultAgent() {
+        return ReActAgent.builder()
+                .name("AG-UI Assistant")
+                .sysPrompt("You are a helpful AI assistant exposed via the AG-UI protocol. "
+                        + "You can help users with various tasks including weather queries "
+                        + "and calculations. Be concise and helpful in your responses.")
+                .model(model())
+                .build();
+    }
+
+    private Agent chatAgent() {
+        return ReActAgent.builder()
+                .name("Chat Assistant")
+                .sysPrompt("You are a friendly conversational assistant. "
+                        + "Engage in natural conversation and help users "
+                        + "with general questions and discussions.")
+                .model(model())
+                .toolkit(toolkit())
+                .middleware(customEventMiddleware())
                 .build();
     }
 
