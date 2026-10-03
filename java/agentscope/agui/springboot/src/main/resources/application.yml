@@ -15,3 +15,7 @@ agentscope:
     max-thread-sessions: 1000
     session-timeout-minutes: 30
     enable-reasoning: true
+logging:
+  level:
+    root: INFO
+    io.agentscope: INFO

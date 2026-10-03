@@ -55,6 +55,7 @@ import io.agentscope.harness.agent.IsolationScope;
 import io.agentscope.harness.agent.filesystem.spec.LocalFilesystemSpec;
 import io.agentscope.harness.agent.memory.compaction.CompactionConfig;
 import io.agentscope.harness.agent.memory.compaction.ToolResultEvictionConfig;
+import io.agentscope.harness.agent.sandbox.impl.docker.DockerFilesystemSpec;
 import io.agentscope.harness.agent.subagent.SubagentDeclaration;
 import io.agentscope.harness.agent.subagent.WorkspaceMode;
 import redis.clients.jedis.DefaultJedisClientConfig;
@@ -107,7 +108,7 @@ public final class Sample {
                 )
                 .toolResultEviction(ToolResultEvictionConfig.defaults())
                 .workspace(Path.of(workspace.toString(), "agentdir"))
-                .filesystem(new LocalFilesystemSpec().isolationScope(IsolationScope.USER))
+                // .filesystem(new LocalFilesystemSpec().isolationScope(IsolationScope.USER))
                 // .filesystem(new RemoteFilesystemSpec(new RedisStore(redisClient)).isolationScope(IsolationScope.USER))
                 // .filesystem(new RemoteFilesystemSpec(
                 //         JdbcStore.builder(dataSource)
@@ -115,11 +116,11 @@ public final class Sample {
                 //                 .initializeSchema(true)
                 //                 .build())
                 //         .isolationScope(IsolationScope.USER))
-                // .filesystem(new DockerFilesystemSpec().image("debian:13")
-                //         .workspaceRoot("/workspace")
-                //         .environment(Map.of("DEBUG", "true"))
-                //         .memorySizeBytes(512L * 1024 * 1024)
-                //         .cpuCount(2L))
+                .filesystem(new DockerFilesystemSpec().image("debian:13")
+                        .workspaceRoot("/workspace")
+                        .environment(Map.of("DEBUG", "true"))
+                        .memorySizeBytes(512L * 1024 * 1024)
+                        .cpuCount(2L))
                 // .skillRepository(new GitSkillRepository("", false))
                 // .skillRepository(MysqlSkillRepository.builder(dataSource)
                 //         .createIfNotExist(true)
@@ -207,10 +208,10 @@ public final class Sample {
     private static Model getModel() {
         return OpenAIChatModel.builder()
                 .apiKey(System.getenv("OPENAI_API_KEY"))
+                .baseUrl("https://ws-1t9uu8m17ouv3le5.cn-beijing.maas.aliyuncs.com/compatible-mode/v1")
                 .modelName("qwen3.7-plus")
                 .stream(true)
                 .formatter(new OpenAIChatFormatter())
-                .baseUrl("https://ws-1t9uu8m17ouv3le5.cn-beijing.maas.aliyuncs.com/compatible-mode/v1")
                 .build();
     }
 

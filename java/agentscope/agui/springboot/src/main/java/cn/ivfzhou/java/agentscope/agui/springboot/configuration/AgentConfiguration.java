@@ -119,7 +119,7 @@ public class AgentConfiguration {
         var toolkit = new Toolkit();
         toolkit.registration()
                 .mcpClient(McpClientBuilder.create("amap")
-                        .streamableHttpTransport("https://mcp.amap.com/mcp?key=" + System.getenv("AMAP_API_KEY"))
+                        .sseTransport("https://mcp.amap.com/sse?key=" + System.getenv("AMAP_API_KEY"))
                         .buildSync())
                 .apply();
         return toolkit;
@@ -130,6 +130,7 @@ public class AgentConfiguration {
         return OpenAIChatModel.builder()
                 .apiKey(System.getenv("OPENAI_API_KEY"))
                 .modelName("qwen3.7-plus")
+                .baseUrl("https://ws-1t9uu8m17ouv3le5.cn-beijing.maas.aliyuncs.com/compatible-mode/v1")
                 .stream(true)
                 .formatter(new OpenAIChatFormatter())
                 .build();
