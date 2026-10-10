@@ -42,8 +42,6 @@
         <!-- 报告输出内容的编码。指定 Maven 生成项目报告、站点文档时输出文件的字符编码。 -->
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>25</java.version>
-
-        <my.pom.filter.value>my parent pom filter value</my.pom.filter.value>
     </properties>
 
     <build>
@@ -51,7 +49,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.15.0</version>
+                <version>3.16.0</version>
                 <configuration>
                     <release>${java.version}</release>
                 </configuration>

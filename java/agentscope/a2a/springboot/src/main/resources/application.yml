@@ -1,37 +1,71 @@
+# AgentScope Spring Boot Starter 的根配置前缀，对应 AgentscopeProperties。
 agentscope:
   model:
+    # 模型提供方标识，可选值：dashscope（默认）、openai、gemini、anthropic。
+    # 由各 provider 的 starter（如 agentscope-openai-spring-boot-starter）据此装配对应的 Model Bean。
     provider: openai
   agent:
+    # 是否创建默认的 ReActAgent Bean（以及配套的 Memory、Toolkit）。
     enabled: true
+    # 默认 Agent 名称。
     name: sliver
+    # 系统提示词（System Prompt），不配置时使用默认值 "You are a helpful AI assistant."。
     # sysPrompt:
+    # 单次请求中 ReAct 循环的最大迭代次数。
     maxIters: 10
   a2a:
     server:
+      # 是否启用 A2A Server 的自动装配（为 true 时才会注册 A2A 相关 Bean 与端点）。
       enabled: true
+      # Agent 完成一次任务所允许的超时时间（秒）。
       # agentCompletionTimeoutSeconds:
+      # A2A Server 消费 Agent 完成任务的流式输出所允许的超时时间（秒）。
       # consumptionCompletionTimeoutSeconds:
+      # Agent 任务状态变为 complete 时，是否在响应中返回 completed 消息。
       completeWithMessage: false
+      # 是否在响应中携带内部中间消息（如 TOOL_CALL 等内部事件）。
       requireInnerMessage: false
+      # Agent Card（代理名片）：用于在 A2A 协议中对外声明代理的元信息。
       card:
+        # 代理名称。
         name: a2a-demo-agent
+        # 代理描述。
         description: AgentScope 2.x A2A Server 示例
+        # 代理对外访问地址（URL）。
         # url:
+        # 代理提供方信息（AgentProvider）。
         # provider: { }
+        # 代理版本号。
         # version:
+        # 代理文档地址。
         # documentationUrl:
+        # 默认支持的输入模式列表（如 text、file 等）。
         # defaultInputModes: [ ]
+        # 默认支持的输出模式列表。
         # defaultOutputModes: [ ]
+        # 代理声明的技能列表（AgentSkill）。
         # skills: [ ]
+        # 安全方案定义（SecurityScheme 映射）。
         # securitySchemes: { }
+        # 安全配置（针对不同接口/操作的权限声明）。
         # security: [ ]
+        # 代理图标地址。
         # iconUrl:
+        # 附加接口声明（AgentInterface）。
         # additionalInterfaces: [ ]
+        # 首选传输协议。
         preferredTransport: JSONRPC
+      # 传输协议配置。
       transports:
+        # JSON-RPC 传输协议配置。
         jsonrpc:
+          # 是否启用 JSON-RPC 传输。
           enabled: true
+          # 部署相关配置（host / port / path）。
           deploymentProperties:
+            # 监听地址。
             host: 127.0.0.1
+            # 监听端口。
             port: 8080
+            # 端点路径。
             path: /a2a

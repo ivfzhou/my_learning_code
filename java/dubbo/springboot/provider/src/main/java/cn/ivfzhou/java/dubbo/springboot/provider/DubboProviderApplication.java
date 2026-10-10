@@ -8,7 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @DubboComponentScan("cn.ivfzhou.java.dubbo.springboot.provider")
 public class DubboProviderApplication {
 
-    public static void main(String[] args) {
+    static void main(String[] args) {
         SpringApplication.run(DubboProviderApplication.class, args);
     }
 

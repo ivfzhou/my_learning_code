@@ -1,11 +1,5 @@
 package cn.ivfzhou.java.javaee.filter;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.nio.charset.StandardCharsets;
-import java.time.Duration;
-
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.FilterConfig;
@@ -20,6 +14,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletRequestWrapper;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpServletResponseWrapper;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 
 // @WebFilter(servletNames = "*", urlPatterns = "/")
 public class LogFilter implements Filter {
@@ -93,15 +93,23 @@ public class LogFilter implements Filter {
 
         ByteArrayOutputStream bs = new ByteArrayOutputStream();
 
-        ServletOutputStreamDecorator(ServletOutputStream stream) {this.stream = stream;}
+        ServletOutputStreamDecorator(ServletOutputStream stream) {
+            this.stream = stream;
+        }
 
-        byte[] getRspBody() {return bs.toByteArray();}
+        byte[] getRspBody() {
+            return bs.toByteArray();
+        }
 
         @Override
-        public boolean isReady() {return stream.isReady();}
+        public boolean isReady() {
+            return stream.isReady();
+        }
 
         @Override
-        public void setWriteListener(WriteListener writeListener) {stream.setWriteListener(writeListener);}
+        public void setWriteListener(WriteListener writeListener) {
+            stream.setWriteListener(writeListener);
+        }
 
         @Override
         public void write(int b) throws IOException {
@@ -115,18 +123,28 @@ public class LogFilter implements Filter {
 
         ByteArrayOutputStream bs = new ByteArrayOutputStream();
 
-        ServletInputStreamDecorator(ServletInputStream stream) {this.stream = stream;}
+        ServletInputStreamDecorator(ServletInputStream stream) {
+            this.stream = stream;
+        }
 
-        byte[] getReqBody() {return bs.toByteArray();}
-
-        @Override
-        public boolean isFinished() {return stream.isFinished();}
-
-        @Override
-        public boolean isReady() {return stream.isReady();}
+        byte[] getReqBody() {
+            return bs.toByteArray();
+        }
 
         @Override
-        public void setReadListener(ReadListener readListener) {stream.setReadListener(readListener);}
+        public boolean isFinished() {
+            return stream.isFinished();
+        }
+
+        @Override
+        public boolean isReady() {
+            return stream.isReady();
+        }
+
+        @Override
+        public void setReadListener(ReadListener readListener) {
+            stream.setReadListener(readListener);
+        }
 
         @Override
         public int read() throws IOException {

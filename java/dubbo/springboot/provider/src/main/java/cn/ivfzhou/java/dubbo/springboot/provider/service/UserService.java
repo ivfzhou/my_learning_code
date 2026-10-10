@@ -1,9 +1,8 @@
 package cn.ivfzhou.java.dubbo.springboot.provider.service;
 
+import cn.ivfzhou.java.dubbo.springboot.protocol.IUserService;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.stereotype.Service;
-
-import cn.ivfzhou.java.dubbo.springboot.protocol.IUserService;
 
 @DubboService
 @Service

@@ -1,11 +1,11 @@
 package cn.ivfzhou.java.javaee.servlet;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 // @WebServlet("/myServlet")
 public class MyServlet extends HttpServlet {
@@ -13,6 +13,7 @@ public class MyServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse rsp) throws IOException {
         rsp.getWriter().println("hello you do get");
+        printApplication();
     }
 
     @Override
@@ -38,6 +39,19 @@ public class MyServlet extends HttpServlet {
     @Override
     public void init() {
         System.out.println("MyServlet init " + this.getInitParameter("servletName"));
+    }
+
+    private void printApplication() throws IOException {
+        try (var stream = getClass().getResourceAsStream("/application.properties")) {
+            if (stream == null) {
+                System.out.println("stream is null");
+                return;
+            }
+            var bs = new byte[64];
+            for (var len = stream.read(bs); len != -1; len = stream.read(bs)) {
+                System.out.print(new String(bs, 0, len));
+            }
+        }
     }
 
 }

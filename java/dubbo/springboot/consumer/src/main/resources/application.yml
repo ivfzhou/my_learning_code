@@ -1,7 +1,9 @@
 server:
-  port: 8081
+  port: 8999
 dubbo:
   application:
     name: dubbo-consumer
+    # QoS 运维端口默认 22222，会和本机已启动的 provider 冲突，这里换成 22223。
+    qos-port: 22223
   registry:
-    address: zookeeper://ivfzhoudockerzookeeper:2181
+    address: zookeeper://127.0.0.1:2181

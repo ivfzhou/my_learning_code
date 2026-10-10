@@ -16,18 +16,21 @@
     <name>javaee</name>
     <packaging>war</packaging>
 
+    <properties>
+        <my.pom.filter.value>my parent pom filter value</my.pom.filter.value>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>jakarta.servlet</groupId>
             <artifactId>jakarta.servlet-api</artifactId>
-            <version>6.0.0</version>
+            <version>6.1.0</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>jakarta.servlet.jsp</groupId>
             <artifactId>jakarta.servlet.jsp-api</artifactId>
             <version>4.0.0</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>jakarta.servlet.jsp.jstl</groupId>
@@ -42,13 +45,12 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>5.12.2</version>
+            <version>6.1.3</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
 
     <build>
-
         <plugins>
             <plugin>
                 <groupId>org.apache.tomcat.maven</groupId>
@@ -61,17 +63,18 @@
             </plugin>
         </plugins>
 
-        <!-- 生成的文件名 -->
+        <!-- 生成的文件名。 -->
         <finalName>javaee</finalName>
 
         <resources>
             <resource>
-                <!-- 默认值 -->
+                <!-- 默认值。 -->
                 <directory>src/main/resources</directory>
                 <!-- 默认 false。把文件中 ${} 替换成其它值。 -->
                 <filtering>true</filtering>
             </resource>
         </resources>
+
         <filters>
             <!-- 引入该文件 -->
             <filter>src/main/filters/filter.properties</filter>

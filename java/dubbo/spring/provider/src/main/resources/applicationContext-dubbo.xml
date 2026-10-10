@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:dubbo="http://dubbo.apache.org/schema/dubbo"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://dubbo.apache.org/schema/dubbo
+        http://dubbo.apache.org/schema/dubbo/dubbo.xsd">
+
+    <!-- 应用名，用于服务提供方的标识。 -->
+    <dubbo:application name="dubbo-spring-provider"/>
+
+    <!-- 注册中心：使用 ZooKeeper，地址请根据实际环境修改。 -->
+    <!-- address="192.168.226.128:2181,192.168.226.128:2182,192.168.226.128:2183" -->
+    <dubbo:registry protocol="zookeeper" address="127.0.0.1:2181"/>
+
+    <!-- 服务暴露协议与端口。 -->
+    <dubbo:protocol name="dubbo" port="20880"/>
+
+    <!-- 服务实现 Bean。 -->
+    <bean id="userServiceImpl" class="cn.ivfzhou.java.dubbo.spring.provider.service.UserServiceImpl"/>
+
+    <!-- 向注册中心暴露服务。 -->
+    <dubbo:service interface="cn.ivfzhou.java.dubbo.spring.protocol.IUserService" ref="userServiceImpl"/>
+
+</beans>

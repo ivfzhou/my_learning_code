@@ -383,7 +383,7 @@ git am /path/to/patches/*.patch
 1. `git rev-parse HEAD`、`git rev-parse <branch-name1>`：获取到提交 ID。
 1. `git commit-tree <暂存区树 ID> -p <HEAD 提交 ID> -p <branch-name1 树 ID> -m <提交说明>`：创建树获取 ID。
 1. `git reset <新树 ID>`：将版本库重置到新的树。
-1. `git log`：查看其它版本库i合并进来的日志。
+1. `git log`：查看其它版本库合并进来的日志。
 
 # 十、同仓库不同分支使用不同 user 信息方案
 
@@ -423,7 +423,7 @@ git config get user.email
 
 在提交时设置环境变量：
 ```shell
-GIT_AUTHOR_NAME="Your Name" GIT_AUTHOR_EMAIL="email@example.com" git commit -m "message"
+GIT_AUTHOR_NAME="ivfzhou" GIT_AUTHOR_EMAIL="ivfzhou@126.com" GIT_COMMITTER_NAME="ivfzhou" GIT_COMMITTER_EMAIL="ivfzhou@126.com" git commit -m "message"
 ```
 
 ## 10.4 使用 pre-commit 钩子

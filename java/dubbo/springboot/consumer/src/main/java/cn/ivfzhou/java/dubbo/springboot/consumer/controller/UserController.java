@@ -1,11 +1,10 @@
 package cn.ivfzhou.java.dubbo.springboot.consumer.controller;
 
+import cn.ivfzhou.java.dubbo.springboot.protocol.IUserService;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import cn.ivfzhou.java.dubbo.springboot.protocol.IUserService;
 
 @Controller
 public class UserController {

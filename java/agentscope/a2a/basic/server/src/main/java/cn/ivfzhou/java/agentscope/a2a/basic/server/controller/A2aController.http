@@ -1,0 +1,54 @@
+###
+GET http://127.0.0.1:8080/.well-known/agent-card.json
+
+
+### 非流式：JSON-RPC 2.0 格式，一次性返回完整 JSON 结果。
+POST http://127.0.0.1:8080/a2a
+Accept: application/json
+Content-Type: application/json
+
+{
+  "jsonrpc": "2.0",
+  "id": "req-1",
+  "method": "message/send",
+  "params": {
+    "message": {
+      "role": "user",
+      "parts": [
+        {
+          "kind": "text",
+          "text": "长沙今日天气"
+        }
+      ],
+      "messageId": "msg-1791528883788",
+      "contextId": "thread-1791528874280",
+      "kind": "message"
+    }
+  }
+}
+
+
+### 流式：method 改为 message/stream，Accept 必须是 text/event-stream，返回 SSE 事件流。
+POST http://127.0.0.1:8080/a2a
+Accept: text/event-stream
+Content-Type: application/json
+
+{
+  "jsonrpc": "2.0",
+  "id": "req-2",
+  "method": "message/stream",
+  "params": {
+    "message": {
+      "role": "user",
+      "parts": [
+        {
+          "kind": "text",
+          "text": "长沙今日天气"
+        }
+      ],
+      "messageId": "msg-1791529003601",
+      "contextId": "thread-1791528874280",
+      "kind": "message"
+    }
+  }
+}

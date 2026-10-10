@@ -13,7 +13,7 @@ public class AgentConfiguration {
     public Model model() {
         return OpenAIChatModel.builder()
                 .apiKey(System.getenv("OPENAI_API_KEY"))
-                .modelName("qwen3.7-plus")
+                .modelName("qwen-plus-2025-07-28")
                 .stream(true)
                 .formatter(new OpenAIChatFormatter())
                 .baseUrl("https://ws-1t9uu8m17ouv3le5.cn-beijing.maas.aliyuncs.com/compatible-mode/v1")

@@ -8,15 +8,16 @@
 # 二、命令
 
 1. zkServer.sh *参数* *命令*：服务端命令。
-  - 参数
-    - --config *路径*：zoo.cfg 文件的所在文件夹路径（路径最后位不能带/），指定配置文件。
-  - 命令
-    - version：打印版本信息。
-    - start：后台启动。
-    - start-foreground：前台启动。
-    - stop：停止。
-    - restart：重启。
-    - status：打印状态信息。
+   参数：
+   - --config *路径*：zoo.cfg 文件的所在文件夹路径（路径最后位不能带/），指定配置文件。
+
+   命令：
+   - version：打印版本信息。
+   - start：后台启动。
+   - start-foreground：前台启动。
+   - stop：停止。
+   - restart：重启。
+   - status：打印状态信息。
 2. zkCli.sh -server *ip*：连接到服务器。
     - ls *节点名*：查看节点的子节点。
     - get *节点名*：查看当前节点数据。

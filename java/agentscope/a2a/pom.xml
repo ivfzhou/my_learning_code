@@ -17,8 +17,7 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>server</module>
-        <module>client</module>
+        <module>basic</module>
         <module>springboot</module>
     </modules>
 

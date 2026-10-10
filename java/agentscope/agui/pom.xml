@@ -18,7 +18,8 @@
 
     <modules>
         <module>springboot</module>
-        <module>basic</module>
+        <module>webflux</module>
+        <module>mvc</module>
     </modules>
 
 </project>
