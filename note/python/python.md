@@ -62,4 +62,4 @@
 1. 下载源码：https://github.com/python/cpython
 1. 运行：`./configure --enable-optimizations --with-ensurepip=install --prefix=/home/ivfzhou/programs/python`。
 1. 运行：`make -j $(nproc)`。
-1. 运行：make install
+1. 运行：`make install`。
