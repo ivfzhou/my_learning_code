@@ -11,7 +11,7 @@ import reactor.core.publisher.Mono;
 @EnableDiscoveryClient
 public class GatewayApplication {
 
-    public static void main(String[] args) {
+    static void main(String[] args) {
         SpringApplication.run(GatewayApplication.class);
     }
 

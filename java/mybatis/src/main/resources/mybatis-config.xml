@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE configuration
-        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
-        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
 <configuration>
 
-    <!-- 指定属性值，resource 从类路径引入 properties 文件，url 从指定路径引入。
-         优先级：代码方法最高，外部文件引入次之，最后是元素体内编写的。
+    <!--
+    指定属性值，resource 从类路径引入 properties 文件，url 从指定路径引入。
+    优先级：代码方法最高，外部文件引入次之，最后是元素体内编写的。
     -->
     <properties resource="mybatis-properties.properties"> <!-- url="" -->
         <property name="driver" value="com.mysql.cj.jdbc.Driver"/>
@@ -80,6 +81,7 @@
                 <property name="driver.encoding " value="UTF-8"/>
             </dataSource>
         </environment>
+
         <environment id="myenv">
             <transactionManager type="cn.ivfzhou.java.mybatis.transaction.MyTransactionManager">
                 <property name="name" value="value"/>
@@ -104,10 +106,10 @@
     -->
 
     <mappers>
-        <!--<mapper resource="mybatis-mapper-config.xml"/>-->
+        <mapper resource="mybatis-mapper-config.xml"/>
         <!--<mapper class="BlogMapper"/>-->
         <!--<mapper url="file:///"/>-->
-        <package name="cn.ivfzhou.java.mybatis.mapper"/>
+        <!--<package name="cn.ivfzhou.java.mybatis.mapper"/>-->
     </mappers>
 
 </configuration>

@@ -10,8 +10,8 @@ public final class Log4jTest {
     public final static java.util.logging.Logger logger3 = java.util.logging.Logger.getLogger(Log4jTest.class.getName());
 
     static void main(String[] args) {
-        logger.info("hello {} {}", "slf4j", 2);
-        logger2.info("hello {} {}", "log4j", 2);
+        logger.warn("hello {} {}", "slf4j", 2);
+        logger2.warn("hello {} {}", "log4j", 2);
         logger3.info("hello jul");
     }
 

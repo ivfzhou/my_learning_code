@@ -17,6 +17,7 @@ public class BlogSQLBuilder {
                 FROM("t_blog");
             }
         }.toString();
+
         return sql;
     }
 

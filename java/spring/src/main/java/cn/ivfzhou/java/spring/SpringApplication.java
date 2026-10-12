@@ -10,7 +10,7 @@ import cn.ivfzhou.java.spring.tx.MyTX;
 @EnableAspectJAutoProxy
 public final class SpringApplication {
 
-    public static void main(String[] args) {
+    static void main(String[] args) {
         var ac = new ClassPathXmlApplicationContext("application.xml");
 
         var user = ac.getBean("user", User.class);

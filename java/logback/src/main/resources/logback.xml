@@ -93,14 +93,9 @@
     <!-- 日志输出级别 -->
     <root level="INFO">
         <appender-ref ref="STDOUT"/>
-        <appender-ref ref="DEBUG_FILE"/>
-        <appender-ref ref="INFO_FILE"/>
-        <appender-ref ref="WARN_FILE"/>
-        <appender-ref ref="ERROR_FILE"/>
     </root>
 
-    <logger name="cn.ivfzhou.java" level="DEBUG" additivity="false">
-        <appender-ref ref="STDOUT"/>
+    <logger name="cn.ivfzhou.java" level="DEBUG" additivity="true">
         <appender-ref ref="DEBUG_FILE"/>
         <appender-ref ref="INFO_FILE"/>
         <appender-ref ref="WARN_FILE"/>

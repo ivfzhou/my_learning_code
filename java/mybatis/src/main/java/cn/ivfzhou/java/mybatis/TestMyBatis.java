@@ -13,13 +13,13 @@ import cn.ivfzhou.java.mybatis.mapper.BlogMapper;
 
 public final class TestMyBatis {
 
-    public static void main(String[] args) throws IOException {
+    static void main(String[] args) throws IOException {
         var resource = "mybatis-config.xml";
         var inputStream = Resources.getResourceAsStream(resource);
         var sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
-        // var sqlSessionFactory2 = new SqlSessionFactoryBuilder().build(Resources.getResourceAsStream(resource), "myenv");
+        // var sqlSessionFactory2 = new SqlSessionFactoryBuilder().build(inputStream, "myenv");
         try (var session = sqlSessionFactory.openSession(true)) {
-            switch (6) {
+            switch (1) {
                 case 1:
                     Blog blog = session.selectOne("cn.ivfzhou.java.mybatis.mapper.BlogMapper.selectBlog1", 4);
                     System.out.println(JSON.toJSON(blog));

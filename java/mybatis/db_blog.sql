@@ -1,3 +1,6 @@
+CREATE DATABASE IF NOT EXISTS db_blog;
+USE db_blog;
+
 DROP TABLE IF EXISTS `t_author`;
 CREATE TABLE `t_author`
 (
@@ -28,7 +31,6 @@ CREATE TABLE `t_blog`
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 5
   DEFAULT CHARSET = utf8mb4;
-
 INSERT INTO `t_blog`
 VALUES (1, 'title1', 99.89, 0, 1, 0, NULL),
        (2, 'title2', 89.78, 1, 2, 0, NULL),
@@ -46,7 +48,6 @@ CREATE TABLE `t_comment`
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 17
   DEFAULT CHARSET = utf8mb4;
-
 INSERT INTO `t_comment`
 VALUES (1, 1, 'comment1'),
        (2, 1, 'comment2'),
@@ -66,8 +67,7 @@ VALUES (1, 1, 'comment1'),
        (16, 1, 'comment16');
 
 DROP PROCEDURE IF EXISTS selectBlog;
-DELIMITER
-$$
+DELIMITER $$
 CREATE PROCEDURE selectBlog(IN param INT)
 BEGIN
     SELECT *

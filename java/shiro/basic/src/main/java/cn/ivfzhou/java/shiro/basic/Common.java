@@ -9,7 +9,7 @@ import org.apache.shiro.env.BasicIniEnvironment;
 
 public final class Common {
 
-    public static void main(String[] args) {
+    static void main(String[] args) {
         var environment = new BasicIniEnvironment("classpath:shiro.ini");
         var securityManager = environment.getSecurityManager();
         SecurityUtils.setSecurityManager(securityManager);

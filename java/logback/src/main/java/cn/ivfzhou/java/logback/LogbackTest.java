@@ -7,7 +7,7 @@ public final class LogbackTest {
 
     private final static Logger logger = LoggerFactory.getLogger(LogbackTest.class);
 
-    public static void main(String[] args) {
+    static void main(String[] args) {
         logger.info("hello {}", "logback");
         logger.warn("hello {}", "logback");
         logger.error("hello {}", "logback");

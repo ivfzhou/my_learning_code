@@ -17,11 +17,11 @@ public final class TestMyBatis2 {
     /*
      * 不使用 xml 配置获取 SQLSessionFactory。
      * */
-    public static void main(String[] args) throws Exception {
+    static void main(String[] args) throws Exception {
         var hashMap = new HashMap<>();
-        hashMap.put("username", "ivfzhou");
+        hashMap.put("username", "root");
         hashMap.put("password", "123456");
-        hashMap.put("url", "jdbc:mysql://ivfzhoudockermysql:3306/db_blog");
+        hashMap.put("url", "jdbc:mysql://127.0.0.1:3306/db_blog");
         var dataSource = DruidDataSourceFactory.createDataSource(hashMap);
         var transactionFactory = new JdbcTransactionFactory();
         var environment = new Environment("development", transactionFactory, dataSource);

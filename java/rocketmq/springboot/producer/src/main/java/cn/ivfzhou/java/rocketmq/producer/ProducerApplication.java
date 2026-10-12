@@ -10,7 +10,7 @@ import org.springframework.messaging.Message;
 @SpringBootApplication
 public class ProducerApplication {
 
-    public static void main(String[] args) {
+    static void main(String[] args) {
         SpringApplication.run(ProducerApplication.class, args);
     }
 

@@ -18,7 +18,7 @@ import cn.ivfzhou.java.springboot.filter.MyFilter;
 @MapperScan("cn.ivfzhou.java.springboot.mapper")
 public class Application {
 
-    public static void main(String[] args) {
+    static void main(String[] args) {
         /*
         var app = new SpringApplication(Application.class);
         var properties = new Properties();

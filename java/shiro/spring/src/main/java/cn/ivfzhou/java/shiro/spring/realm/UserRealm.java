@@ -1,7 +1,7 @@
 package cn.ivfzhou.java.shiro.spring.realm;
 
 import java.util.HashSet;
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;

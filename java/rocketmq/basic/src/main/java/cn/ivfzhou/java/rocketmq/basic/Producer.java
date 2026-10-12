@@ -27,7 +27,7 @@ public final class Producer {
 
     public static final String GROUP = "default";
 
-    public static void main(String[] args) throws Exception {
+    static void main(String[] args) throws Exception {
         sendOneway();
     }
 

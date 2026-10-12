@@ -92,10 +92,14 @@
         <Root level="all">
             <AppenderRef ref="Console"/>
             <AppenderRef ref="TestFileLog"/>
+        </Root>
+
+        <!-- additivity 表示将日志输出往上级传播，本机 logger 的 appender 处理完后，再交给 Root 的 appender 处理。 -->
+        <logger name="cn.ivfzhou" level="info" additivity="true">
             <AppenderRef ref="RollingFileInfo"/>
             <AppenderRef ref="RollingFileWarn"/>
             <AppenderRef ref="RollingFileError"/>
-        </Root>
+        </logger>
 
         <!-- 第三方日志系统 -->
         <!-- 过滤掉 spring 和 mybatis 的一些无用的 DEBUG 信息，也可以在 springboot 的 logging.level.org.springframework=FATAL 设置 -->
