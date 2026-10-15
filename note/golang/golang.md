@@ -2,6 +2,7 @@
 
 1. 下载导包格式化工具： `go install golang.org/x/tools/cmd/goimports@latest`。
 1. 下载语言服务工具：`go install golang.org/x/tools/gopls@latest`。
+1. 下载语言 Debug 工具：`go install github.com/go-delve/delve/cmd/dlv@latest`，`cp ~/go/bin/dlv ~/.local/share/JetBrains/IntelliJIdea2026.2/go-plugin/lib/dlv/linux/`。
 1. `// indirect` 出现情形：项目的间接依赖版本号升级后。在 go1.17 所有间接依赖在独立块中列出。
 1. `exclude` 和 `replace` 命令只在主项目中生效。被 exclude 的依赖取它高一级的版本代替，去除伪版本。replace 依赖为系统路径时须以 `./` 或 `../` 开头，替换依赖的 module path 须匹配。
 1. `+incompatible` 出现情形：依赖没有 go.mod，module_path 路径部分匹配相对的仓库根路径。这类依赖升级不考虑语义化版本限制。可能出现在伪版本后。
