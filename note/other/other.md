@@ -90,3 +90,12 @@ reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender" /v DisableAntiSpywar
 winget show --versions "Microsoft.VisualStudio.2022.Community"
 winget install -v 17.9.1 "Microsoft.VisualStudio.2022.Community"
 ```
+
+# 九、注册 Windows 系统服务
+
+1. 复制 [instsrv.exe](./instsrv.exe) 和 [srvany.exe](./srvany.exe) 到 C:\Windows\ 下。
+1. 注册服务，运行：`instsrv.exe <服务名称> "C:\Windows\srvany.exe"`。
+1. 编辑注册表 regedit。
+1. 在 `HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\<服务名称>` 下新建项 `Parameters`。
+1. 在项 `Parameters` 下新建字符串 `Application`（程序的完整路径）、`AppDirectory`（程序所在的工作目录）、`AppParameters`（传递给该程序的启动参数）。
+1. 启动服务，运行：`sc start <服务名称>`。
