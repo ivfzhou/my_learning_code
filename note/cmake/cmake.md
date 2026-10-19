@@ -160,12 +160,7 @@
 
 1. 构建过程：
    ```shell
-   mkdir build
-   cd build
-   cmake -DCMAKE_INSTALL_PREFIX=xxx -DCMAKE_BUILD_TYPE=Release  ..
-   cmake -S /src/path -B /generate/file/path -G 'Unix Makefiles'
-   cmake --build . --target install --config Release
-   make -j
-   make install
+   cmake -S /path/to/source -B /path/to/build -G 'Unix Makefiles' -DCMAKE_INSTALL_PREFIX=xxx -DCMAKE_BUILD_TYPE=Release
+   cmake --build /path/to/build --target install --config Release
    ```
 2. `cmake --build . --target xxx -- -j 6 VERBOSE=1`：其中 `--` 后面是传递给构建工具的，这里是 `make`。其中 `VERBOSE=1` 会打印编译命令信息。

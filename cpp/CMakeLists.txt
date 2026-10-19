@@ -210,3 +210,20 @@ if (COMPILE_DYNAMIC_MODE)
         install_dynamic_library_with_soname(${v} bin)
     endforeach ()
 endif ()
+
+# # 设置头文件安装路径。
+# block()
+#     file(GLOB INSTALL_HEADERS
+#             ${CMAKE_SOURCE_DIR}/*.hpp
+#             ${CMAKE_SOURCE_DIR}/*.tpp
+#     )
+#     foreach (v ${INSTALL_HEADERS})
+#         file(RELATIVE_PATH HEADER_RELATIVE_PATH ${CMAKE_SOURCE_DIR} ${v})
+#         get_filename_component(HEADER_DIR ${HEADER_RELATIVE_PATH} DIRECTORY)
+#         if (HEADER_DIR STREQUAL "")
+#             install(FILES ${v} DESTINATION include)
+#         else ()
+#             install(FILES ${v} DESTINATION include/${HEADER_DIR})
+#         endif ()
+#     endforeach ()
+# endblock()
