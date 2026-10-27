@@ -56,7 +56,9 @@ static void test_scanf() {
 }
 
 int main(const int argv, const char* argc[]) {
-
+    char str[2] = {0};
+    int res = scanf("\tq %c", str); // 输入 \t q \t w。
+    printf("%d, %s\n", res, str); // 1, w
     printf("OK 完成\n");
     return 0;
 }

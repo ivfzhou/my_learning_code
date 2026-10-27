@@ -171,6 +171,7 @@ git am /path/to/patches/*.patch
 - `git revert <commit-id>`：新建一个提交来撤销指定提交引入的改动（不改变已有的历史提交记录）。
 - `git checkout <branch> -- <file-path>`：从指定分支取出文件，覆盖当前分支的暂存区和工作区。
 - `git cherry-pick <commit-id>`：将指定提交的改动"拣选"出来，在当前 HEAD 上重新应用为一个新提交。
+- `git reset --hard ORIG_HEAD`：回到合并分支前的提交处。ORIG_HEAD 就是合并前的 HEAD。
 
 ## 9.9 查看
 

@@ -3,7 +3,10 @@
 1. [Information technology —Programming languages — C ISO/IEC 9899 2018](./ISO_IEC_9899_2018.pdf)
 1. [Programming languages — C++ ISO/IEC 14882 2020](./ISO_IEC_14882_2020.pdf)
 1. 参考网站：cppreference.com。
-1. 逗号运算符表达式取右值。
+
+## 1.1 语法
+
+1. 逗号运算符表达式取最右边的值。
 1. `switch case` 值只能作用于整形常量。
 1. 函数返回值不能是数组。
 1. 不允许 `main` 函数递归。
@@ -11,10 +14,10 @@
 1. 外部变量、静态变量有默认值，为零值。
 1. 语句：标号语句、复合语句、表达式语句、选择语句、迭代语句、跳转语句。
 1. 储存类型说明符：`_Thread_local`、`auto`、`extern`、`static`、`register`。
-1. 类型限定符：`const`、`volatile`（代理（而不是变量所在的程序）可以改变该变量的值）、`restrict`（用于指针，表明该指针是访问数据对象的唯一且初始的方式）、`_Atomic`。
-1. E 表示法的数字都以浮点数存储。
-1. 可以安全的 delete 一个空指针。
-1. 使用 {} 初始化数字更严格，它不允许 narrow，{} 里面的值要是常量。
+1. 类型限定符：`const`、`volatile`、`restrict`（用于指针，表明该指针是访问数据对象的唯一且初始的方式）、`_Atomic`。
+1. `E` 表示法的数字都以浮点数存储。
+1. 可以安全的 `delete` 一个空指针。
+1. 使用 `{}` 初始化数字更严格，它不允许 narrow，`{}` 里面的值要是常量。
    ```c++
    int arr[10] = {} // 数组所有元素初始化为 0。
    ```
@@ -120,7 +123,7 @@
    int hexadecimal = 0Xf; // 0xf
    double exponent = 1e2; // 1E2
    double exponent1 = 0x1p1; // 0x1P1
-   ```
+   ```  
 1. 字符字面量：
    ```
    \a \b \f \n \r \t \v \' \" \\
