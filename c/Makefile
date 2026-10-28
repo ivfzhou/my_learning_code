@@ -1,4 +1,10 @@
-CC = gcc
+CC := gcc
+
+# 打印变量值。
+$(info $$(CC) $(CC))
+$(info $$(MAKE) $(MAKE))
+$(info $$(SHELL) $(SHELL))
+$(info $$(OS) $(OS))
 
 # -g0：不生成调试信息。
 # -g1：生成基本的调试信息，通常是最小的调试信息。
@@ -8,37 +14,59 @@ CC = gcc
 # -O2：优化级别设置。
 # -Dxxx=xxx：定义预处理宏。
 # -Wno-unused：禁用所有未使用的警告（包括函数、参数等）。
-# -I/usr/local/include/ -L/usr/local/lib/ -l_bitwise
-CFLAGS = -std=c18 -finput-charset=UTF-8 -fexec-charset=UTF-8 --all-warnings -pedantic -Winline -O0 -Wall -g3 \
-	-Wno-unused-variable -Wno-unused-function -Wno-unused-local-typedefs
+# -I /usr/local/include/ -L /usr/local/lib/ -l bitwise
+CFLAGS_COMMON := -std=c18 -finput-charset=UTF-8 -fexec-charset=UTF-8 --all-warnings -pedantic -Winline -Wall \
+                 -Wno-unused-variable -Wno-unused-function -Wno-unused-local-typedefs
+CFLAGS_DEBUG := $(CFLAGS_COMMON) -O0 -g3
+CFLAGS_RELEASE := $(CFLAGS_COMMON) -O2 -g0 -DNDEBUG
+TARGET := c
+SOURCES := $(shell ls | grep -E '(\.c$$)|(\.C$$)')
+SOURCES += bitwise/bitwise.c
+DEBUG_OBJECTS := $(addprefix debug/, $(SOURCES:.c=.o))
+RELEASE_OBJECTS := $(addprefix release/, $(SOURCES:.c=.o))
+CLEAN_COMMAND := rm -rf debug/ release/ $(TARGET)-debug $(TARGET)-debug.exe $(TARGET)-release $(TARGET)-release.exe
+$(info $$(CFLAGS_DEBUG) $(CFLAGS_DEBUG))
+$(info $$(CFLAGS_RELEASE) $(CFLAGS_RELEASE))
+$(info $$(SOURCES) $(SOURCES))
+$(info $$(DEBUG_OBJECTS) $(DEBUG_OBJECTS))
+$(info $$(RELEASE_OBJECTS) $(RELEASE_OBJECTS))
+$(info $$(CLEAN_COMMAND) $(CLEAN_COMMAND))
 
-TARGET = main
-SOURCES = alignment.c array.c assertion.c bit_field.c constant.c enumeration.c flow_statement.c function.c \
-	generic.c macro.c string.c struct.c type.c typedef.c union.c varargs.c variable.c bitwise/bitwise.c main.c
-OBJECTS = $(SOURCES:.c=.o)
-DEL_PARAMETERS = $(OBJECTS) $(TARGET).exe
-RM_PARAMETERS = $(OBJECTS) $(TARGET)
 
-# 如果是 Windows 系统，且没有运行环境没有 sh.exe 可使用，则使用 del 命令清理文件。
-# 否则使用 rm 命令清理文件。
-CLEAN_COMMAND = rm -f $(RM_PARAMETERS);
-ifeq ($(OS), Windows_NT)
-$(info shell interpreter is $(SHELL))
-	HAS_SH = $(shell sh.exe --version > /dev/null 2>&1 && echo 1 || echo 0)
-	ifeq ($(HAS_SH), 0)
-		CLEAN_COMMAND = del /Q $(DEL_PARAMETERS);
-	endif
-endif
+.PHONY: debug release all clean format-code
 
-.PHONY: debug clean all
 
-debug: $(TARGET)
-# 编译每个源代码。
-%.o: %.c
-	@$(CC) $(CFLAGS) -c -o $@ $<
-# 链接代码。
-$(TARGET): $(OBJECTS)
-	@$(CC) $(CFLAGS) -o $@ $^
+# 编译每个源代码（debug 版本）。
+debug/%.o: %.c
+	@mkdir -p $(dir $@)
+	@$(CC) $(CFLAGS_DEBUG) -c -o $@ $<
+
+
+# 编译每个源代码（release 版本）。
+release/%.o: %.c
+	@mkdir -p $(dir $@)
+	@$(CC) $(CFLAGS_RELEASE) -c -o $@ $<
+
+
+# 链接代码（debug 版本）。
+$(TARGET)-debug: $(DEBUG_OBJECTS)
+	@$(CC) $(CFLAGS_DEBUG) -o $@ $^
+
+
+# 链接代码（release 版本）。
+$(TARGET)-release: $(RELEASE_OBJECTS)
+	@$(CC) $(CFLAGS_RELEASE) -o $@ $^
+
+
 clean:
 	@$(CLEAN_COMMAND)
-all: debug
+
+
+# 格式化所有源文件（-i 原地修改）。依赖 clang-format 工具。
+format-code:
+	@clang-format -i $(SOURCES)
+
+
+all: $(TARGET)-release
+debug: $(TARGET)-debug
+release: $(TARGET)-release

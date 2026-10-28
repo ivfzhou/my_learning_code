@@ -1,4 +1,6 @@
-void test_constant() {
+#include "constant.h"
+
+void test_constant(void) {
     const int I = 0;
     const int* P1; // 指针指向值不能修改。
     int const* P2; // 同上。

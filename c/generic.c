@@ -1,7 +1,9 @@
 #include <stdio.h>
 
+#include "generic.h"
+
 // 泛型选择
-void test_generic() {
+void test_generic(void) {
     int x = 9;
     char* s = _Generic(x, int: "int", long: "long", default: ""); // 根据 x 的类型返回冒号后的值。
     printf("x type is %s\n", s);

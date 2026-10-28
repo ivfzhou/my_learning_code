@@ -1,7 +1,7 @@
+#include <locale.h>
 #include <stdio.h>
 #include <uchar.h>
 #include <wchar.h>
-#include <locale.h>
 
 // 数据类型
 void test_type() {
@@ -39,7 +39,7 @@ void test_type() {
 
     printf("\n===\n\n");
 
-    setlocale(LC_ALL, ""/* en_US.utf8 */);
+    setlocale(LC_ALL, "" /* en_US.utf8 */);
     wprintf(L"wt\u4f60 is %lc\n", wt\u4f60);
     wchar_t* ws = L"hello world 你好世界";
     wprintf(L"ws is %ls\n", ws);

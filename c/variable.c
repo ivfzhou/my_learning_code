@@ -31,9 +31,7 @@ void block_extern_var() {
     extern int file_var;
 }
 
-void block_auto_var() {
-    auto int file_var;
-}
+void block_auto_var() { auto int file_var; }
 
 
 // 寄存器变量。
@@ -43,9 +41,7 @@ void register_var() {
 }
 
 // 寄存器形参。
-void test_register0(register int i) {
-    printf("register i is %d", i);
-}
+void test_register0(register int i) { printf("register i is %d", i); }
 
 void test_variable() {
     block_static_var();

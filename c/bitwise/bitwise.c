@@ -17,21 +17,13 @@ static void print_byte_in_binary_right_to_left(const unsigned char byte) {
     }
 }
 
-unsigned char bit_mask(const unsigned char flag, const unsigned char index) {
-    return MASK << index & flag;
-}
+unsigned char bit_mask(const unsigned char flag, const unsigned char index) { return MASK << index & flag; }
 
-unsigned char bit_open(const unsigned char flag, const unsigned char index) {
-    return MASK << index | flag;
-}
+unsigned char bit_open(const unsigned char flag, const unsigned char index) { return MASK << index | flag; }
 
-unsigned char bit_close(const unsigned char flag, const unsigned char index) {
-    return flag & ~(MASK << index);
-}
+unsigned char bit_close(const unsigned char flag, const unsigned char index) { return flag & ~(MASK << index); }
 
-unsigned char bit_toggle(const unsigned char flag, const unsigned char index) {
-    return MASK << index ^ flag;
-}
+unsigned char bit_toggle(const unsigned char flag, const unsigned char index) { return MASK << index ^ flag; }
 
 _Bool bit_check(const unsigned char flag, const unsigned char index) {
     const unsigned char mask = MASK << index;
@@ -83,7 +75,7 @@ void print_bit_field_layout_left_to_right_reverse(const void* target, const size
     if (!target) return;
 
     const unsigned char* ptr = (unsigned char*)target;
-    for (size_t i = size - 1; ;) {
+    for (size_t i = size - 1;;) {
         print_byte_in_binary_left_to_right(ptr[i]);
         if (!i) break;
         printf("_");

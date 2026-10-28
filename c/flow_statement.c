@@ -1,7 +1,9 @@
 #include <stdio.h>
 
+#include "flow_statement.h"
+
 // 流程语句
-void test_flow_statement() {
+void test_flow_statement(void) {
     // if () { ... } else if () { ... } else { ... }
     // switch () { case n: break; default: }
     // while () { ... }
@@ -13,8 +15,6 @@ void test_flow_statement() {
     goto F1;
     {
         printf("not print\n");
-    F1: {
-            printf("print\n");
-        }
+    F1: { printf("print\n"); }
     }
 }

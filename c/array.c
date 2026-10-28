@@ -1,9 +1,11 @@
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdint.h>
+
+#include "array.h"
 
 // 数组
-void test_array() {
+void test_array(void) {
     // str 是一个指向字符串字面量的指针。
     // 字符串字面量 "hello world" 存储在只读的内存区域（通常是程序的文本段或只读数据段）。
     char* str = "hello world"; // 等价于 char (*str)[12]; str[11] = '\x00'
@@ -44,9 +46,11 @@ void test_array() {
     };
     printf("sizeof(arr) is %zd\n", sizeof(arr));
     printf("the number of bytes in arr[2][3] + 1 is %llu and sizeof(int[3]) is %zd\n",
-           (unsigned long long)((uintptr_t)(arr + 1) - (uintptr_t)arr), sizeof(int[3])); // 表示加 sizeof(int[3])
+           (unsigned long long)((uintptr_t)(arr + 1) - (uintptr_t)arr),
+           sizeof(int[3])); // 表示加 sizeof(int[3])
     printf("the number of bytes in arr[0] + 1 is %llu and sizeof(int) is %zd\n",
-           (unsigned long long)((uintptr_t)(arr[0] + 1) - (uintptr_t)arr[0]), sizeof(int)); // 表示加 sizeof(int)
+           (unsigned long long)((uintptr_t)(arr[0] + 1) - (uintptr_t)arr[0]),
+           sizeof(int)); // 表示加 sizeof(int)
 
     printf("\n===\n\n");
 

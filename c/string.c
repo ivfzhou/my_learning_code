@@ -1,7 +1,7 @@
-#include <string.h>
-#include <stdio.h>
 #include <locale.h>
 #include <stddef.h>
+#include <stdio.h>
+#include <string.h>
 #include <wchar.h>
 
 // 字符串。
@@ -29,7 +29,8 @@ void test_string() {
     // str4[0] = 'H'; // 无法写入。该字符串在静态数据区。
 
     // 字符串拼接。
-    char* str5 = "hello" "world";
+    char* str5 = "hello"
+                 "world";
 
     printf("\n===\n\n");
 

@@ -1,13 +1,15 @@
 #include <stdio.h>
 #include "bitwise/bitwise.h"
 
+#include "bit_field.h"
+
 // 位字段
-void test_bit_field() {
+void test_bit_field(void) {
     // C 以 unsigned int 作为位字段结构的基本布局单元，分配的内存为 int 长度的倍数。
     // 实测表现，内存布局中前 21 位为填充，接着 2 位是 c 的，接着 7 位为填充，接着 2 位是 a 的。
     struct has_bit_field {
         int a : 2;
-        int  : 7; // 间隙
+        int : 7; // 间隙
         int c : 2;
     };
 

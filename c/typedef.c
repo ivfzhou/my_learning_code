@@ -17,7 +17,7 @@ void test_typedef() {
 
 // typedef 和 define 的区别。
 
-#define BYTE char *
+#define BYTE char*
 
 typedef char* byte;
 

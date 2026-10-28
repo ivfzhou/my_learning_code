@@ -1,7 +1,10 @@
-#include <stdio.h>
 #include <stdint.h>
+#include <stdio.h>
 
-// 内存对齐是指在计算机内存中，数据的存储地址必须是某个特定值的倍数。内存对齐的目的是为了提高内存访问的效率，减少 CPU 访问内存时的延迟。
+#include "alignment.h"
+
+// 内存对齐是指在计算机内存中，数据的存储地址必须是某个特定值的倍数。
+// 内存对齐的目的是为了提高内存访问的效率，减少 CPU 访问内存时的延迟。
 // 对齐要求是指数据在内存中存储时，地址必须是某个特定值的倍数。
 
 struct S {
@@ -10,7 +13,7 @@ struct S {
     double c;
 };
 
-void test_alignment() {
+void test_alignment(void) {
     printf("_Alignof(int) is %zd\n", _Alignof(int)); // 4
     char _Alignas(8) c = 'a'; // 使 c 的对齐值是 8，地址会是 8 的整数倍。
     printf("sizeof(c) is %zd\n", sizeof(c)); // 1

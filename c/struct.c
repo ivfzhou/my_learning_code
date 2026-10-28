@@ -7,7 +7,7 @@ struct user {
 
 void test_struct() {
     // 使用结构体。
-    struct user s0 = {.age = 18/*, 123 多余元素 */};
+    struct user s0 = {.age = 18 /*, 123 多余元素 */};
     struct user s1 = {18};
 
     // 声明及使用语法。
