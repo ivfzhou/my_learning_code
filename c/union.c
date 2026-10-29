@@ -1,12 +1,14 @@
 #include <stdio.h>
 
+#include "union.h"
+
 // 联合体声明语法。编译器只分配占用最大字节类型字段的空间。
 union brand {
     char a;
     int b;
 };
 
-void test_union() {
+void test_union(void) {
     // 联合体的初始化。
     union brand b0 = {33}; // 33 复制给了 a。
     printf("b0.b is %d\n", b0.b);

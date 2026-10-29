@@ -1,3 +1,5 @@
+#include "typedef.h"
+
 // 声明语法。
 typedef unsigned int uint;
 
@@ -8,7 +10,7 @@ typedef struct {
 
 typedef void (*func)(char*);
 
-void test_typedef() {
+void test_typedef(void) {
     // 仅供函数内使用。
     typedef unsigned char BYTE;
     complex c; // 等价于 struct{double real; double imag;} c;
@@ -21,7 +23,7 @@ void test_typedef() {
 
 typedef char* byte;
 
-void test_typedef0() {
+void test_typedef0(void) {
     BYTE x, y; // 等价于 char *x, y;
     byte x1, y1; // 等价于 char *x1, *y1;
 }

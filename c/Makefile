@@ -51,20 +51,24 @@ release/%.o: %.c
 # 链接代码（debug 版本）。
 $(TARGET)-debug: $(DEBUG_OBJECTS)
 	@$(CC) $(CFLAGS_DEBUG) -o $@ $^
+	@echo 'build debug done'
 
 
 # 链接代码（release 版本）。
 $(TARGET)-release: $(RELEASE_OBJECTS)
 	@$(CC) $(CFLAGS_RELEASE) -o $@ $^
+	@echo 'build release done'
 
 
 clean:
 	@$(CLEAN_COMMAND)
+	@echo 'clean done'
 
 
 # 格式化所有源文件（-i 原地修改）。依赖 clang-format 工具。
 format-code:
 	@clang-format -i $(SOURCES)
+	@echo 'format-code done'
 
 
 all: $(TARGET)-release

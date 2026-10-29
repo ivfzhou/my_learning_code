@@ -1,11 +1,8 @@
 #include <stdio.h>
 
-// 声明结构体语法。
-struct user {
-    int age;
-};
+#include "struct.h"
 
-void test_struct() {
+void test_struct(void) {
     // 使用结构体。
     struct user s0 = {.age = 18 /*, 123 多余元素 */};
     struct user s1 = {18};

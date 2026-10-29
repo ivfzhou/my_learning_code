@@ -3,8 +3,10 @@
 #include <uchar.h>
 #include <wchar.h>
 
+#include "type.h"
+
 // 数据类型
-void test_type() {
+void test_type(void) {
     char c = 'C';
     short s = 1;
     unsigned short us = 1;

@@ -4,8 +4,10 @@
 #include <string.h>
 #include <wchar.h>
 
+#include "string.h"
+
 // 字符串。
-void test_string() {
+void test_string(void) {
     char str1[11] = "hello";
     printf("str1 is %s and length is %zu\n", str1, strlen(str1));
     char str2[] = "world";

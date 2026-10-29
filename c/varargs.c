@@ -1,6 +1,8 @@
 #include <stdarg.h>
 #include <stdio.h>
 
+#include "varargs.h"
+
 static int sum(int paramn, ...) {
     va_list args;
     va_start(args, paramn);
@@ -20,7 +22,7 @@ static int sum(int paramn, ...) {
     return sum;
 }
 
-void test_varargs() {
+void test_varargs(void) {
     int res = sum(4, 1, 1, 1);
     printf("res is %d\n", res);
 }

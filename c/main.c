@@ -1,42 +1,25 @@
 #include <stdio.h>
 
+#include "alignment.h"
+#include "array.h"
+#include "assertion.h"
+#include "bit_field.h"
 #include "bitwise/bitwise.h"
+#include "constant.h"
+#include "enumeration.h"
+#include "flow_statement.h"
+#include "function.h"
+#include "generic.h"
+#include "macro.h"
+#include "string.h"
+#include "struct.h"
+#include "type.h"
+#include "typedef.h"
+#include "union.h"
+#include "varargs.h"
+#include "variable.h"
 
-extern void test_alignment();
-
-extern void test_array();
-
-extern void test_assertion();
-
-extern void test_bit_field();
-
-extern void test_constant();
-
-extern void test_enumeration();
-
-extern void test_flow_statement();
-
-extern void test_function();
-
-extern void test_generic();
-
-extern void test_macro();
-
-extern void test_string();
-
-extern void test_struct();
-
-extern void test_type();
-
-extern void test_typedef();
-
-extern void test_union();
-
-extern void test_varargs();
-
-extern void test_variable();
-
-static void test_cast() {
+static void test_cast(void) {
     const char c = 5;
     char result_char = (char)~c;
     char result_int = ~c;
@@ -47,7 +30,7 @@ static void test_cast() {
     print_bit_field_layout_left_to_right_reverse((unsigned char*)&result_int, sizeof(char));
 }
 
-static void test_scanf() {
+static void test_scanf(void) {
     // scanf 遇到空格字符串就结束，末尾自动加 \0，而 gets 换行才算字符串结束。
     char x[3];
     int res = scanf("%2s", x);
