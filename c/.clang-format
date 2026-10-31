@@ -9,6 +9,7 @@ AllowShortCaseLabelsOnASingleLine: true
 AllowShortIfStatementsOnASingleLine: true
 AllowShortLoopsOnASingleLine: true
 AlwaysBreakTemplateDeclarations: Yes # 如果设置为 true，则在模板声明时总是换行。这对于长模板参数列表特别有用，可以提高可读性。
+AlignEscapedNewlines: Left
 BraceWrapping: # 用于控制大括号的换行行为。它是一个字典，允许你为不同的上下文设置换行规则。
   AfterCaseLabel: false
   AfterClass: false # 在类定义后换行。
